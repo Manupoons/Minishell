@@ -15,6 +15,14 @@
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <termcap.h>
+# include <./libft.h>
 
+//commands
+
+void    exec_comms(char **argv);
+void    exec_ls(char **argv);
+void    exec_cd(char **argv);
+void    exec_pwd(char **argv);
+void    exec_echo(char **argv);
 
 #endif

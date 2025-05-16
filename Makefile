@@ -3,7 +3,7 @@ NAME = minishell
 DEF_COLOR = \033[0;39m
 BRIGHT_GREEN =	\033[1;92m
 
-SRC = src/main.c 
+SRC = src/main.c src/commands.c
 
 LIBFT = libft/libft.a
 

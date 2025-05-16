@@ -11,26 +11,50 @@ void print_banner(void) {
     printf("\033[0m\n");  // Reset color
 }
 
+char **split_line(char *line)
+{
+    char **args;
+    char *token;
+    int i = 0;
+
+    args = malloc(sizeof(char *) * 100);
+    if (!args)
+        return NULL;
+
+    token = strtok(line, " ");
+    while (token)
+    {
+        args[i++] = token;
+        token = strtok(NULL, " ");
+    }
+    args[i] = NULL;
+    return args;
+}
+
 int main(void)
 {
     print_banner();
     char    *line;
+    char    **argv;
 
-    while (1) {
-        line = readline("minishell$ ");
+    while ((line = readline("minishell$ ")) != NULL)
+    {
 
-        if (!line) {
+        if (!line)
+        {
             printf("exit\n");
             break;
         }
 
-        if (*line) {
+        if (*line)
+        {
             add_history(line);
-            printf("You typed: %s\n", line);
+            argv = split_line(line);
+            exec_comms(argv);
+            free(argv);
         }
-
         free(line);
     }
-
+    rl_clear_history();
     return 0;
 }
