@@ -23,45 +23,33 @@
 // }
 
 
-int ft_isspace(char c) // mejorar
-{
-    return (c == " ");
-}
-
-int ft_comillas(char c)
-{
-    return (c == 34 || c == 39);
-}
-
-int ft_extract_quoted_token(char *line)
-{
-    int i;
-    int j;
-    char    *temp;
-
-    i = 1;
-    j = 0;
-    while (!ft_comillas(line[i]))
-    {
-        temp[i] = line[i];
-        i++;
-        j        
-    }
-}
 
 
 void    tokenizer(t_shell *mini, char *line)
 {
     int     i;
-    char    *temp;
+    char    *token;
+    int     consumed;
 
     i = 0;
     while (line[i])
     {
         if (ft_isspace(line[i]))
+        {
             i++;
-        if (ft_comillas(line[i]))
-            ft_extract_quoted_token(&line);
+            continue;
+        }
+        if (ft_quotes(line[i]))
+        {
+            consumed = extract_quoted_token(line, token);
+            if (consumed)
+                break;
+            add_token(mini, TOKEN_WORD, token);
+        }
+        if (ft_special_simbol(line[i]))
+        {
+            
+        }
     }
 }
 
@@ -75,7 +63,6 @@ void    ft_minishell(t_shell *mini)
     {
         line = readline("minishell$ ");
         printf("line %s \n", line);
-        tokenizer(mini, line);
         if (!line)
         {
             printf("exit\n");

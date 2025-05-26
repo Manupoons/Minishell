@@ -17,9 +17,24 @@
 # include <termcap.h>
 # include "libft.h"
 
+
+// SE LO PEDI A CHATGPT me dio pereza generarlo
+typedef enum e_token_type
+{
+    TOKEN_WORD,       // Palabra normal, comando o argumento
+    TOKEN_PIPE,       // '|'
+    TOKEN_REDIR_IN,   // '<'
+    TOKEN_REDIR_OUT,  // '>'
+    TOKEN_APPEND,     // '>>'
+    TOKEN_HEREDOC,    // '<<'
+    TOKEN_EOF         // Fin de línea o archivo (opcional)
+}   t_token_type;
+
+
+
 typedef struct s_token
 {
-    int             type;
+    t_token_type    type;
     char            *token;
     struct  s_token *next; // para recorrer lista
 }   t_token;
@@ -49,12 +64,22 @@ typedef struct s_shell
 
 //  ###--- MAIN ---### 
 void    ft_minishell(t_shell *mini);
-void    tokenizer(t_shell *mini);
+void    tokenizer(t_shell *mini, char *line);
 //  ###--------------### 
 
 //  ###--- HEADER ---### 
 void	print_banner(void);
 //  ###--------------### 
+
+
+//  ###--- HEADER ---### 
+int ft_isspace(char c);
+int ft_quotes(char c);
+int extract_quoted_token(char *line, char**token);
+int ft_special_simbol(char *line);
+
+//  ###--------------### 
+
 
 #endif
 
