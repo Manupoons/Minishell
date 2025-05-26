@@ -23,7 +23,8 @@ LDFLAGS = -lreadline
 all: $(LIBFT) $(NAME)
 
 $(LIBFT):
-	@$(MAKE) -C $(LIBFT_DIR)
+	@echo "Building libft..."
+	@$(MAKE) -C $(LIBFT_DIR) --no-print-directory
 
 -include $(DEPS)
 
@@ -33,12 +34,12 @@ $(NAME): $(OBJS) $(LIBFT)
 
 clean:
 	@${RM} ${OBJS} ${DEPS}
-	@$(MAKE) -C $(LIBFT_DIR) clean
+	@$(MAKE) -C $(LIBFT_DIR) clean --no-print-directory
 	@echo "\n$(BRIGHT_GREEN)All objects cleaned successfully ✓$(DEF_COLOR)\n"
 
 fclean: clean
 	@${RM} ${NAME}
-	@$(MAKE) -C $(LIBFT_DIR) fclean
+	@$(MAKE) -C $(LIBFT_DIR) fclean --no-print-directory
 	@echo "\n$(BRIGHT_GREEN)All objects and executable cleaned successfully ✓$(DEF_COLOR)\n"
 
 re: fclean all
