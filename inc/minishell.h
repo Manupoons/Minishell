@@ -1,17 +1,8 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-# include <stdio.h>
-# include <stdlib.h>
-# include <unistd.h>
-# include <string.h>
+# include <./libft.h>
 # include <fcntl.h>
-# include <dirent.h>
-# include <sys/stat.h>
-# include <sys/wait.h>
-# include <signal.h>
-# include <termios.h>
-# include <sys/ioctl.h>
 # include <readline/readline.h>
 # include <readline/history.h>
 # include <termcap.h>
@@ -38,6 +29,12 @@ typedef struct s_cmd
 	struct s_cmd    *next; // para manejar pipelines (|) entre comandos
 } t_cmd;
 
+typedef struct s_env
+{
+	char *env_name;     // nombre de la variable
+	char *env_value;    // valor de la variable
+	struct s_env *next; //  siguiente elemento en la lista
+}			t_env;
 
 typedef struct s_shell
 {

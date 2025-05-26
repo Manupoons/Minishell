@@ -23,7 +23,7 @@
 // }
 
 
-int ft_isspace(char c) // mejorar
+int ft_isspace(char c)
 {
     return (c == " ");
 }
@@ -45,7 +45,7 @@ int ft_extract_quoted_token(char *line)
     {
         temp[i] = line[i];
         i++;
-        j        
+        j++;       
     }
 }
 
@@ -90,9 +90,6 @@ void    ft_minishell(t_shell *mini)
     }
 }
 
-
-
-                    // , char **env
 int main(int ac, char **av)
 {
     t_shell mini;
@@ -102,4 +99,36 @@ int main(int ac, char **av)
     print_banner();
     ft_minishell(&mini);
     return (EXIT_SUCCESS);
+}
+
+void	print_banner(void)
+{
+	printf("\033[1;36m");
+	printf(" __  __ _       _     _          _ _ \n");
+	printf("|  \\/  (_)_ __ (_)___| |__   ___| | |\n");
+	printf("| |\\/| | | '_ \\| / __| '_ \\ / _ \\ | |\n");
+	printf("| |  | | | | | | \\__ \\ | | |  __/ | |\n");
+	printf("|_|  |_|_|_| |_|_|___/_| |_|\\___|_|_|\n");
+	printf("                                     \n");
+	printf("\033[0m\n");
+}
+
+char	**split_line(char *line)
+{
+	char **args;
+	char *token;
+	int i = 0;
+
+	args = malloc(sizeof(char *) * 100);
+	if (!args)
+		return NULL;
+
+	token = strtok(line, " ");
+	while (token)
+	{
+		args[i++] = token;
+		token = strtok(NULL, " ");
+	}
+	args[i] = NULL;
+	return args;
 }
