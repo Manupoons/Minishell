@@ -6,12 +6,12 @@ BRIGHT_GREEN =	\033[1;92m
 SRC = src/main.c src/header.c
 
 LIBFT = libft/libft.a
-
 INC = ./inc/minishell.h
 
 CC = gcc
 RM = rm -f
-CFLAGS = -Wall -Wextra -Werror -MMD -I./inc -g -Ilibft
+AR = ar rcs
+CFLAGS = -Wall -Wextra -Werror -MMD -Iinc -g -Ilibft
 LDFLAGS = -lreadline
 
 .c.o:
@@ -23,8 +23,8 @@ DEPS = $(addsuffix .d, $(basename $(SRC)))
 all: ${NAME}
 
 -include $(DEPS)
-${NAME}: ${OBJS}
-	@${CC} ${OBJS} -o $(NAME) $(LDFLAGS)
+${NAME}: ${OBJS} $(LIBFT)
+	@${CC} ${OBJS} $(LIBFT) -o $(NAME) $(LDFLAGS)
 	@echo "\n$(BRIGHT_GREEN)Created ${NAME} ✓$(DEF_COLOR)\n"
 
 clean:
