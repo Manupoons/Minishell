@@ -1,0 +1,68 @@
+
+void    parse(char *tokens)
+{
+    // función parse(tokens):
+    // crear lista vacía de comandos
+    // crear nuevo comando actual
+
+    // para cada token en tokens:
+    //     si es PIPE:
+    //         guardar comando actual
+    //         crear nuevo comando
+
+    //     si es WORD:
+    //         añadir a argv del comando actual
+
+    //     si es redirección:
+    //         el siguiente token debe ser un archivo
+    //         añadir a lista de redirecciones
+
+    // añadir último comando a lista
+    // devolver lista de comandos
+}
+
+
+
+
+void    tokenizer(char **input)
+{
+    t_token *token_list;
+    char    *temp;
+    size_t  i;
+
+    whie (1)
+    {
+        temp = 
+    }
+
+//     crear lista vacía de tokens
+//     índice = 0
+
+//     mientras input[indice] no es fin:
+//         si es espacio:
+//             saltar
+
+//         si es comilla:
+//             detectar tipo de comilla
+//             extraer texto hasta comilla de cierre
+//             añadir token tipo WORD con valor extraído
+
+//         si empieza con << o >>:
+//             añadir token tipo HEREDOC o APPEND
+//             avanzar 2 posiciones
+
+//         si es < o >:
+//             añadir token tipo REDIR_IN o REDIR_OUT
+//             avanzar 1
+
+//         si es |:
+//             añadir token tipo PIPE
+//             avanzar 1
+
+//         si es palabra normal:
+//             extraer hasta espacio o carácter especial
+//             añadir token tipo WORD
+
+//     devolver lista de tokens
+
+}make
