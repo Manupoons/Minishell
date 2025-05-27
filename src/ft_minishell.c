@@ -6,30 +6,22 @@
 /*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 19:14:03 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/05/27 19:53:57 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/05/27 20:18:55 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./minishell.h"
 
-static void	child_process(t_shell *mini)
-{
-	if (is_comms(mini))
-		ft_comms(mini);
-	else
-		run_cmd(mini);
-}
-
 static void	run_cmd(t_shell *mini)
 {
 	char	*path;
 	char	**envp;
-
+	
 	envp = ft_env_to_array(mini);
 	if (mini->parser->fd_in != 0)
-		dup2(mini->parser->fd_in, STDIN_FILENO);
+	dup2(mini->parser->fd_in, STDIN_FILENO);
 	if (mini->parser->fd_out != 1)
-		dup2(mini->parser->fd_out, STDOUT_FILENO);
+	dup2(mini->parser->fd_out, STDOUT_FILENO);
 	path = ft_get_path(mini->arg->argv[0], mini->env);
 	if (!ft_isalnum(mini->arg->argv[0][0]))
 	{
@@ -38,9 +30,17 @@ static void	run_cmd(t_shell *mini)
 	}
 	if (!path)
 		exit(127);
-	execve(path, mini->arg->argv, envp);
+		execve(path, mini->arg->argv, envp);
 	perror("execve");
 	exit(127);
+}
+
+static void	child_process(t_shell *mini)
+{
+	if (is_comms(mini))
+		ft_comms(mini);
+	else
+		run_cmd(mini);
 }
 
 static void	handle_status(t_shell *mini)

@@ -41,14 +41,6 @@ typedef struct s_token
 	struct s_token	*next; // para recorrer lista
 }	t_token;
 
-typedef struct s_cmd
-{
-	char			**argv; // list de comandos
-	int				args_count; // cantidad de argumentos
-	t_parser		*parser; // lista de redirecciones
-	struct s_cmd	*next; // para manejar pipelines (|) entre comandos
-}	t_cmd;
-
 typedef struct s_env
 {
 	char *env_name;     // nombre de la variable
@@ -63,6 +55,14 @@ typedef struct s_parser
 	int				fd_out;
 	struct s_parser	*next; // estado de salida del comando
 }	t_parser;
+
+typedef struct s_cmd
+{
+	char			**argv; // list de comandos
+	int				args_count; // cantidad de argumentos
+	t_parser		*parser; // lista de redirecciones
+	struct s_cmd	*next; // para manejar pipelines (|) entre comandos
+}	t_cmd;
 
 typedef struct s_shell
 {
