@@ -7,7 +7,6 @@ SRC = src/main.c src/builtins/ft_comms.c src/builtins/ft_echo.c src/builtins/ft_
 	  src/builtins/ft_cd.c src/builtins/ft_export.c src/builtins/ft_unset.c \
 	  src/builtins/ft_env.c src/builtins/ft_exit.c 
 
-
 OBJS = ${SRC:.c=.o}
 DEPS = $(OBJS:.o=.d)
 

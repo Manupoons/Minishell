@@ -1,30 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_echo.c                                          :+:      :+:    :+:   */
+/*   ft_memfree.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/26 18:20:50 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/05/27 17:03:28 by mamaratr         ###   ########.fr       */
+/*   Created: 2025/05/27 19:01:08 by mamaratr          #+#    #+#             */
+/*   Updated: 2025/05/27 19:02:25 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "./minishell.h"
+#include "libft.h"
 
-void	ft_echo(t_shell *mini)
+void	ft_memfree(void *ptr)
 {
-	int i;
-
-	i = 1;
-	if (mini->arg->argv[i] && !ft_strncmp(mini->arg->argv[i], "-n", 2))
-		i++;
- 	while (mini->arg->argv[i])
-	{
-		ft_putstr_fd(mini->arg->argv[i++], STDOUT_FILENO);
-		if (mini->arg->argv[i])
-			ft_putchar_fd(32, STDOUT_FILENO);
-	}
-	if (!(mini->arg->argv[i] && !ft_strncmp(mini->arg->argv[i], "-n", 2)))
-		ft_putchar_fd(10, STDOUT_FILENO);
+	if (!ptr)
+		return;
+	free(ptr);
+	ptr = NULL;
 }

@@ -67,48 +67,6 @@ void	tokenizer(t_shell *mini, char *line)
 	}
 }
 
-char	**split_line(char *line)
-{
-	char **args;
-	char *token;
-	int i = 0;
-
-	args = malloc(sizeof(char *) * 100);
-	if (!args)
-		return NULL;
-	token = strtok(line, " ");
-	while (token)
-	{
-		args[i++] = token;
-		token = strtok(NULL, " ");
-	}
-	args[i] = NULL;
-	return args;
-}
-
-void	ft_minishell(t_shell *mini)
-{
-	char	*line;
-	(void)mini;
-
-	while (1)
-	{
-		line = readline("minishell$ ");
-		//tokenizer(mini, line);
-		if (!line)
-		{
-			printf("exit\n");
-			break;
-		}
-		if (*line)
-		{
-			add_history(line);
-			ft_comms(split_line(line));
-		}
-		free(line);
-	}
-}
-
 int main(int ac, char **av)
 {
 	t_shell	mini;
