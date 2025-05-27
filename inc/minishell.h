@@ -64,7 +64,6 @@ typedef struct s_shell
 
 //  ###--- MAIN ---### 
 void    ft_minishell(t_shell *mini);
-void    tokenizer(t_shell *mini, char *line);
 //  ###--------------### 
 
 //  ###--- HEADER ---### 
@@ -74,18 +73,27 @@ void	print_banner(void);
 
 //  ###--- HEADER ---### 
 int ft_isspace(char c);
-int ft_quotes(char c);
-int extract_quoted_token(char *line, char**token);
-int ft_special_simbol(char *line);
-
+int is_quotes(char c);
 //  ###--------------### 
 
 //  ###--- ERROR_HANDLER ---### 
 void	error_message(char *str);
-
-
 //  ###--------------### 
 
+
+//  ###--- TOKENIZER ---###
+int     handle_space(char *input, int i);
+int     handle_quoted_token(char *input, t_shell *mini, int i);
+int     handle_operator(char *input, t_shell *mini, int i);
+int     handle_word(char *input, t_shell *mini, int i);
+void    tokenizer(t_shell *mini, char *input);
+//  ###--------------### 
+
+//  ###--- TOKENIZER_UTILS ---### 
+int     ft_quotes(char c);
+int     is_operator(char c);
+void    add_token(char *input, t_shell *mini, t_token_type type);
+//  ###--------------### 
 
 #endif
 
