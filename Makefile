@@ -3,10 +3,8 @@ NAME = minishell
 DEF_COLOR = \033[0;39m
 BRIGHT_GREEN = \033[1;92m
 
-SRC = src/main.c src/builtins/ft_comms.c src/builtins/ft_echo.c src/builtins/ft_pwd.c \
-	  src/builtins/ft_cd.c src/builtins/ft_export.c src/builtins/ft_unset.c \
-	  src/builtins/ft_env.c src/builtins/ft_exit.c 
-
+SRC_DIR = src
+SRC = $(shell find $(SRC_DIR) -name "*.c")
 OBJS = ${SRC:.c=.o}
 DEPS = $(OBJS:.o=.d)
 
