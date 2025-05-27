@@ -6,7 +6,7 @@
 /*   By: jdorazio <jdorazio@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 15:03:22 by jdorazio          #+#    #+#             */
-/*   Updated: 2025/05/16 15:03:29 by jdorazio         ###   ########.fr       */
+/*   Updated: 2025/05/27 19:15:21 by jdorazio         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,5 +15,5 @@
 void	error_message(char *str)
 {
 	printf("Error: %s\n", str);
-	exit(EXIT)
+	exit(EXIT_FAILURE);
 }

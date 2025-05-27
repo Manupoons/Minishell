@@ -6,7 +6,7 @@
 /*   By: jdorazio <jdorazio@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 08:32:35 by jdorazio          #+#    #+#             */
-/*   Updated: 2025/05/26 19:55:29 by jdorazio         ###   ########.fr       */
+/*   Updated: 2025/05/27 19:30:29 by jdorazio         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,20 +23,6 @@ void print_banner(void) {
     printf("\033[0m\n");  // Reset color
 }
 
-int handle_space(char *input, int i)
-{
-    while (input[i] == ' ' || input[i] == '\t' || input[i] == '\n' 
-        || input[i] == '\r' || input[i] == '\v' || input[i] == '\f')
-        i++;
-    return i;
-}
-
-// QUOTES
-
-int ft_quotes(char c)
-{
-    return (c == 34 || c == 39);
-}
 /*
  * Extrae un token encerrado entre comillas (simples o dobles).
  * 
@@ -52,57 +38,3 @@ int ft_quotes(char c)
  * 
  * Devuelve -1 si la comilla de cierre no se encuentra o falla la memoria.
  */
-
-int extract_quoted_token(char *line, char**token)
-{
-    int     i;
-    char    quote;
-
-    quote = line[0]; 
-    i = 1;
-    while(line[i] && line[i] != quote)
-        i++;
-    if (!line[i])
-        return (-1);
-    *token = malloc(sizeof(char) * (i));
-    if (!(*token))
-        return (-1);
-    ft_memcpy(*token, line + 1, i - 1);
-    (*token)[i - 1] = '\0';
-    return (i + 1);
-}
-
-// --------------------
-
-
-
-
-
-
-
-
-
-
-void    add_token(t_shell *mini, t_token_type type, char *line)
-{
-    t_token *new;
-    t_token *current;
-
-    new = (t_token *) malloc(sizeof(t_token));
-    if (!new)
-        error_message("Failed to alloc mem for token.");
-    new->token = ft_strdup(line);
-    if (!new->token)
-        error_message("Failed to dup line.");
-    new->type = type;
-    new->next = NULL;
-    if (!mini->token)
-        mini->token = new;
-    else
-    {
-        current = mini->token;
-        while (current->next)
-            current = current->next;
-        current->next = new;
-    }
-}

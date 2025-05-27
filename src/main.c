@@ -22,28 +22,6 @@
 //     // devolver lista de comandos
 // }
 
-void    check_type()
-
-
-
-void    tokenizer(t_shell *mini, char *input)
-{
-    int i;
-    int count;
-
-    i = 0;
-    while (input[i])
-    {
-        i = (handle_space(input, i));
-        if (!input[i])
-            break;
-        if (is_quotes(input[i]))
-            handle_quoted_token(input, mini, i);
-            
-    }
-}
-
-
 
 void    ft_minishell(t_shell *mini)
 {
@@ -62,6 +40,7 @@ void    ft_minishell(t_shell *mini)
         {
             add_history(line);
             printf("You typed: %s\n", line);
+            tokenizer(mini, line);
         }
         
         free(line);
