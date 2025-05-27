@@ -107,5 +107,15 @@ int     is_operator(char c);
 void    add_token(char *input, t_shell *mini, t_token_type type);
 //  ###--------------### 
 
+char	**shell_split(t_shell *mini, char *line, char s);
+void	ft_next_cmd(t_shell *mini);
+void	ft_minishell(t_shell *mini);
+
+void	ft_pwd(t_shell *mini);
+void	ft_exit(t_shell *mini);
+void	ft_echo(t_shell *mini);
+int		is_comms(t_shell *mini);
+void	ft_comms(t_shell *mini);
+
 #endif
 
