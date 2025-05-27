@@ -23,11 +23,22 @@
 	\t\t --- \033[1;92mmamaratr\033[0m && \033[1;92mjdorazio\033[0m ---\n\
 	\n")
 
+typedef enum e_token_type
+{
+	TOKEN_WORD,       // Palabra normal, comando o argumento
+	TOKEN_PIPE,       // '|'
+	TOKEN_REDIR_IN,   // '<'
+	TOKEN_REDIR_OUT,  // '>'
+	TOKEN_APPEND,     // '>>'
+	TOKEN_HEREDOC,    // '<<'
+	TOKEN_EOF         // Fin de línea o archivo (opcional)
+}   t_token_type;
+
 typedef struct s_token
 {
-	int		type;
-	char	*token;
-	struct	s_token *next; // para recorrer lista
+	t_token_type	type;
+	char			*token;
+	struct s_token	*next; // para recorrer lista
 }	t_token;
 
 typedef struct s_cmd
