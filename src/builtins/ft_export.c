@@ -1,21 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_exit.c                                          :+:      :+:    :+:   */
+/*   ft_export.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/26 18:24:06 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/05/27 12:05:23 by mamaratr         ###   ########.fr       */
+/*   Created: 2025/05/27 12:09:09 by mamaratr          #+#    #+#             */
+/*   Updated: 2025/05/27 12:09:10 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "./minishell.h"
-
-void	ft_exit(char **argv)
-{
-	ft_putendl_fd("exit", 2);
-	if (!argv[1])
-		exit(1);
-	ft_putendl_fd("exit: too many arguments", 2);
-}

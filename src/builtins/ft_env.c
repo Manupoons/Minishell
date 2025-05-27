@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_env.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mamaratr <mamaratr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 18:37:46 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/05/26 18:40:36 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/05/27 12:20:28 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,12 @@
 
 void	ft_env(char **argv)
 {
-	int		status;
+	//int	status;
 
-    if (argv[1])
-    {
-        printf("env: %s: No such file or directory\n", argv[1]);
-        return ;
-    }
-    
+	if (argv[1])
+	{
+		printf("env: %s: No such file or directory\n", argv[1]);
+		return ;
+	}
+	
 }

@@ -8,6 +8,20 @@
 # include <termcap.h>
 # include "libft.h"
 
+
+# define HEADER ("\n\033[1;92m\
+	███╗   ███╗██╗███╗   ██╗██╗███████╗██╗  ██╗███████╗██╗     ██╗     \n\
+	████╗ ████║██║████╗  ██║██║██╔════╝██║  ██║██╔════╝██║     ██║     \n\
+	██╔████╔██║██║██╔██╗ ██║██║███████╗███████║█████╗  ██║     ██║     \n\
+	██║╚██╔╝██║██║██║╚██╗██║██║╚════██║██╔══██║██╔══╝  ██║     ██║     \n\
+	██║ ╚═╝ ██║██║██║ ╚████║██║███████║██║  ██║███████╗███████╗███████╗\n\
+	╚═╝     ╚═╝╚═╝╚═╝  ╚═══╝╚═╝╚══════╝╚═╝  ╚═╝╚══════╝╚══════╝╚══════╝\n\
+	\n\033[0m\
+			A simple shell implemented in C                            \n\
+	\n\033[0m\
+	\t\t --- \033[1;92mmamaratr\033[0m && \033[1;92mjdorazio\033[0m ---\n\
+	\n")
+
 typedef struct s_token
 {
     int             type;
@@ -46,11 +60,15 @@ typedef struct s_shell
 
 //  ###--- MAIN ---### 
 void    ft_minishell(t_shell *mini);
-void    tokenizer(t_shell *mini);
+void    tokenizer(t_shell *mini, char *line);
 //  ###--------------### 
+//  ###--- COMMANDS ---###
+void	ft_echo(char **argv);
+void	ft_env(char **argv);
+void	ft_exit(char **argv);
+void	ft_pwd(void);
+void	ft_comms(char **argv);
 
-//  ###--- HEADER ---### 
-void	print_banner(void);
 //  ###--------------### 
 
 #endif

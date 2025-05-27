@@ -23,93 +23,48 @@
 // }
 
 
-int ft_isspace(char c) // mejorar
+int ft_isspace(char c) // mejorar		printf("line %s \n", line);
+
 {
-    return (c == " ");
+	return (c == ' ');
 }
 
 int ft_comillas(char c)
 {
-    return (c == 34 || c == 39);
+	return (c == 34 || c == 39);
 }
 
-int ft_extract_quoted_token(char *line)
+void ft_extract_quoted_token(char *line)
 {
-    int i;
-    int j;
-    char    *temp;
+	int i;
+	int j;
+	char    *temp;
 
-    i = 1;
-    j = 0;
-    while (!ft_comillas(line[i]))
-    {
-        temp[i] = line[i];
-        i++;
-        j++;    
-    }
+	i = 1;
+	j = 0;
+	temp = malloc(sizeof(char));
+	while (!ft_comillas(line[i]))
+	{
+		temp[i] = line[i];
+		i++;
+		j++;
+	}
 }
 
-
-void    tokenizer(t_shell *mini, char *line)
+void	tokenizer(t_shell *mini, char *line)
 {
-    int     i;
-    char    *temp;
+	int	i;
+	//char    *temp;
+	(void)mini;
 
-    i = 0;
-    while (line[i])
-    {
-        if (ft_isspace(line[i]))
-            i++;
-        if (ft_comillas(line[i]))
-            ft_extract_quoted_token(&line);
-    }
-}
-
-
-
-void    ft_minishell(t_shell *mini)
-{
-    char    *line;
-
-    while (1)
-    {
-        line = readline("minishell$ ");
-        printf("line %s \n", line);
-        tokenizer(mini, line);
-        if (!line)
-        {
-            printf("exit\n");
-            break;
-        }
-        if (*line)
-        {
-            add_history(line);
-            printf("You typed: %s\n", line);
-        }
-        free(line);
-    }
-}
-
-int main(int ac, char **av)
-{
-    t_shell mini;
-
-    if (ac != 1 || av[1])
-        return (EXIT_FAILURE);
-    print_banner();
-    ft_minishell(&mini);
-    return (EXIT_SUCCESS);
-}
-
-void	print_banner(void) {
-	printf("\033[1;36m");  // Bright cyan
-	printf(" __  __ _       _     _          _ _ \n");
-	printf("|  \\/  (_)_ __ (_)___| |__   ___| | |\n");
-	printf("| |\\/| | | '_ \\| / __| '_ \\ / _ \\ | |\n");
-	printf("| |  | | | | | | \\__ \\ | | |  __/ | |\n");
-	printf("|_|  |_|_|_| |_|_|___/_| |_|\\___|_|_|\n");
-	printf("                                     \n");
-	printf("\033[0m\n");  // Reset color
+	i = 0;
+	while (line[i])
+	{
+		if (ft_isspace(line[i]))
+			i++;
+		if (ft_comillas(line[i]))
+			ft_extract_quoted_token(line);
+	}
 }
 
 char	**split_line(char *line)
@@ -121,7 +76,6 @@ char	**split_line(char *line)
 	args = malloc(sizeof(char *) * 100);
 	if (!args)
 		return NULL;
-
 	token = strtok(line, " ");
 	while (token)
 	{
@@ -130,4 +84,38 @@ char	**split_line(char *line)
 	}
 	args[i] = NULL;
 	return args;
+}
+
+void	ft_minishell(t_shell *mini)
+{
+	char	*line;
+	(void)mini;
+
+	while (1)
+	{
+		line = readline("minishell$ ");
+		//tokenizer(mini, line);
+		if (!line)
+		{
+			printf("exit\n");
+			break;
+		}
+		if (*line)
+		{
+			add_history(line);
+			ft_comms(split_line(line));
+		}
+		free(line);
+	}
+}
+
+int main(int ac, char **av)
+{
+	t_shell	mini;
+
+	if (ac != 1 || av[1])
+		return (EXIT_FAILURE);
+	printf("%s", HEADER);
+	ft_minishell(&mini);
+	return (EXIT_SUCCESS);
 }
