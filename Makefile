@@ -3,7 +3,8 @@ NAME = minishell
 DEF_COLOR = \033[0;39m
 BRIGHT_GREEN = \033[1;92m
 
-SRC = src/main.c src/commands.c
+SRC_DIR = src
+SRC = $(shell find $(SRC_DIR) -name "*.c")
 OBJS = ${SRC:.c=.o}
 DEPS = $(OBJS:.o=.d)
 
