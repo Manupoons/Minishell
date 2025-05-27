@@ -69,7 +69,7 @@ void    tokenizer(t_shell *mini, char *line);
 
 //  ###--- HEADER ---### 
 void	print_banner(void);
-//  ###--------------### 
+//  ###-------------### 
 
 
 //  ###--- HEADER ---### 
@@ -77,6 +77,12 @@ int ft_isspace(char c);
 int ft_quotes(char c);
 int extract_quoted_token(char *line, char**token);
 int ft_special_simbol(char *line);
+
+//  ###--------------### 
+
+//  ###--- ERROR_HANDLER ---### 
+void	error_message(char *str);
+
 
 //  ###--------------### 
 

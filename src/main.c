@@ -22,34 +22,24 @@
 //     // devolver lista de comandos
 // }
 
+void    check_type()
 
 
 
-void    tokenizer(t_shell *mini, char *line)
+void    tokenizer(t_shell *mini, char *input)
 {
-    int     i;
-    char    *token;
-    int     consumed;
+    int i;
+    int count;
 
     i = 0;
-    while (line[i])
+    while (input[i])
     {
-        if (ft_isspace(line[i]))
-        {
-            i++;
-            continue;
-        }
-        if (ft_quotes(line[i]))
-        {
-            consumed = extract_quoted_token(line, token);
-            if (consumed)
-                break;
-            add_token(mini, TOKEN_WORD, token);
-        }
-        if (ft_special_simbol(line[i]))
-        {
+        i = (handle_space(input, i));
+        if (!input[i])
+            break;
+        if (is_quotes(input[i]))
+            handle_quoted_token(input, mini, i);
             
-        }
     }
 }
 
@@ -73,6 +63,7 @@ void    ft_minishell(t_shell *mini)
             add_history(line);
             printf("You typed: %s\n", line);
         }
+        
         free(line);
     }
 }

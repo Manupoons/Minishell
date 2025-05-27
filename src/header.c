@@ -23,9 +23,12 @@ void print_banner(void) {
     printf("\033[0m\n");  // Reset color
 }
 
-int ft_isspace(char c)
+int handle_space(char *input, int i)
 {
-    return (c == ' ' || c == '\t' || c == '\n' || c == '\r' || c == '\v' || c == '\f');
+    while (input[i] == ' ' || input[i] == '\t' || input[i] == '\n' 
+        || input[i] == '\r' || input[i] == '\v' || input[i] == '\f')
+        i++;
+    return i;
 }
 
 // QUOTES
@@ -72,29 +75,34 @@ int extract_quoted_token(char *line, char**token)
 // --------------------
 
 
-// ESPECIAL SIMBOL
 
 
-int ft_special_simbol(char c)
-{
-    return (c == '<' || c == '>');
-}
+
+
+
 
 
 
 void    add_token(t_shell *mini, t_token_type type, char *line)
 {
-    char    *token;
+    t_token *new;
+    t_token *current;
 
-    
+    new = (t_token *) malloc(sizeof(t_token));
+    if (!new)
+        error_message("Failed to alloc mem for token.");
+    new->token = ft_strdup(line);
+    if (!new->token)
+        error_message("Failed to dup line.");
+    new->type = type;
+    new->next = NULL;
     if (!mini->token)
+        mini->token = new;
+    else
     {
-        mini->token->type = NULL;
-        mini->token->token = NULL;
-        
+        current = mini->token;
+        while (current->next)
+            current = current->next;
+        current->next = new;
     }
-    (void) ft_strlcpy(token, line, ft_strlen(line));
-    mini->token->token = line;
-    mini->token->type = type;
-    mini->token->next;
 }

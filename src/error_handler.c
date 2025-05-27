@@ -10,5 +10,10 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "minishell.h"
+# include "../inc/minishell.h"
 
+void	error_message(char *str)
+{
+	printf("Error: %s\n", str);
+	exit(EXIT)
+}
