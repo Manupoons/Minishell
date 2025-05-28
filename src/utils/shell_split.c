@@ -6,7 +6,7 @@
 /*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 18:37:51 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/05/27 19:23:30 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/05/28 18:01:09 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,9 @@ static int	ft_found_quotes(char *line, int *i)
 	if ((line[*i] == '\"' || line[*i] == '"') && line[*i])
 	{
 		quote = line[*i];
-		*i++;
+		*i = *i + 1;
 		while (line[*i] && line[*i] != quote)
-			*i++;
+			*i = *i + 1;
 		return (1);
 	}
 	return (0);
@@ -35,7 +35,7 @@ static int	ft_found_word(char *line, char s, int *i)
 		while (line[*i] && line[*i] != s)
 		{
 			ft_found_quotes(line, i);
-			*i++;
+			*i = *i + 1;
 		}
 		return (1);
 	}
@@ -72,7 +72,7 @@ char	**shell_split(t_shell *mini, char *line, char s)
 	i = 0;
 	j = 0;
 	len = 0;
-	split = malloc(sizeof(char *) * ft_count_words(line, s) + 1);
+	split = ft_calloc(sizeof(char *), ft_count_words(line, s) + 1);
 	while (line[i])
 	{
 		while (line[i] == s && line[i])

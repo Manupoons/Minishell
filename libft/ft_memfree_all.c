@@ -1,23 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_pwd.c                                           :+:      :+:    :+:   */
+/*   ft_memfree_all.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/26 18:20:45 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/05/28 16:24:40 by mamaratr         ###   ########.fr       */
+/*   Created: 2025/05/28 15:45:22 by mamaratr          #+#    #+#             */
+/*   Updated: 2025/05/28 15:46:25 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "./minishell.h"
+#include "libft.h"
 
-void	ft_pwd(t_shell *mini)
+void	ft_memfree_all(char **ptr)
 {
-	char	*buf;
+	int	i;
 
-	mini->status = 0;
-	buf = getcwd(NULL, 0);
-	ft_putendl_fd(buf, 1);
-	ft_memfree(buf);
+	if (!ptr)
+		return;
+	i = 0;
+	while (ptr[i])
+		ft_memfree(ptr[i++]);
+	free(ptr);
+	ptr = NULL;
 }

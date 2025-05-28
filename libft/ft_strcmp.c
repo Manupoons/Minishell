@@ -1,23 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_pwd.c                                           :+:      :+:    :+:   */
+/*   ft_strcmp.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/26 18:20:45 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/05/28 16:24:40 by mamaratr         ###   ########.fr       */
+/*   Created: 2025/05/28 16:46:33 by mamaratr          #+#    #+#             */
+/*   Updated: 2025/05/28 16:47:47 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "./minishell.h"
+#include "libft.h"
 
-void	ft_pwd(t_shell *mini)
+int	ft_strcmp(const char *s1, const char *s2)
 {
-	char	*buf;
-
-	mini->status = 0;
-	buf = getcwd(NULL, 0);
-	ft_putendl_fd(buf, 1);
-	ft_memfree(buf);
+	while (*s1 == *s2)
+	{
+		if (*s1 == '\0')
+			return (0);
+		s1++;
+		s2++;
+	}
+	return (*s1 - *s2);
 }

@@ -8,6 +8,7 @@
 # include <termcap.h>
 # include <signal.h>
 # include "libft.h"
+# include <sys/wait.h>
 
 
 # define HEADER ("\n\033[1;92m\
@@ -22,6 +23,8 @@
 	\n\033[0m\
 	\t\t --- \033[1;92mmamaratr\033[0m && \033[1;92mjdorazio\033[0m ---\n\
 	\n")
+
+# define READLINE_MSG "\033[1;36mminishell\033[34m$> \033[0m"
 
 typedef enum e_token_type
 {
@@ -75,7 +78,7 @@ typedef struct s_shell
 }	t_shell;
 
 //  ###--- MAIN ---###
-void    ft_minishell(t_shell *mini);
+//void    ft_minishell(t_shell *mini);
 //  ###--------------### 
 
 //  ###--- HEADER ---### 
@@ -107,15 +110,27 @@ int     is_operator(char c);
 void    add_token(char *input, t_shell *mini, t_token_type type);
 //  ###--------------### 
 
+//  ###--- MINISHELL_UTILS ---###
+char	**ft_env_to_array(t_shell *mini);
+
+//  ###-------------------###
+
 char	**shell_split(t_shell *mini, char *line, char s);
-void	ft_next_cmd(t_shell *mini);
-void	ft_minishell(t_shell *mini);
+void	ft_cmd_exec(t_shell *mini);
 
 void	ft_pwd(t_shell *mini);
 void	ft_exit(t_shell *mini);
 void	ft_echo(t_shell *mini);
 int		is_comms(t_shell *mini);
 void	ft_comms(t_shell *mini);
+
+void	ft_lst_env_init(t_env **env, char **envp);
+t_env	*ft_lst_new_env(char *name, char *value, int alloc);
+void	ft_add_back_env(t_env **lst, t_env *new);
+char	*get_env_name(char  *name);
+char	*get_env_value(char *value);
+
+char	*ft_get_path(char *cmd, t_env *env);
 
 #endif
 
