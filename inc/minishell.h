@@ -83,33 +83,36 @@ void	print_banner(void);
 //  ###-------------### 
 
 
-//  ###--- HEADER ---### 
-int ft_isspace(char c);
-int is_quotes(char c);
-//  ###--------------### 
-
 //  ###--- ERROR_HANDLER ---### 
 void	error_message(char *str);
 //  ###--------------### 
 
 
 //  ###--- TOKENIZER ---###
-int     handle_space(char *input, int i);
-int     handle_quoted_token(char *input, t_shell *mini, int i);
-int     handle_operator(char *input, t_shell *mini, int i);
-int     handle_word(char *input, t_shell *mini, int i);
-void    tokenizer(t_shell *mini, char *input);
+int			handle_space(char *input, int i);
+int			handle_quoted_token(char *input, t_token **token_list,  int i);
+int 		handle_operator(char *input, t_token **token_list,  int i);
+int 		handle_word(char *input, t_token **token_list, int i); // for echo
+t_token    *tokenizer(char *input);
 //  ###--------------### 
 
 //  ###--- TOKENIZER_UTILS ---### 
 int     ft_quotes(char c);
 int     is_operator(char c);
-void    add_token(char *input, t_shell *mini, t_token_type type);
+void    add_token(char *input, t_token **token_list, t_token_type type);
 //  ###--------------### 
+
+
+
+//  ###--- TOKENIZER_UTILS ---### 
+t_cmd   *parse_tokens(t_token *token_list);
+//  ###--------------### 
+
+
 
 char	**shell_split(t_shell *mini, char *line, char s);
 void	ft_next_cmd(t_shell *mini);
-void	ft_minishell(t_shell *mini);
+
 
 void	ft_pwd(t_shell *mini);
 void	ft_exit(t_shell *mini);
