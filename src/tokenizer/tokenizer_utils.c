@@ -22,7 +22,7 @@ int is_operator(char c)
     return (c == '|' || c == '<' || c == '>');
 }
 
-void    add_token(char *input, t_shell *mini, t_token_type type)
+void    add_token(char *input, t_token **token_list, t_token_type type)
 {
     t_token *new;
     t_token *current;
@@ -35,11 +35,11 @@ void    add_token(char *input, t_shell *mini, t_token_type type)
         error_message("Failed to dup line.");
     new->type = type;
     new->next = NULL;
-    if (!mini->token)
-        mini->token = new;
+    if (!*token_list)
+        *token_list = new;
     else
     {
-        current = mini->token;
+        current = *token_list;
         while (current->next)
             current = current->next;
         current->next = new;
