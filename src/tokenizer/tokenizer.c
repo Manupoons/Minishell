@@ -6,7 +6,7 @@
 /*   By: jdorazio <jdorazio@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 17:41:35 by jdorazio          #+#    #+#             */
-/*   Updated: 2025/05/27 19:13:27 by jdorazio         ###   ########.fr       */
+/*   Updated: 2025/05/28 16:41:18 by jdorazio         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ int handle_space(char *input, int i)
     return (i);
 }
 
-int handle_quoted_token(char *input, t_token **token,  int i)
+int handle_quoted_token(char *input, t_token **token_list,  int i)
 {
     char    *str;
     char    quote;
@@ -97,11 +97,11 @@ t_token    *tokenizer(char *input)
         if (!input[i])
             break;
         if (is_quotes(input[i]))
-            count = handle_quoted_token(input, &token, i);
+            count = handle_quoted_token(input, &token_list, i);
         else if (is_operator(input[i])) 
-            count = handle_operator(input, &token, i);
+            count = handle_operator(input, &token_list, i);
         else
-            count = handle_word(input, &token, i);
+            count = handle_word(input, &token_list, i);
         i += count;
     }
     return (token_list);
