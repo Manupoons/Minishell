@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   shell_split.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: mamaratr <mamaratr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 18:37:51 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/05/28 18:01:09 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/05/29 13:42:21 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,12 +17,14 @@ static int	ft_found_quotes(char *line, int *i)
 	char quote;
 
 	quote = 0;
-	if ((line[*i] == '\"' || line[*i] == '"') && line[*i])
+	if ((line[*i] == '"' || line[*i] == '\'') && line[*i])
 	{
 		quote = line[*i];
 		*i = *i + 1;
 		while (line[*i] && line[*i] != quote)
-			*i = *i + 1;
+			(*i)++;
+		if (line[*i] == quote)
+			(*i)++;
 		return (1);
 	}
 	return (0);
@@ -61,30 +63,55 @@ static int	ft_count_words(char *line, char s)
 	return (count);
 }
 
+static char	*split_token(char *line, int *i, char s, int *start)
+{
+	char	quote;
+
+	while (line[*i] == s)
+		(*i)++;
+	*start = *i;
+	if (line[*i] == '"' || line[*i] == '\'')
+	{
+		quote = line[*i];
+		(*i)++;
+		while (line[*i] && line[*i] != quote)
+			(*i)++;
+		if (line[*i])
+			(*i)++;
+	}
+	else
+	{
+		while (line[*i] && line[*i] != s && line[*i] != '"' && line[*i] != '\'')
+			(*i)++;
+	}
+	return (ft_substr(line, *start, *i - *start));
+}
+
 char	**shell_split(t_shell *mini, char *line, char s)
 {
 	char	**split;
 	char	*temp;
 	int		i;
 	int		j;
-	int		len;
+	int		start;
 
 	i = 0;
 	j = 0;
-	len = 0;
-	split = ft_calloc(sizeof(char *), ft_count_words(line, s) + 1);
+	split = ft_calloc(ft_count_words(line, s) + 1, sizeof(char *));
+	if (!split)
+		return (NULL);
 	while (line[i])
 	{
-		while (line[i] == s && line[i])
-			len++;
-		if (ft_found_word(line, s, &i))
+		if (line[i] != s)
 		{
-			temp = ft_substr(line, len, i -len);
+			temp = split_token(line, &i, s, &start);
 			split[j++] = ft_strtrim(temp, "\"\'");
 			ft_memfree(temp);
-			len = i;
 		}
-		mini->arg->args_count = j;
+		else
+			i++;
 	}
+	split[j] = NULL;
+	mini->arg->args_count = j;
 	return (split);
 }

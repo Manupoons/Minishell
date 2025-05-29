@@ -119,6 +119,8 @@ char	**shell_split(t_shell *mini, char *line, char s);
 void	ft_cmd_exec(t_shell *mini);
 
 void	ft_pwd(t_shell *mini);
+void	ft_cd(t_shell *mini);
+void	ft_env(t_shell *mini);
 void	ft_exit(t_shell *mini);
 void	ft_echo(t_shell *mini);
 int		is_comms(t_shell *mini);
@@ -131,6 +133,7 @@ char	*get_env_name(char  *name);
 char	*get_env_value(char *value);
 
 char	*ft_get_path(char *cmd, t_env *env);
+void    ft_free_env(t_env **env);
 
 #endif
 

@@ -2,19 +2,19 @@
 
 int	is_comms(t_shell *mini)
 {
-	if (!ft_strncmp(mini->arg->argv[0], "echo", 4))
+	if (ft_strcmp(mini->arg->argv[0], "echo") == 0)
 		return (1);
-	// else if (!ft_strncmp(mini->arg->argv[0], "cd", 2))
-	// 	return (1);
-	else if (!ft_strncmp(mini->arg->argv[0], "pwd", 3))
+	else if (ft_strcmp(mini->arg->argv[0], "cd") == 0)
 		return (1);
-	// else if (!ft_strncmp(mini->arg->argv[0], "export", 6))
+	else if (ft_strcmp(mini->arg->argv[0], "pwd") == 0)
+		return (1);
+	// else if (ft_strcmp(mini->arg->argv[0], "export") == 0)
 	// 	return (1);
-	// else if (!ft_strncmp(mini->arg->argv[0], "unset", 5))
+	// else if (ft_strcmp(mini->arg->argv[0], "unset") == 0)
 	// 	return (1);
-	// else if (!ft_strncmp(mini->arg->argv[0], "env", 3))
-	// 	return (1);
-	else if (!ft_strncmp(mini->arg->argv[0], "exit", 4))
+	else if (ft_strcmp(mini->arg->argv[0], "env") == 0)
+		return (1);
+	else if (ft_strcmp(mini->arg->argv[0], "exit") == 0)
 		return (1);
 	else
 		return (0);
@@ -22,18 +22,18 @@ int	is_comms(t_shell *mini)
 
 void	ft_comms(t_shell *mini)
 {
-	if (ft_strncmp(mini->arg->argv[0], "echo", 4) == 0)
+	if (ft_strcmp(mini->arg->argv[0], "echo") == 0)
 		ft_echo(mini);
-	// else if (ft_strncmp(mini->arg->argv[0], "cd", 2) == 0)
-	// 	ft_cd(argv);
-	else if (ft_strncmp(mini->arg->argv[0], "pwd", 3) == 0)
+	else if (ft_strncmp(mini->arg->argv[0], "cd", 2) == 0)
+		ft_cd(mini);
+	else if (ft_strcmp(mini->arg->argv[0], "pwd") == 0)
 		ft_pwd(mini);
-	// else if (ft_strncmp(mini->arg->argv[0], "export", 6) == 0)
-	// 	ft_export(argv);
-	// else if (ft_strncmp(mini->arg->argv[0], "unset", 5) == 0)
-	// 	ft_unset(argv);
-	// else if (ft_strncmp(mini->arg->argv[0], "env", 3) == 0)
-	// 	ft_env(argv);
-	else if (ft_strncmp(mini->arg->argv[0], "exit", 4) == 0)
+	// else if (ft_strcmp(mini->arg->argv[0], "export") == 0)
+	// 	ft_export(mini);
+	// else if (ft_strcmp(mini->arg->argv[0], "unset") == 0)
+	// 	ft_unset(mini);
+	else if (ft_strcmp(mini->arg->argv[0], "env") == 0)
+		ft_env(mini);
+	else if (ft_strcmp(mini->arg->argv[0], "exit") == 0)
 		ft_exit(mini);
 }

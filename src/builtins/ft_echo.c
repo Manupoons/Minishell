@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_echo.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: mamaratr <mamaratr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 18:20:50 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/05/28 16:19:42 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/05/29 12:38:05 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,8 +24,8 @@ void	ft_echo(t_shell *mini)
 	{
 		ft_putstr_fd(mini->arg->argv[i++], mini->parser->fd_out);
 		if (mini->arg->argv[i])
-			ft_putchar_fd(32, mini->parser->fd_out);
+			ft_putchar_fd(' ', mini->parser->fd_out);
 	}
 	if (!(mini->arg->argv[i] && !ft_strncmp(mini->arg->argv[i], "-n", 2)))
-		ft_putchar_fd(10, mini->parser->fd_out);
+		ft_putchar_fd('\n', mini->parser->fd_out);
 }

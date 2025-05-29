@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_cmd_exec.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: mamaratr <mamaratr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 19:14:03 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/05/28 18:03:04 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/05/29 13:57:37 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,8 +76,16 @@ void	ft_cmd_exec(t_shell *mini)
 {
 	pid_t	pid;
 
+	if (!mini || !mini->parser || !mini->arg)
+		return;
 	while (mini->parser)
 	{
+		if (!mini->parser->cmd || !mini->parser->cmd[0])
+		{
+			mini->status = 1;
+			ft_next_cmd(mini);
+			continue;
+		}
 		if (!ft_isascii(mini->parser->cmd[0]))
 		{
 			mini->status = 1;
