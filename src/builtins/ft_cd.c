@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   ft_cd.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: mamaratr <mamaratr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 18:20:52 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/05/28 17:52:12 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/05/29 18:06:36 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "./minishell.h"
+#include "./minishell.h"
 
 static int	check_variable(char *name, char *value, t_shell *mini)
 {
@@ -33,6 +33,7 @@ static int	check_variable(char *name, char *value, t_shell *mini)
 	}
 	return (0);
 }
+
 void	add_arg_to_env(char *var, t_shell *mini)
 {
 	t_env	*env;
@@ -84,10 +85,10 @@ static void	ft_change_pwd(t_shell *mini)
 void	ft_cd(t_shell *mini)
 {
 	char	*path;
-	
+
 	path = NULL;
 	if (mini->arg->args_count > 2)
-		return (printf("cd: too many arguments\n"), (void)NULL);
+		return (printf("cd: too many arguments\n"), (void) NULL);
 	ft_change_oldpwd(mini);
 	if (mini->arg->argv[1])
 		path = ft_strdup(mini->arg->argv[1]);

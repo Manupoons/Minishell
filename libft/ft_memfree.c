@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_memfree.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: mamaratr <mamaratr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 19:01:08 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/05/27 19:02:25 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/05/29 14:58:00 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 void	ft_memfree(void *ptr)
 {
 	if (!ptr)
-		return;
+		return ;
 	free(ptr);
 	ptr = NULL;
 }

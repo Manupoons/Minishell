@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   ft_pwd.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: mamaratr <mamaratr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 18:20:45 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/05/28 16:24:40 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/05/29 16:28:35 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "./minishell.h"
+#include "./minishell.h"
 
 void	ft_pwd(t_shell *mini)
 {

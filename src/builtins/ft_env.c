@@ -3,19 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   ft_env.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: mamaratr <mamaratr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 18:37:46 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/05/28 16:28:11 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/05/29 18:02:53 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "./minishell.h"
+#include "./minishell.h"
 
 void	ft_env(t_shell *mini)
 {
 	t_env	*env;
-	
+
 	if (mini->arg->args_count > 1)
 	{
 		printf("env: %s: No such file or directory\n", mini->arg->argv[1]);

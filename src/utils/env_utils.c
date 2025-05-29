@@ -6,41 +6,51 @@
 /*   By: mamaratr <mamaratr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 19:04:03 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/05/29 13:10:35 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/05/29 18:45:50 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "./minishell.h"
+#include "./minishell.h"
 
-char	*get_env_name(char  *name)
+char	*get_env_name(char *name)
 {
 	int	i;
-	
+
 	i = 0;
 	while (name[i] && name[i] != '=' && name[i] != ' ')
 		i++;
-	return(ft_substr(name, 0, i));
+	return (ft_substr(name, 0, i));
 }
 
 char	*get_env_value(char *value)
 {
-	int	i;
+	int		i;
+	char	*val;
+	int		len;
 
 	i = 0;
 	while (value[i] && value[i] != '=' && value[i] != ' ')
 		i++;
-	if (value[i] == '=' && value[i + 1] == '\"')
-		return (ft_substr(value, i + 2, ft_strlen(value) - (i + 2)));
-	else if (value[i] == '=')
-		return (ft_substr(value, i + 1, ft_strlen(value) - (i + 1)));
-	return (ft_strdup(""));
+	if (value[i] != '=')
+		return (ft_strdup(""));
+
+	len = ft_strlen(value) - (i + 1);
+	val = ft_substr(value, i + 1, len);
+
+	if (val[0] == '"' && val[len - 1] == '"' && len >= 2)
+	{
+		char *tmp = ft_substr(val, 1, len - 2);
+		ft_memfree(val);
+		return (tmp);
+	}
+	return (val);
 }
 
 void	ft_add_back_env(t_env **lst, t_env *new)
 {
 	t_env	*tmp;
 
-	if (*lst || !new)
+	if (!lst || !new)
 		return ;
 	if (!*lst)
 	{
@@ -56,7 +66,7 @@ void	ft_add_back_env(t_env **lst, t_env *new)
 t_env	*ft_lst_new_env(char *name, char *value, int alloc)
 {
 	t_env	*new_node;
-	
+
 	new_node = ft_calloc(1, sizeof(t_env));
 	if (!new_node)
 		return (NULL);
@@ -87,7 +97,7 @@ void	ft_lst_env_init(t_env **env, char **envp)
 	int		i;
 	char	*name;
 	char	*value;
-	
+
 	if (!env || ! envp)
 		return ;
 	i = -1;

@@ -6,11 +6,11 @@
 /*   By: mamaratr <mamaratr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 18:24:06 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/05/29 12:38:54 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/05/29 16:28:11 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "./minishell.h"
+#include "./minishell.h"
 
 static int	check_exit_args(t_shell *mini)
 {
@@ -25,7 +25,8 @@ static int	check_exit_args(t_shell *mini)
 		{
 			if (!ft_isdigit(mini->arg->argv[1][i]))
 			{
-				printf("exit: %s: numeric argument required\n", mini->arg->argv[i]);
+				printf("exit: %s: numeric argument required\n",
+					mini->arg->argv[i]);
 				return (2);
 			}
 		}

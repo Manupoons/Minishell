@@ -6,15 +6,15 @@
 /*   By: mamaratr <mamaratr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 18:37:51 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/05/29 13:42:21 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/05/29 16:08:08 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "./minishell.h"
+#include "./minishell.h"
 
 static int	ft_found_quotes(char *line, int *i)
 {
-	char quote;
+	char	quote;
 
 	quote = 0;
 	if ((line[*i] == '"' || line[*i] == '\'') && line[*i])

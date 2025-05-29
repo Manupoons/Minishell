@@ -2,14 +2,23 @@
 # define MINISHELL_H
 
 # include <./libft.h>
+# include <dirent.h>
+# include <errno.h>
 # include <fcntl.h>
-# include <readline/readline.h>
+# include <libgen.h>
 # include <readline/history.h>
-# include <termcap.h>
+# include <readline/readline.h>
 # include <signal.h>
-# include "libft.h"
+# include <stdbool.h>
+# include <stdio.h>
+# include <stdlib.h>
+# include <string.h>
+# include <sys/ioctl.h>
+# include <sys/stat.h>
+# include <sys/types.h>
 # include <sys/wait.h>
-
+# include <termios.h>
+# include <unistd.h>
 
 # define HEADER ("\n\033[1;92m\
 	███╗   ███╗██╗███╗   ██╗██╗███████╗██╗  ██╗███████╗██╗     ██╗     \n\
@@ -25,6 +34,20 @@
 	\n")
 
 # define READLINE_MSG "\033[1;36mminishell\033[34m$> \033[0m"
+
+extern int	g_signal;
+
+typedef enum e_signal
+{
+	S_BASE,				//Señal base
+	S_HEREDOC,			//entra heredoc
+	S_HEREDOC_END,		//fin heredoc
+	S_HEREDOC_CANCEL,	//Ctrl + D en heredoc
+	S_SIGINT,			//Ctrl + C
+	S_SIGINT_CMD,		//Ctrl + C en medio de comando
+	S_CMD,				//se ejecuta comando
+	S_SIZE
+}	t_signal;
 
 typedef enum e_token_type
 {
@@ -123,17 +146,24 @@ void	ft_cd(t_shell *mini);
 void	ft_env(t_shell *mini);
 void	ft_exit(t_shell *mini);
 void	ft_echo(t_shell *mini);
+void	ft_export(t_shell *mini);
+void	ft_unset(t_shell *mini);
+
 int		is_comms(t_shell *mini);
 void	ft_comms(t_shell *mini);
 
-void	ft_lst_env_init(t_env **env, char **envp);
 t_env	*ft_lst_new_env(char *name, char *value, int alloc);
+void	ft_lst_env_init(t_env **env, char **envp);
 void	ft_add_back_env(t_env **lst, t_env *new);
 char	*get_env_name(char  *name);
 char	*get_env_value(char *value);
 
 char	*ft_get_path(char *cmd, t_env *env);
 void    ft_free_env(t_env **env);
+void	ft_free_list(t_env **env);
+void	add_arg_to_env(char *var, t_shell *mini);
+
+void	init_signal(void);
 
 #endif
 

@@ -6,7 +6,7 @@
 /*   By: mamaratr <mamaratr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 19:14:03 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/05/29 13:57:37 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/05/29 18:15:08 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ static void	run_cmd(t_shell *mini)
 {
 	char	*path;
 	char	**envp;
-	
+
 	envp = ft_env_to_array(mini);
 	if (mini->parser->fd_in != 0)
 		dup2(mini->parser->fd_in, STDIN_FILENO);
@@ -32,29 +32,12 @@ static void	run_cmd(t_shell *mini)
 	exit(127);
 }
 
-static void	child_process(t_shell *mini)
-{
-	if (is_comms(mini))
-		ft_comms(mini);
-	else
-		run_cmd(mini);
-}
-
 static void	handle_status(t_shell *mini)
 {
 	if (WIFEXITED(mini->status))
 		mini->status = WEXITSTATUS(mini->status);
 	if (mini && mini->status == 127)
 		printf("%s: %s\n", mini->arg->argv[0], "command not found");
-	else if (WIFSIGNALED(mini->status))
-	{
-		int sig = WTERMSIG(mini->status);
-		mini->status = 128 + sig;
-		if (sig == SIGINT)
-			write(STDOUT_FILENO, "\n", 1);
-		else if (sig == SIGQUIT)
-			write(STDOUT_FILENO, "Quit (core dumped)\n", 19);
-	}
 }
 
 static void	ft_next_cmd(t_shell *mini)
@@ -72,38 +55,35 @@ static void	ft_next_cmd(t_shell *mini)
 	ft_memfree(next);
 }
 
+static void	child_proccess(t_shell *msh)
+{
+	if (is_comms(msh))
+		ft_comms(msh);
+	else
+		run_cmd(msh);
+}
+
 void	ft_cmd_exec(t_shell *mini)
 {
 	pid_t	pid;
 
 	if (!mini || !mini->parser || !mini->arg)
-		return;
+		return ;
 	while (mini->parser)
 	{
-		if (!mini->parser->cmd || !mini->parser->cmd[0])
-		{
-			mini->status = 1;
-			ft_next_cmd(mini);
-			continue;
-		}
 		if (!ft_isascii(mini->parser->cmd[0]))
 		{
 			mini->status = 1;
 			break ;
 		}
 		mini->arg->argv = shell_split(mini, mini->parser->cmd, ' ');
-		if (!mini->arg || !mini->arg->argv[0])
-		{
-			ft_next_cmd(mini);
-			continue ;
-		}
 		if (is_comms(mini))
 			ft_comms(mini);
 		else
 		{
 			pid = fork();
 			if (pid == 0)
-				child_process(mini);
+				child_proccess(mini);
 			else
 				waitpid(-1, &mini->status, 0);
 			handle_status(mini);
