@@ -6,7 +6,7 @@
 /*   By: mamaratr <mamaratr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 17:43:10 by jdorazio          #+#    #+#             */
-/*   Updated: 2025/05/29 16:09:00 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/05/29 19:40:08 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ int	is_operator(char c)
 	return (c == '|' || c == '<' || c == '>');
 }
 
-void	add_token(char *input, t_shell *mini, t_token_type type)
+void	add_token(char *input, t_token **token_list, t_token_type type)
 {
 	t_token	*new;
 	t_token	*current;
@@ -35,11 +35,11 @@ void	add_token(char *input, t_shell *mini, t_token_type type)
 		error_message("Failed to dup line.");
 	new->type = type;
 	new->next = NULL;
-	if (!mini->token)
-		mini->token = new;
+	if (!*token_list)
+		*token_list = new;
 	else
 	{
-		current = mini->token;
+		current = *token_list;
 		while (current->next)
 			current = current->next;
 		current->next = new;
