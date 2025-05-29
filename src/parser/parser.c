@@ -1,81 +1,112 @@
 #include "./minishell.h"
 
-int count_word_tokens(t_token *tokens)
+int word_counter(t_token *tokens)
 {
     int count;
 
     count = 0;
-    while (tokens)
+    while (tokens && tokens->type != TOKEN_PIPE)
     {
-        if (tokens->type = TOKEN_WORD)
+        if (tokens->type == TOKEN_WORD)
             count++;
         tokens = tokens->next;
     }
     return (count);
 }
 
-
-
-t_cmd   *parse_tokens(t_token *tokens)
+t_arg   *init_arg(int count)
 {
-    t_cmd           *cmd_list;
-    t_token_type    type;
-    int             count;
+    t_arg   *arg_list;
 
-    cmd_list = NULL;
-    count = 0;
-    cmd_list->args_count = count_word_tokens(tokens);
-    while (tokens)
+    arg_list = malloc(sizeof(t_arg));
+    if (!arg_list)
+        error_message("failed to alloc mem");
+    arg_list->args_count = count;
+    arg_list->argv =  malloc(sizeof(char *) * (arg_list->args_count + 1));
+    if (!arg_list->argv)
+        error_message("failed to alloc mem");
+    arg_list->argv[count] = NULL;
+    arg_list->next = NULL;
+    return (arg_list);    
+}
+
+t_arg   *parse_tokens(t_token *tokens)
+{
+    t_arg   *head_arg;
+    t_arg   *curr_arg;
+    t_token *curr_token;
+    int     index;
+
+    head_arg = NULL;
+    curr_arg = NULL;
+    curr_token = tokens;
+    index = 0;
+    while (curr_token)
     {
-        type = tokens->type;
-        if (type == TOKEN_WORD)
-            count += add_token_to_cmds(cmd_list, tokens->token);
-        // else if (type == TOKEN_REDIR_IN)
-
-        // else if (type == TOKEN_PIPE)
-        tokens = tokens->next;
+        if (!curr_arg)
+        {
+            curr_arg = init_arg(word_counter(curr_token));
+            head_arg = curr_arg;
+        }
+        if (curr_token->type == TOKEN_WORD)
+            index += handle_word_token(curr_arg, curr_token->token, index);
+        else if (curr_token->type == TOKEN_PIPE)
+            curr_arg = handle_pipe_token(curr_arg, curr_token->next);
+        else
+            handle_redir_token(curr_arg, curr_token); 
+        curr_token = curr_token->next;
     }
-    return (cmd_list);
+    return (head_arg);
 }
 
-t_cmd   *init_cmd(int count)
+int  handle_word_token(t_arg *curr_arg, char *token, int index)
 {
-    t_cmd   *cmd_list;
-
-    cmd_list = malloc(sizeof(t_cmd));
-    if (!cmd_list)
-        error_message("failed to alloc mem");
-    cmd_list->args_count = count;
-    cmd_list->argv =  malloc(sizeof(char *) * (cmd_list->args_count + 1));
-    if (!cmd_list->argv)
-        error_message("failed to alloc mem");
-    cmd->
+    curr_arg->argv[index] = strdup(token);
+    return (1)
 }
 
-
-
-int add_token_to_cmds(t_cmd *cmd_list, char *tokens)
+t_arg   *handle_pipe_token(t_arg *curr_arg, t_token *next_tokens)
 {
-    cmd_list->argv = malloc(sizeof(char *) * cmd_list->args_count);
-    
+    t_arg   *new;
+
+    new = init_arg(word_counter(next_tokens));
+    curr_arg->next = new;
+    return (new)
 }
 
 
-crear comando raíz current_cmd
-args_count = 0
+void    handle_redir_token(t_arg *curr_arg, t_token *redir_token)
+{
+    t_token *file_token;
+    t_parser *redir;
 
-for each token in token_list:
-    if token es palabra:
-        agregar token a current_cmd.argv
-        args_count++
-    else if token es redirección:
-        crear nodo parser con tipo y archivo
-        agregar a current_cmd.parser
-    else if token es PIPE:
-        finalizar argv con NULL y guardar args_count en current_cmd
-        crear nuevo t_cmd y enlazar con current_cmd->next
-        current_cmd = current_cmd->next
-        args_count = 0
+    file_token = redir_token->next;
+    if (!file_token || file_token->type != TOKEN_WORD)
+        error_message("Syntax error. Change this output later");
+    redir = malloc(sizeof(t_parser));
+    if (!redir)
+        error_message("failed to alloc.");
+    if (redir_token->type == TOKEN_REDIR_IN)
+        redir->fd_in = redir_token->type
+    else if (redir_token->type == TOKEN_REDIR_OUT)
+        redir->fd_out = redir_token->type
+    redir->cmd = ft_strdup(file_token->token);
+    redir->next = NULL;
+    append_to_parser(&(curr(curr_arg->)))
+}
 
-finalizar último argv con NULL y guardar args_count
-retornar comando raíz
+
+void    append_to_parser(t_parser *head, t_arg *redir)
+{
+    t_parser    *tmp;
+
+    if (!head)
+        head = redir;
+    else
+    {
+        tmp = head;
+        while (tmp->next)
+            tmp = tmp->next;
+        tmp->next =  redir; 
+    }
+}

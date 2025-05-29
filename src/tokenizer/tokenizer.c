@@ -6,7 +6,7 @@
 /*   By: jdorazio <jdorazio@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 17:41:35 by jdorazio          #+#    #+#             */
-/*   Updated: 2025/05/28 16:41:18 by jdorazio         ###   ########.fr       */
+/*   Updated: 2025/05/29 17:08:00 by jdorazio         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,8 @@ int handle_word(char *input, t_token **token_list, int i) // for echo
     char    *str;
 
     start = i;
-    while (input[i] && !(is_quotes(input[i])) && !(is_operator((input[i]))))
+    while (input[i] && !is_quotes(input[i]) && !is_operator(input[i]) &&
+           input[i] != ' ' && input[i] != '\t' && input[i] != '\n')
         i++;
     len = i - start;
     str = malloc(len + 1);
@@ -79,8 +80,7 @@ int handle_word(char *input, t_token **token_list, int i) // for echo
         error_message("failed to alloc mem.");
     ft_strlcpy(str, input + start, len + 1);
     add_token(str, token_list, TOKEN_WORD);
-    free(str);
-    return (len);
+    return (free(str), len);
 }
 
 t_token    *tokenizer(char *input)
@@ -90,6 +90,7 @@ t_token    *tokenizer(char *input)
     int count;
 
     i = 0;
+    count = 0;  
     token_list = NULL;
     while (input[i])
     {

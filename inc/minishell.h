@@ -23,6 +23,8 @@
 	\t\t --- \033[1;92mmamaratr\033[0m && \033[1;92mjdorazio\033[0m ---\n\
 	\n")
 
+typedef struct s_parser t_parser;
+
 typedef enum e_token_type
 {
 	TOKEN_WORD,       // Palabra normal, comando o argumento
@@ -41,13 +43,13 @@ typedef struct s_token
 	struct s_token	*next; // para recorrer lista
 }	t_token;
 
-typedef struct s_cmd
+typedef struct s_arg
 {
 	char			**argv; // list de comandos
 	int				args_count; // cantidad de argumentos
 	t_parser		*parser; // lista de redirecciones
-	struct s_cmd	*next; // para manejar pipelines (|) entre comandos
-}	t_cmd;
+	struct s_arg	*next; // para manejar pipelines (|) entre comandos
+}	t_arg;
 
 typedef struct s_env
 {
@@ -67,8 +69,8 @@ typedef struct s_parser
 typedef struct s_shell
 {
 	char		*actual_line;
-	t_token		*token;
-	t_cmd		*arg;
+	t_token		*tokens;
+	t_arg		*arg;
 	int			status;
 	t_parser	*parser;
 	t_env		*env; // lista de variables de entorno
@@ -97,17 +99,21 @@ t_token    *tokenizer(char *input);
 //  ###--------------### 
 
 //  ###--- TOKENIZER_UTILS ---### 
-int     ft_quotes(char c);
+int     is_quotes(char c);
 int     is_operator(char c);
 void    add_token(char *input, t_token **token_list, t_token_type type);
 //  ###--------------### 
 
 
 
-//  ###--- TOKENIZER_UTILS ---### 
-t_cmd   *parse_tokens(t_token *token_list);
+//  ###--- PARSER ---###
+int word_counter(t_token *tokens);
+t_arg   *init_arg(int count);
+t_arg   *parse_tokens(t_token *token_list);
+int handle_word_token(t_arg *arg, char *token, int index);
 //  ###--------------### 
 
+char  *ft_read_line(void);
 
 
 char	**shell_split(t_shell *mini, char *line, char s);
