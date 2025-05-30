@@ -3,10 +3,11 @@
 /*                                                        :::      ::::::::   */
 /*   ft_unset.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: mamaratr <mamaratr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 12:09:06 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/05/27 12:09:07 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/05/29 16:26:59 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "./minishell.h"

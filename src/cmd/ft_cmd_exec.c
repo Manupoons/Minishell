@@ -1,24 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_minishell.c                                     :+:      :+:    :+:   */
+/*   ft_cmd_exec.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: mamaratr <mamaratr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 19:14:03 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/05/27 19:53:57 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/05/29 18:15:08 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./minishell.h"
-
-static void	child_process(t_shell *mini)
-{
-	if (is_comms(mini))
-		ft_comms(mini);
-	else
-		run_cmd(mini);
-}
 
 static void	run_cmd(t_shell *mini)
 {
@@ -33,13 +25,10 @@ static void	run_cmd(t_shell *mini)
 	path = ft_get_path(mini->arg->argv[0], mini->env);
 	if (!ft_isalnum(mini->arg->argv[0][0]))
 	{
-		free(path);
-		path = NULL;
+		ft_memfree(path);
+		path = mini->arg->argv[0];
 	}
-	if (!path)
-		exit(127);
 	execve(path, mini->arg->argv, envp);
-	perror("execve");
 	exit(127);
 }
 
@@ -49,60 +38,56 @@ static void	handle_status(t_shell *mini)
 		mini->status = WEXITSTATUS(mini->status);
 	if (mini && mini->status == 127)
 		printf("%s: %s\n", mini->arg->argv[0], "command not found");
-	else if (WIFSIGNALED(mini->status))
-	{
-		int sig = WTERMSIG(mini->status);
-		mini->status = 128 + sig;
-		if (sig == SIGINT)
-			write(STDOUT_FILENO, "\n", 1);
-		else if (sig == SIGQUIT)
-			write(STDOUT_FILENO, "Quit (core dumped)\n", 19);
-	}
 }
 
-void	ft_next_cmd(t_shell *mini)
+static void	ft_next_cmd(t_shell *mini)
 {
 	t_parser	*next;
 
-	if (mini->parser)
-	{
-		next = mini->parser;
-		mini->parser = mini->parser->next;
-		free(next->cmd);
-		free(next);
-	}
+	ft_memfree(mini->parser->cmd);
+	ft_memfree_all(mini->arg->argv);
+	if (mini->parser->fd_in != 0)
+		close(mini->parser->fd_in);
+	if (mini->parser->fd_out != 1)
+		close(mini->parser->fd_out);
+	next = mini->parser;
+	mini->parser = mini->parser->next;
+	ft_memfree(next);
 }
 
-void	ft_minishell(t_shell *mini)
+static void	child_proccess(t_shell *msh)
+{
+	if (is_comms(msh))
+		ft_comms(msh);
+	else
+		run_cmd(msh);
+}
+
+void	ft_cmd_exec(t_shell *mini)
 {
 	pid_t	pid;
 
+	if (!mini || !mini->parser || !mini->arg)
+		return ;
 	while (mini->parser)
 	{
-		if (!mini->parser->cmd || !ft_isascii(mini->parser->cmd[0]))
+		if (!ft_isascii(mini->parser->cmd[0]))
 		{
 			mini->status = 1;
 			break ;
 		}
-		mini->arg = ft_split_shell(mini, mini->parser->cmd, ' ');
-		if (!mini->arg || !mini->arg->argv[0])
-		{
-			ft_next_cmd(mini);
-			continue ;
-		}
+		mini->arg->argv = shell_split(mini, mini->parser->cmd, ' ');
 		if (is_comms(mini))
 			ft_comms(mini);
 		else
 		{
 			pid = fork();
 			if (pid == 0)
-				child_process(mini);
+				child_proccess(mini);
 			else
-				waitpid(pid, &mini->status, 0);
+				waitpid(-1, &mini->status, 0);
 			handle_status(mini);
 		}
-		ft_free_split(mini->arg);
-		mini->arg = NULL;
 		ft_next_cmd(mini);
 	}
 }

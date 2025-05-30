@@ -2,13 +2,23 @@
 # define MINISHELL_H
 
 # include <./libft.h>
+# include <dirent.h>
+# include <errno.h>
 # include <fcntl.h>
-# include <readline/readline.h>
+# include <libgen.h>
 # include <readline/history.h>
-# include <termcap.h>
+# include <readline/readline.h>
 # include <signal.h>
-# include "libft.h"
-
+# include <stdbool.h>
+# include <stdio.h>
+# include <stdlib.h>
+# include <string.h>
+# include <sys/ioctl.h>
+# include <sys/stat.h>
+# include <sys/types.h>
+# include <sys/wait.h>
+# include <termios.h>
+# include <unistd.h>
 
 # define HEADER ("\n\033[1;92m\
 	███╗   ███╗██╗███╗   ██╗██╗███████╗██╗  ██╗███████╗██╗     ██╗     \n\
@@ -23,7 +33,21 @@
 	\t\t --- \033[1;92mmamaratr\033[0m && \033[1;92mjdorazio\033[0m ---\n\
 	\n")
 
-typedef struct s_parser t_parser;
+# define READLINE_MSG "\033[1;36mminishell\033[34m$> \033[0m"
+
+extern int	g_signal;
+
+typedef enum e_signal
+{
+	S_BASE,				//Señal base
+	S_HEREDOC,			//entra heredoc
+	S_HEREDOC_END,		//fin heredoc
+	S_HEREDOC_CANCEL,	//Ctrl + D en heredoc
+	S_SIGINT,			//Ctrl + C
+	S_SIGINT_CMD,		//Ctrl + C en medio de comando
+	S_CMD,				//se ejecuta comando
+	S_SIZE
+}	t_signal;
 
 typedef enum e_token_type
 {
@@ -66,6 +90,14 @@ typedef struct s_parser
 	struct s_parser	*next; // estado de salida del comando
 }	t_parser;
 
+typedef struct s_cmd
+{
+	char			**argv; // list de comandos
+	int				args_count; // cantidad de argumentos
+	t_parser		*parser; // lista de redirecciones
+	struct s_cmd	*next; // para manejar pipelines (|) entre comandos
+}	t_cmd;
+
 typedef struct s_shell
 {
 	char		*actual_line;
@@ -77,7 +109,7 @@ typedef struct s_shell
 }	t_shell;
 
 //  ###--- MAIN ---###
-void    ft_minishell(t_shell *mini);
+//void    ft_minishell(t_shell *mini);
 //  ###--------------### 
 
 //  ###--- HEADER ---### 
@@ -113,18 +145,37 @@ t_arg   *parse_tokens(t_token *token_list);
 int handle_word_token(t_arg *arg, char *token, int index);
 //  ###--------------### 
 
-char  *ft_read_line(void);
+//  ###--- MINISHELL_UTILS ---###
+char	**ft_env_to_array(t_shell *mini);
 
+//  ###-------------------###
 
 char	**shell_split(t_shell *mini, char *line, char s);
-void	ft_next_cmd(t_shell *mini);
-
+void	ft_cmd_exec(t_shell *mini);
 
 void	ft_pwd(t_shell *mini);
+void	ft_cd(t_shell *mini);
+void	ft_env(t_shell *mini);
 void	ft_exit(t_shell *mini);
 void	ft_echo(t_shell *mini);
+void	ft_export(t_shell *mini);
+void	ft_unset(t_shell *mini);
+
 int		is_comms(t_shell *mini);
 void	ft_comms(t_shell *mini);
+
+t_env	*ft_lst_new_env(char *name, char *value, int alloc);
+void	ft_lst_env_init(t_env **env, char **envp);
+void	ft_add_back_env(t_env **lst, t_env *new);
+char	*get_env_name(char  *name);
+char	*get_env_value(char *value);
+
+char	*ft_get_path(char *cmd, t_env *env);
+void    ft_free_env(t_env **env);
+void	ft_free_list(t_env **env);
+void	add_arg_to_env(char *var, t_shell *mini);
+
+void	init_signal(void);
 
 #endif
 

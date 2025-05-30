@@ -1,37 +1,70 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mamaratr <mamaratr@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/29 16:05:08 by mamaratr          #+#    #+#             */
+/*   Updated: 2025/05/29 19:39:28 by mamaratr         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "./minishell.h"
 
-
-void    ft_init_shell(t_shell *mini, char **envp)
+static void	ft_minishell(t_shell *mini, char **envp)
 {
+	char		*line;
+	char		*temp;
+	t_parser	*parser;
 
+	mini->env = NULL;
+	mini->parser = NULL;
+	ft_lst_env_init(&mini->env, envp);
+	while (1)
+	{
+		if (g_signal == S_SIGINT)
+			mini->status = 1;
+		line = readline(READLINE_MSG);
+		if (!line)
+			break ;
+		temp = ft_strtrim(line, " \t\n\v\f\r");
+		if (temp[0] != '\0')
+		{
+			add_history(temp);
+			parser = malloc(sizeof(t_parser));
+			if (!parser)
+				break ;
+			parser->cmd = ft_strdup(temp);
+			parser->fd_in = 0;
+			parser->fd_out = 1;
+			parser->next = NULL;
+			mini->parser = parser;
+			mini->arg = malloc(sizeof(t_cmd));
+			if (!mini->arg)
+				break ;
+			mini->arg->argv = NULL;
+			mini->arg->args_count = 0;
+			mini->arg->parser = NULL;
+			mini->arg->next = NULL;
+		}
+		if (g_signal != S_HEREDOC_CANCEL)
+			ft_cmd_exec(mini);
+		ft_memfree(temp);
+		ft_memfree(line);
+		mini->parser = NULL;
+	}
+	ft_free_env(&mini->env);
 }
 
-void    ft_minishell(t_shell *mini)
-{
-    char    *line;
-    
-    while(1)
-    {
-        line = ft_read_line(); // readline + history
-        if (!line)
-            break;
-        mini->token = tokenizer(line); // tokenizador de palabaras
-        // mini->cmds = parse_tokens(mini->tokens); // parser: agrupa tokens en comandos
-        // ft_execute_cmds(mini); // ejecuta los comandos (Fork / Builtin)
-        // ft_cleanup_cycle(mini); //  libera tokens, cmds , line
-    }
-    free(line);
-}
-
-
-int main(int ac, char **av)
+int	main(int argc, char **argv, char **envp)
 {
 	t_shell	mini;
 
-	if (ac != 1 || av[1])
+	if (argc != 1 || argv[1])
 		return (EXIT_FAILURE);
 	printf("%s", HEADER);
-	//ft_init_shell(&mini, envp);
-	ft_minishell(&mini);
+	init_signal();
+	ft_minishell(&mini, envp);
 	return (EXIT_SUCCESS);
 }

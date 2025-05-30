@@ -1,21 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_memfree.c                                       :+:      :+:    :+:   */
+/*   ft_strcmp.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mamaratr <mamaratr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/27 19:01:08 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/05/29 14:58:00 by mamaratr         ###   ########.fr       */
+/*   Created: 2025/05/28 16:46:33 by mamaratr          #+#    #+#             */
+/*   Updated: 2025/05/28 16:47:47 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-void	ft_memfree(void *ptr)
+int	ft_strcmp(const char *s1, const char *s2)
 {
-	if (!ptr)
-		return ;
-	free(ptr);
-	ptr = NULL;
+	while (*s1 == *s2)
+	{
+		if (*s1 == '\0')
+			return (0);
+		s1++;
+		s2++;
+	}
+	return (*s1 - *s2);
 }
