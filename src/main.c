@@ -16,7 +16,7 @@ static void	ft_minishell(t_shell *mini, char **envp)
 {
 	char		*line;
 	char		*temp;
-	t_parser	*parser;
+	//t_parser	*parser;
 
 	mini->env = NULL;
 	mini->parser = NULL;
@@ -30,32 +30,29 @@ static void	ft_minishell(t_shell *mini, char **envp)
 			break ;
 		temp = ft_strtrim(line, " \t\n\v\f\r");
 		if (temp[0] != '\0')
-		{
 			add_history(temp);
-			parser = malloc(sizeof(t_parser));
-			if (!parser)
-				break ;
-			parser->cmd = ft_strdup(temp);
-			parser->fd_in = 0;
-			parser->fd_out = 1;
-			parser->next = NULL;
-			mini->parser = parser;
-			mini->arg = malloc(sizeof(t_cmd));
-			if (!mini->arg)
-				break ;
-			mini->arg->argv = NULL;
-			mini->arg->args_count = 0;
-			mini->arg->parser = NULL;
-			mini->arg->next = NULL;
-		}
-		if (g_signal != S_HEREDOC_CANCEL)
-			ft_cmd_exec(mini);
-		ft_memfree(temp);
-		ft_memfree(line);
-		mini->parser = NULL;
+		ft_prev_exec(mini, temp);
+		// if (g_signal != S_HEREDOC_CANCEL)
+		// 	ft_cmd_exec(mini);
+		// ft_memfree(temp);
+		// ft_memfree(line);
+		//mini->parser = NULL;
 	}
 	ft_free_env(&mini->env);
 }
+
+void	ft_prev_exec(t_shell *mini, char *temp)
+{
+	mini->tokens = tokenizer(temp);
+	//print_tokens(mini->tokens); // Tokenizer working correctly
+	printf("Finish tokenizer\n");
+	mini->arg = parse_tokens(mini->tokens);
+	print_parser(mini->arg);
+	printf("Working\n");
+}
+
+// cat input.txt | g e
+
 
 int	main(int argc, char **argv, char **envp)
 {
