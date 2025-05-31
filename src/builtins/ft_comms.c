@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_comms.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mamaratr <mamaratr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 16:32:15 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/05/29 18:08:07 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/05/31 12:25:13 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ int	is_comms(t_shell *mini)
 	else if (ft_strcmp(mini->arg->argv[0], "export") == 0)
 		return (1);
 	// else if (ft_strcmp(mini->arg->argv[0], "unset") == 0)
-	// 	return (1);
+		// return (1);
 	else if (ft_strcmp(mini->arg->argv[0], "env") == 0)
 		return (1);
 	else if (ft_strcmp(mini->arg->argv[0], "exit") == 0)

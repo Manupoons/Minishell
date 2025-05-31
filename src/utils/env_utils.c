@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env_utils.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mamaratr <mamaratr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 19:04:03 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/05/29 18:45:50 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/05/31 12:10:47 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,19 +27,18 @@ char	*get_env_value(char *value)
 	int		i;
 	char	*val;
 	int		len;
+	char	*tmp;
 
 	i = 0;
 	while (value[i] && value[i] != '=' && value[i] != ' ')
 		i++;
 	if (value[i] != '=')
 		return (ft_strdup(""));
-
 	len = ft_strlen(value) - (i + 1);
 	val = ft_substr(value, i + 1, len);
-
 	if (val[0] == '"' && val[len - 1] == '"' && len >= 2)
 	{
-		char *tmp = ft_substr(val, 1, len - 2);
+		tmp = ft_substr(val, 1, len - 2);
 		ft_memfree(val);
 		return (tmp);
 	}

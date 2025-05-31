@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minishell.h                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/31 12:15:39 by mamaratr          #+#    #+#             */
+/*   Updated: 2025/05/31 12:24:59 by mamaratr         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
@@ -58,7 +70,7 @@ typedef enum e_token_type
 	TOKEN_APPEND,     // '>>'
 	TOKEN_HEREDOC,    // '<<'
 	TOKEN_EOF         // Fin de línea o archivo (opcional)
-}   t_token_type;
+}	t_token_type;
 
 typedef struct s_token
 {
@@ -74,7 +86,7 @@ typedef struct s_env
 	struct s_env *next; //  siguiente elemento en la lista
 }	t_env;
 
-typedef struct s_parser 
+typedef struct s_parser
 {
 	char			*cmd; // línea de entrada del usuario
 	int				fd_in;
@@ -108,10 +120,9 @@ typedef struct s_shell
 void	print_banner(void);
 //  ###-------------### 
 
-
 //  ###--- HEADER ---### 
-int ft_isspace(char c);
-int is_quotes(char c);
+int		ft_isspace(char c);
+int		is_quotes(char c);
 //  ###--------------### 
 
 //  ###--- ERROR_HANDLER ---### 
@@ -120,17 +131,17 @@ void	error_message(char *str);
 
 
 //  ###--- TOKENIZER ---###
-int     handle_space(char *input, int i);
-int     handle_quoted_token(char *input, t_shell *mini, int i);
-int     handle_operator(char *input, t_shell *mini, int i);
-int     handle_word(char *input, t_shell *mini, int i);
-void    tokenizer(t_shell *mini, char *input);
+int		handle_space(char *input, int i);
+int		handle_quoted_token(char *input, t_shell *mini, int i);
+int		handle_operator(char *input, t_shell *mini, int i);
+int		handle_word(char *input, t_shell *mini, int i);
+void	tokenizer(t_shell *mini, char *input);
 //  ###--------------### 
 
 //  ###--- TOKENIZER_UTILS ---### 
-int     ft_quotes(char c);
-int     is_operator(char c);
-void    add_token(char *input, t_shell *mini, t_token_type type);
+int		ft_quotes(char c);
+int		is_operator(char c);
+void	add_token(char *input, t_shell *mini, t_token_type type);
 //  ###--------------### 
 
 //  ###--- MINISHELL_UTILS ---###
@@ -147,23 +158,22 @@ void	ft_env(t_shell *mini);
 void	ft_exit(t_shell *mini);
 void	ft_echo(t_shell *mini);
 void	ft_export(t_shell *mini);
-void	ft_unset(t_shell *mini);
+//void	ft_unset(t_shell *mini);
 
 int		is_comms(t_shell *mini);
 void	ft_comms(t_shell *mini);
 
-t_env	*ft_lst_new_env(char *name, char *value, int alloc);
-void	ft_lst_env_init(t_env **env, char **envp);
-void	ft_add_back_env(t_env **lst, t_env *new);
-char	*get_env_name(char  *name);
+char	*get_env_name(char *name);
 char	*get_env_value(char *value);
+void	ft_add_back_env(t_env **lst, t_env *new);
+void	ft_lst_env_init(t_env **env, char **envp);
+t_env	*ft_lst_new_env(char *name, char *value, int alloc);
 
 char	*ft_get_path(char *cmd, t_env *env);
-void    ft_free_env(t_env **env);
+void	ft_free_env(t_env **env);
 void	ft_free_list(t_env **env);
 void	add_arg_to_env(char *var, t_shell *mini);
 
 void	init_signal(void);
 
 #endif
-
