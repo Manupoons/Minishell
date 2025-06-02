@@ -99,7 +99,10 @@ t_token	*tokenizer(char *input)
 	{
 		i = handle_space(input, i);
 		if (!input[i])
+		{
+			printf("Exiting if enter\n");
 			break ;
+		}
 		if (is_quotes(input[i]))
 			count = handle_quoted_token(input, &token_list, i);
 		else if (is_operator(input[i]))

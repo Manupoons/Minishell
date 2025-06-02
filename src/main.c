@@ -16,10 +16,10 @@ static void	ft_minishell(t_shell *mini, char **envp)
 {
 	char		*line;
 	char		*temp;
-	//t_parser	*parser;
 
+	mini->tokens = NULL;
 	mini->env = NULL;
-	mini->parser = NULL;
+	mini->arg = NULL;
 	ft_lst_env_init(&mini->env, envp);
 	while (1)
 	{
@@ -28,30 +28,36 @@ static void	ft_minishell(t_shell *mini, char **envp)
 		line = readline(READLINE_MSG);
 		if (!line)
 			break ;
-		temp = ft_strtrim(line, " \t\n\v\f\r");
+		temp = ft_strtrim(line, " \t\n\v\f\r");  
 		if (temp[0] != '\0')
 			add_history(temp);
-		ft_prev_exec(mini, temp);
-		// if (g_signal != S_HEREDOC_CANCEL)
-		// 	ft_cmd_exec(mini);
-		// ft_memfree(temp);
-		// ft_memfree(line);
-		//mini->parser = NULL;
+		if (ft_prev_exec(mini, temp))
+			continue;
+		if (g_signal != S_HEREDOC_CANCEL)
+			ft_cmd_exec(mini);
+		ft_memfree(temp);
+		ft_memfree(line);
 	}
 	ft_free_env(&mini->env);
 }
 
-void	ft_prev_exec(t_shell *mini, char *temp)
+
+
+int	ft_prev_exec(t_shell *mini, char *temp)
 {
 	mini->tokens = tokenizer(temp);
-	//print_tokens(mini->tokens); // Tokenizer working correctly
-	printf("Finish tokenizer\n");
+	if (!mini->tokens)
+		return (1);
+	print_tokens(mini->tokens); // Tokenizer working correctly
 	mini->arg = parse_tokens(mini->tokens);
 	print_parser(mini->arg);
-	printf("Working\n");
+	return (0);
 }
 
-// cat input.txt | g e
+
+//cat input.txt | grep error > output.log >> full.log | wc -l
+
+// For extra: cat input.txt | grep "error" > output.log >> full.log && echo Done
 
 
 int	main(int argc, char **argv, char **envp)

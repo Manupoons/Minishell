@@ -24,7 +24,7 @@ void print_parser(t_arg *head)
         }
 
         // Redirections
-        t_parser *redir = head->parser;
+        t_redir *redir = head->redirs;
         if (redir)
             printf("Redirections:\n");
         while (redir)
