@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signal.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mamaratr <mamaratr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 18:58:56 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/05/29 19:19:44 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/05/31 12:12:26 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int	g_signal;
 
-static void	handler_heredoc()
+static void	handler_heredoc(void)
 {
 	if (g_signal == S_HEREDOC)
 	{
@@ -48,7 +48,7 @@ static void	sigint_handler(int sig)
 		ft_putstr_fd("\n", 1);
 		rl_on_new_line();
 	}
-	handler_heredoc();   
+	handler_heredoc();
 }
 
 void	init_signal(void)

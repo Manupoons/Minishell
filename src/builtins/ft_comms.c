@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_comms.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mamaratr <mamaratr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 16:32:15 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/05/29 18:08:07 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/06/02 10:13:28 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,8 @@ int	is_comms(t_shell *mini)
 		return (1);
 	else if (ft_strcmp(mini->arg->argv[0], "export") == 0)
 		return (1);
-	// else if (ft_strcmp(mini->arg->argv[0], "unset") == 0)
-	// 	return (1);
+	else if (ft_strcmp(mini->arg->argv[0], "unset") == 0)
+		return (1);
 	else if (ft_strcmp(mini->arg->argv[0], "env") == 0)
 		return (1);
 	else if (ft_strcmp(mini->arg->argv[0], "exit") == 0)
@@ -42,8 +42,8 @@ void	ft_comms(t_shell *mini)
 		ft_pwd(mini);
 	else if (ft_strcmp(mini->arg->argv[0], "export") == 0)
 		ft_export(mini);
-	// else if (ft_strcmp(mini->arg->argv[0], "unset") == 0)
-	// 	ft_unset(mini);
+	else if (ft_strcmp(mini->arg->argv[0], "unset") == 0)
+		ft_unset(mini);
 	else if (ft_strcmp(mini->arg->argv[0], "env") == 0)
 		ft_env(mini);
 	else if (ft_strcmp(mini->arg->argv[0], "exit") == 0)
