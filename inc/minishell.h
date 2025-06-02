@@ -1,7 +1,7 @@
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-# include <./libft.h>
+# include "../libft/libft.h"
 # include <dirent.h>
 # include <errno.h>
 # include <fcntl.h>
@@ -36,6 +36,7 @@
 # define READLINE_MSG "\033[1;36mminishell\033[34m$> \033[0m"
 
 extern int	g_signal;
+typedef struct s_redir t_redir;
 
 typedef enum e_signal
 {
@@ -71,9 +72,18 @@ typedef struct s_arg
 {
 	char			**argv; // list de comandos
 	int				args_count; // cantidad de argumentos
-	t_parser		*parser; // lista de redirecciones
+	t_redir			*redirs; // lista de redirecciones
 	struct s_arg	*next; // para manejar pipelines (|) entre comandos
 }	t_arg;
+
+typedef struct s_redir 
+{
+	char			*cmd; // línea de entrada del usuario
+	int				fd_in; 
+	int				fd_out;
+	int				type; // redirection type
+	struct s_redir	*next; // estado de salida del comando
+}	t_redir;
 
 typedef struct s_env
 {
@@ -82,21 +92,6 @@ typedef struct s_env
 	struct s_env *next; //  siguiente elemento en la lista
 }	t_env;
 
-typedef struct s_parser 
-{
-	char			*cmd; // línea de entrada del usuario
-	int				fd_in;
-	int				fd_out;
-	struct s_parser	*next; // estado de salida del comando
-}	t_parser;
-
-typedef struct s_cmd
-{
-	char			**argv; // list de comandos
-	int				args_count; // cantidad de argumentos
-	t_parser		*parser; // lista de redirecciones
-	struct s_cmd	*next; // para manejar pipelines (|) entre comandos
-}	t_cmd;
 
 typedef struct s_shell
 {
@@ -104,7 +99,6 @@ typedef struct s_shell
 	t_token		*tokens;
 	t_arg		*arg;
 	int			status;
-	t_parser	*parser;
 	t_env		*env; // lista de variables de entorno
 }	t_shell;
 
@@ -143,6 +137,10 @@ int word_counter(t_token *tokens);
 t_arg   *init_arg(int count);
 t_arg   *parse_tokens(t_token *token_list);
 int handle_word_token(t_arg *arg, char *token, int index);
+t_arg   *handle_pipe_token(t_arg *curr_arg, t_token *next_tokens, int *index);
+void    handle_redir_token(t_arg *curr_arg, t_token *token);
+void    append_to_parser(t_redir **head, t_redir *redir);
+
 //  ###--------------### 
 
 //  ###--- MINISHELL_UTILS ---###
@@ -176,6 +174,15 @@ void	ft_free_list(t_env **env);
 void	add_arg_to_env(char *var, t_shell *mini);
 
 void	init_signal(void);
+
+
+int	ft_prev_exec(t_shell *mini, char *temp);
+
+// DEBUGGIN
+void print_parser(t_arg *head);
+void print_tokens(t_token *tokens);
+
+
 
 #endif
 
