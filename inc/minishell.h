@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: mamaratr <mamaratr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/31 12:15:39 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/06/02 10:13:38 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/06/02 19:01:57 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,16 +132,16 @@ void	error_message(char *str);
 
 //  ###--- TOKENIZER ---###
 int		handle_space(char *input, int i);
-int		handle_quoted_token(char *input, t_shell *mini, int i);
-int		handle_operator(char *input, t_shell *mini, int i);
-int		handle_word(char *input, t_shell *mini, int i);
-void	tokenizer(t_shell *mini, char *input);
+int		handle_quoted_token(char *input, t_token **token_list,  int i);
+int		handle_operator(char *input, t_token **token_list,  int i);
+int		handle_word(char *input, t_token **token_list, int i); // for echo
+t_token	*tokenizer(char *input);
 //  ###--------------### 
 
 //  ###--- TOKENIZER_UTILS ---### 
-int		ft_quotes(char c);
+int		is_quotes(char c);
 int		is_operator(char c);
-void	add_token(char *input, t_shell *mini, t_token_type type);
+void	add_token(char *input, t_token **token_list, t_token_type type);
 //  ###--------------### 
 
 //  ###--- MINISHELL_UTILS ---###
