@@ -6,7 +6,7 @@
 /*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/31 12:15:39 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/05/31 12:24:59 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/06/02 10:13:38 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -158,7 +158,7 @@ void	ft_env(t_shell *mini);
 void	ft_exit(t_shell *mini);
 void	ft_echo(t_shell *mini);
 void	ft_export(t_shell *mini);
-//void	ft_unset(t_shell *mini);
+void	ft_unset(t_shell *mini);
 
 int		is_comms(t_shell *mini);
 void	ft_comms(t_shell *mini);
@@ -175,5 +175,6 @@ void	ft_free_list(t_env **env);
 void	add_arg_to_env(char *var, t_shell *mini);
 
 void	init_signal(void);
+int		check_export(char *argv);
 
 #endif
