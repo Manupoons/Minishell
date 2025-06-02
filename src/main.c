@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mamaratr <mamaratr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jdorazio <jdorazio@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 16:05:08 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/05/29 19:39:28 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/06/02 20:02:12 by jdorazio         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,9 +48,11 @@ int	ft_prev_exec(t_shell *mini, char *temp)
 	mini->tokens = tokenizer(temp);
 	if (!mini->tokens)
 		return (1);
-	print_tokens(mini->tokens); // Tokenizer working correctly
+	//print_tokens(mini->tokens); // Tokenizer working correctly
 	mini->arg = parse_tokens(mini->tokens);
-	print_parser(mini->arg);
+	//print_parser(mini->arg);
+	printf("ARG PREV %s \n", mini->arg->prev->argv[0]);
+	printf("exit prev_exec\n");
 	return (0);
 }
 

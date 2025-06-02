@@ -33,7 +33,25 @@ t_arg   *init_arg(int count)
         error_message("failed to alloc mem");
     arg_list->argv[count] = NULL;
     arg_list->next = NULL;
+    if (!arg_list)
+        arg_list->prev = NULL;
+    arg_list->prev = arg_list;
     return (arg_list);    
+}
+
+int	count_pipes(t_shell *mini)
+{
+	int	i;
+	t_arg	*current;
+	
+	i = 0;
+	current = mini->arg;
+	while(current)
+    {
+		i++;
+        current = current->next;
+    }
+    return (i - 1); // return (N - 1). We always have at least 1 pipe		
 }
 
 t_arg   *parse_tokens(t_token *tokens)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_cmd_exec.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jdorazio <jdorazio@student.42.madrid.co    +#+  +:+       +#+        */
+/*   By: jdorazio <jdorazio@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 19:14:03 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/05/31 21:22:47 by jdorazio         ###   ########.fr       */
+/*   Updated: 2025/06/02 20:05:11 by jdorazio         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ static void	run_cmd(t_shell *mini)
 		ft_memfree(path);
 		path = mini->arg->argv[0];
 	}
+	printf("prueba run \n");
 	execve(path, mini->arg->argv, envp);
 	exit(127);
 }
@@ -66,115 +67,48 @@ static void	ft_next_cmd(t_shell *mini)
 	ft_memfree(tmp);
 }
 
-// static void	child_proccess(t_shell *msh, int *fd)
-// {
-// 	close(fd[0]);
-// 	if (is_comms(msh))
-// 		ft_comms(msh);
-// 	else
-// 		run_cmd(msh);
-// }
 
 
-static void	child_proccess(t_shell *msh, int fd_in, int fd_out)
+static void	child_proccess(t_shell *msh)
 {
-	if (fd_in != STDIN_FILENO)
-		dup2(fd_in, STDIN_FILENO);
-	if (fd_out != STDOUT_FILENO)
-		dup2(fd_out, STDOUT_FILENO);
 
-	// Close unused fds in child here if needed (not shown)
 	if (is_comms(msh))
 		ft_comms(msh);
 	else
 		run_cmd(msh);
-	exit(127); // safety exit if exec fails
+	//exit(127); // safety exit if exec fails
 }
 
-void	execute_pipelines(t_shell *mini)
+void	execute_pipeline(t_shell *mini)
 {
-	int		i;
-	int		num_cmds;
-	int		**pipes;
-	pid_t	*pids;
+	printf("piping\n");
+	pid_t	pid;
 	t_arg	*current;
 
-	// Count commands
-	num_cmds = 0;
 	current = mini->arg;
-	while (current)
+	while (current) //total de listas generadas
 	{
-		num_cmds++;
-		current = current->next;
+		// CREAR MULTIPLES PIPES
+		if (init_pipes(current))
+		
+		pid = pid;
+		if (pid < 0)
+			error_message("error creating fork");
+		if (pid == 0)
+			child_proccess(mini);
+		else
+			waitpid(pid, &mini->status, 0);
+		handle_status(mini);	
 	}
-	printf("num_cmds [%d]\n", num_cmds); 
-	if (num_cmds == 0)
-		return ;
-
-	// Allocate pipes: (num_cmds - 1) pipes, each has 2 fds
-	pipes = malloc(sizeof(int *) * (num_cmds - 1));
-	for (i = 0; i < num_cmds - 1; i++)
-	{
-		pipes[i] = malloc(sizeof(int) * 2);
-		if (pipe(pipes[i]) == -1)
-			error_message("failed to create pipe\n");
-	}
-
-	pids = malloc(sizeof(pid_t) * num_cmds);
-	current = mini->arg;
-
-	for (i = 0; i < num_cmds; i++)
-	{
-		int fd_in = (i == 0) ? STDIN_FILENO : pipes[i - 1][0];
-		int fd_out = (i == num_cmds - 1) ? STDOUT_FILENO : pipes[i][1];
-
-		pids[i] = fork();
-		if (pids[i] < 0)
-			error_message("failed to fork\n");
-
-		if (pids[i] == 0)
-		{
-			// Child closes all pipe fds except the ones used for stdin/stdout
-			for (int j = 0; j < num_cmds - 1; j++)
-			{
-				if (pipes[j][0] != fd_in)
-					close(pipes[j][0]);
-				if (pipes[j][1] != fd_out)
-					close(pipes[j][1]);
-			}
-
-			mini->arg = current; // Set current command for child
-			child_proccess(mini, fd_in, fd_out);
-		}
-
-		current = current->next;
-	}
-
-	// Parent closes all pipe ends
-	for (i = 0; i < num_cmds - 1; i++)
-	{
-		close(pipes[i][0]);
-		close(pipes[i][1]);
-		free(pipes[i]);
-	}
-	free(pipes);
-
-	// Wait for all children and handle status
-	for (i = 0; i < num_cmds; i++)
-	{
-		waitpid(pids[i], &mini->status, 0);
-		handle_status(mini);
-	}
-	free(pids);
+	ft_next_cmd(mini);
 }
 
-void	ft_cmd_exec(t_shell *mini)
+void	execute(t_shell *mini)
 {
-	if (!mini || !mini->arg)
-		return ;
-	if (mini->arg && mini->arg->next)
-		execute_pipelines(mini);
-	while (mini->arg)
+	pid_t pid;
+	
+	printf("Execute\n");
+	while (mini->arg) 
 	{
 		if (mini->arg->redirs)
 			if (!mini->arg->redirs->cmd || !ft_isascii(mini->arg->redirs->cmd[0]))
@@ -186,15 +120,30 @@ void	ft_cmd_exec(t_shell *mini)
 			ft_comms(mini);
 		else
 		{
-			pid_t pid = fork();
-			if (pid < 0)
-				error_message("failed to fork\n");
-			if (pid == 0)
-				child_proccess(mini, STDIN_FILENO, STDOUT_FILENO);
+			pid = fork(); // lo necesitamos porque llama a child y mantiene en espere el proceso de reinicir Shell
+			 if (pid < 0)
+			 	error_message("failed to fork\n");
+			 if (pid == 0)
+			 {
+				
+				child_proccess(mini);
+			 }
 			else
 				waitpid(pid, &mini->status, 0);
 			handle_status(mini);
 		}
 		ft_next_cmd(mini);
-	}
+	}	
+}
+
+
+void	ft_cmd_exec(t_shell *mini)
+{
+	printf("entering ft_cmd_execc\n");
+	if (!mini || !mini->arg)
+		return ;
+	if (mini->arg && mini->arg->next)
+		execute_pipeline(mini);
+	else
+		execute(mini);	
 }

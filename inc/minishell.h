@@ -68,12 +68,16 @@ typedef struct s_token
 	struct s_token	*next; // para recorrer lista
 }	t_token;
 
+
 typedef struct s_arg
 {
 	char			**argv; // list de comandos
 	int				args_count; // cantidad de argumentos
 	t_redir			*redirs; // lista de redirecciones
+	int				pipe_in; //fd de pipes
+	int				pipe_out; //fd de pipes
 	struct s_arg	*next; // para manejar pipelines (|) entre comandos
+	struct s_arg	*prev; // para controlar previo a pipes
 }	t_arg;
 
 typedef struct s_redir 
