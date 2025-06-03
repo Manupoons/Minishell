@@ -108,22 +108,6 @@ typedef struct s_env
 	struct s_env *next; //  siguiente elemento en la lista
 }	t_env;
 
-typedef struct s_parser 
-{
-	char			*cmd; // línea de entrada del usuario
-	int				fd_in;
-	int				fd_out;
-	struct s_parser	*next; // estado de salida del comando
-}	t_parser;
-
-typedef struct s_cmd
-{
-	char			**argv; // list de comandos
-	int				args_count; // cantidad de argumentos
-	t_parser		*parser; // lista de redirecciones
-	struct s_cmd	*next; // para manejar pipelines (|) entre comandos
-}	t_cmd;
-
 typedef struct s_shell
 {
 	char		*actual_line;
