@@ -51,8 +51,8 @@ int	ft_prev_exec(t_shell *mini, char *temp)
 	//print_tokens(mini->tokens); // Tokenizer working correctly
 	mini->arg = parse_tokens(mini->tokens);
 	//print_parser(mini->arg);
-	printf("ARG PREV %s \n", mini->arg->prev->argv[0]);
-	printf("exit prev_exec\n");
+	//printf("ARG PREV %s \n", mini->arg->prev->argv[0]);
+	//printf("exit prev_exec\n");
 	return (0);
 }
 

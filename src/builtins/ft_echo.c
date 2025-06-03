@@ -42,7 +42,8 @@ void	ft_echo(t_shell *mini)
 	i = 1;
 	if (mini->arg->argv[i] && !ft_strncmp(mini->arg->argv[i], "-n", 2))
 		i++;
-	fd = 1;
+	int fd;
+		fd = 1;
 	if (mini->arg->redirs)
 		fd =  mini->arg->redirs->fd_out;
 	while (mini->arg->argv[i])
@@ -51,10 +52,10 @@ void	ft_echo(t_shell *mini)
 			expanded_arg = expand_var(mini->arg->argv[i], mini->env);
 		else
 			expanded_arg = ft_strdup(mini->arg->argv[i]);
-		ft_putstr_fd(expanded_arg, mini->parser->fd_out);
+		ft_putstr_fd(expanded_arg, mini->arg->redirs->fd_out);
 		ft_memfree(expanded_arg);
 		if (mini->arg->argv[i + 1])
-			ft_putchar_fd(' ', mini->parser->fd_out);
+			ft_putchar_fd(' ', mini->arg->redirs->fd_out);
 		i++;
 	}
 	if (!(mini->arg->argv[1] && !ft_strncmp(mini->arg->argv[1], "-n", 2)))
