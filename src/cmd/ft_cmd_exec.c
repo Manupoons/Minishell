@@ -32,7 +32,6 @@ static void	run_cmd(t_shell *mini)
 		ft_memfree(path);
 		path = mini->arg->argv[0];
 	}
-	printf("prueba run \n");
 	execve(path, mini->arg->argv, envp);
 	exit(127);
 }
@@ -69,37 +68,91 @@ static void	ft_next_cmd(t_shell *mini)
 
 
 
-static void	child_proccess(t_shell *msh)
+static void	child_process(t_shell *msh)
 {
+	if (msh->arg->pipe_in != 0 )
+	{
+		dup2(msh->arg->pipe_in, STDIN_FILENO);
+		close(msh->arg->pipe_in);
+	}
+	if (msh->arg->pipe_out!= 1)
+	{
+		dup2(msh->arg->pipe_out, STDOUT_FILENO);
+		close(msh->arg->pipe_out);
+	}
+	if (msh->arg->redirs)
+	{
+		if (msh->arg->redirs->fd_in != 0)
+			dup2(msh->arg->redirs->fd_in, STDIN_FILENO);
+		if (msh->arg->redirs->fd_out != 1)
+			dup2(msh->arg->redirs->fd_out, STDOUT_FILENO);
+	}
 
 	if (is_comms(msh))
 		ft_comms(msh);
 	else
 		run_cmd(msh);
-	//exit(127); // safety exit if exec fails
+	exit(127); // safety exit if exec fails
+}
+
+bool	init_pipes(t_shell *mini)
+{
+	t_arg	*current;
+	int		pipefd[2];
+
+	current = mini->arg;
+	if (!current || !current->next)
+		return (true);  // no piping needed
+	while(current && current->next)
+	{
+		if (pipe(pipefd) < 0)
+			return (false);
+		current->pipe_out = pipefd[1];
+		current->next->pipe_in = pipefd[0];
+		current = current->next;
+	}
+	return (true);
+}
+
+
+int	close_pipes(t_arg *current, int prev_fd_in)
+{
+	if (current->pipe_out != 1)
+		close(current->pipe_out);
+	if (prev_fd_in != -1 && prev_fd_in != 0)
+		close(prev_fd_in);
+	prev_fd_in = current->pipe_in;
+	return (prev_fd_in);
 }
 
 void	execute_pipeline(t_shell *mini)
 {
-	printf("piping\n");
 	pid_t	pid;
+	int		prev_fd_in;
 	t_arg	*current;
 
+	prev_fd_in = -1;
+	if(!init_pipes(mini))
+		error_message("failed init pipe");
 	current = mini->arg;
-	while (current) //total de listas generadas
+		while (current) //total de listas generadas
 	{
-		// CREAR MULTIPLES PIPES
-		if (init_pipes(current))
-		
-		pid = pid;
+		pid = fork();
 		if (pid < 0)
 			error_message("error creating fork");
 		if (pid == 0)
-			child_proccess(mini);
+		{
+			mini->arg = current;
+			child_process(mini);
+			exit(EXIT_FAILURE);
+		}
 		else
-			waitpid(pid, &mini->status, 0);
-		handle_status(mini);	
+			prev_fd_in = close_pipes(current, prev_fd_in);
+		current = current->next;
 	}
+	while (wait(NULL) > 0)
+		;
+	handle_status(mini);
 	ft_next_cmd(mini);
 }
 
@@ -107,15 +160,16 @@ void	execute(t_shell *mini)
 {
 	pid_t pid;
 	
-	printf("Execute\n");
-	while (mini->arg) 
+	while (mini->arg)
 	{
 		if (mini->arg->redirs)
-			if (!mini->arg->redirs->cmd || !ft_isascii(mini->arg->redirs->cmd[0]))
+		{
+			if (!mini->arg->redirs->cmd || !mini->arg->redirs->cmd[0] || !ft_isascii(mini->arg->redirs->cmd[0]))
 			{
 				mini->status = 1;
 				break;
 			}
+		}
 		if (is_comms(mini))
 			ft_comms(mini);
 		else
@@ -124,22 +178,19 @@ void	execute(t_shell *mini)
 			 if (pid < 0)
 			 	error_message("failed to fork\n");
 			 if (pid == 0)
-			 {
-				
-				child_proccess(mini);
-			 }
+				child_process(mini);
 			else
 				waitpid(pid, &mini->status, 0);
 			handle_status(mini);
 		}
 		ft_next_cmd(mini);
-	}	
+	}
 }
 
 
 void	ft_cmd_exec(t_shell *mini)
 {
-	printf("entering ft_cmd_execc\n");
+	//printf("entering ft_cmd_execc\n");
 	if (!mini || !mini->arg)
 		return ;
 	if (mini->arg && mini->arg->next)
