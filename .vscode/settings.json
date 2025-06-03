@@ -1,5 +1,7 @@
 {
 	"files.associations": {
-		"libft.h": "c"
+		"*.ejs": "html",
+		"libft.h": "c",
+		"cstdlib": "c"
 	}
 }
