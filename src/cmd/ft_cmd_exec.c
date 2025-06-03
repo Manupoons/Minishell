@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_cmd_exec.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jdorazio <jdorazio@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 19:14:03 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/06/02 20:05:11 by jdorazio         ###   ########.fr       */
+/*   Updated: 2025/06/03 22:05:39 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ static void	run_cmd(t_shell *mini)
 			dup2(mini->arg->redirs->fd_out, STDOUT_FILENO);
 	}
 	path = ft_get_path(mini->arg->argv[0], mini->env);
-	printf("Path: %s\n", path);
+	//printf("Path: %s\n", path);
 	if (!mini->arg->argv || !mini->arg->argv[0] || !ft_isalnum(mini->arg->argv[0][0]))
 	{
 		ft_memfree(path);
@@ -66,28 +66,31 @@ static void	ft_next_cmd(t_shell *mini)
 	ft_memfree(tmp);
 }
 
-
-
 static void	child_process(t_shell *msh)
 {
-	if (msh->arg->pipe_in != 0 )
+	if (msh->arg->redirs)
+	{
+		if (msh->arg->redirs->fd_in != STDIN_FILENO)
+		{
+			dup2(msh->arg->redirs->fd_in, STDIN_FILENO);
+			close(msh->arg->redirs->fd_in);
+		}
+		if (msh->arg->redirs->fd_out != STDOUT_FILENO)
+		{
+			dup2(msh->arg->redirs->fd_out, STDOUT_FILENO);
+			close(msh->arg->redirs->fd_out);
+		}
+	}
+	if (msh->arg->pipe_in != STDIN_FILENO)
 	{
 		dup2(msh->arg->pipe_in, STDIN_FILENO);
 		close(msh->arg->pipe_in);
 	}
-	if (msh->arg->pipe_out!= 1)
+	if (msh->arg->pipe_out != STDOUT_FILENO)
 	{
 		dup2(msh->arg->pipe_out, STDOUT_FILENO);
 		close(msh->arg->pipe_out);
 	}
-	if (msh->arg->redirs)
-	{
-		if (msh->arg->redirs->fd_in != 0)
-			dup2(msh->arg->redirs->fd_in, STDIN_FILENO);
-		if (msh->arg->redirs->fd_out != 1)
-			dup2(msh->arg->redirs->fd_out, STDOUT_FILENO);
-	}
-
 	if (is_comms(msh))
 		ft_comms(msh);
 	else
@@ -117,9 +120,11 @@ bool	init_pipes(t_shell *mini)
 
 int	close_pipes(t_arg *current, int prev_fd_in)
 {
-	if (current->pipe_out != 1)
+	if (current->pipe_out != STDOUT_FILENO)
 		close(current->pipe_out);
-	if (prev_fd_in != -1 && prev_fd_in != 0)
+	if (current->pipe_in != STDIN_FILENO)
+		close(current->pipe_in);
+	if (prev_fd_in != -1 && prev_fd_in != STDIN_FILENO)
 		close(prev_fd_in);
 	prev_fd_in = current->pipe_in;
 	return (prev_fd_in);
@@ -128,14 +133,16 @@ int	close_pipes(t_arg *current, int prev_fd_in)
 void	execute_pipeline(t_shell *mini)
 {
 	pid_t	pid;
+	pid_t	last_pid;
 	int		prev_fd_in;
 	t_arg	*current;
 
+	last_pid = -1;
 	prev_fd_in = -1;
 	if(!init_pipes(mini))
 		error_message("failed init pipe");
 	current = mini->arg;
-		while (current) //total de listas generadas
+	while (current) //total de listas generadas
 	{
 		pid = fork();
 		if (pid < 0)
@@ -147,9 +154,14 @@ void	execute_pipeline(t_shell *mini)
 			exit(EXIT_FAILURE);
 		}
 		else
+		{
+			last_pid = pid;
 			prev_fd_in = close_pipes(current, prev_fd_in);
+		}
 		current = current->next;
 	}
+	if (last_pid != -1)
+		waitpid(last_pid, &mini->status, 0);
 	while (wait(NULL) > 0)
 		;
 	handle_status(mini);
@@ -195,6 +207,6 @@ void	ft_cmd_exec(t_shell *mini)
 		return ;
 	if (mini->arg && mini->arg->next)
 		execute_pipeline(mini);
-	else
-		execute(mini);	
+	else if (mini->arg && !mini->arg->next)
+		execute(mini);
 }

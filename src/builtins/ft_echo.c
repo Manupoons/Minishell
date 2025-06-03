@@ -6,7 +6,7 @@
 /*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 18:20:50 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/06/02 10:19:36 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/06/03 19:49:03 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,27 +37,27 @@ void	ft_echo(t_shell *mini)
 {
 	int		i;
 	char	*expanded_arg;
+	int		fd;
 
 	mini->status = 0;
 	i = 1;
-	if (mini->arg->argv[i] && !ft_strncmp(mini->arg->argv[i], "-n", 2))
+	if (ft_strcmp(mini->arg->argv[i], "-n") == 0)
 		i++;
-	int fd;
-		fd = 1;
-	if (mini->arg->redirs)
-		fd =  mini->arg->redirs->fd_out;
+	fd = 1;
+	if (mini->arg->redirs && mini->arg->redirs->fd_out != -1)
+		fd = mini->arg->redirs->fd_out;
 	while (mini->arg->argv[i])
 	{
 		if (mini->arg->argv[i][0] == '$')
 			expanded_arg = expand_var(mini->arg->argv[i], mini->env);
 		else
 			expanded_arg = ft_strdup(mini->arg->argv[i]);
-		ft_putstr_fd(expanded_arg, mini->arg->redirs->fd_out);
+		ft_putstr_fd(expanded_arg, fd);
 		ft_memfree(expanded_arg);
 		if (mini->arg->argv[i + 1])
-			ft_putchar_fd(' ', mini->arg->redirs->fd_out);
+			ft_putchar_fd(' ', fd);
 		i++;
 	}
-	if (!(mini->arg->argv[1] && !ft_strncmp(mini->arg->argv[1], "-n", 2)))
+	if (!(mini->arg->argv[1] && ft_strcmp(mini->arg->argv[1], "-n") == 0))
 		ft_putchar_fd('\n', fd);
 }

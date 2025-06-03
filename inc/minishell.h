@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mamaratr <mamaratr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/31 12:15:39 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/06/02 19:01:57 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/06/03 22:21:11 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@
 	\t\t --- \033[1;92mmamaratr\033[0m && \033[1;92mjdorazio\033[0m ---\n\
 	\n")
 
-# define READLINE_MSG "\033[1;36mminishell\033[34m$> \033[0m"
+#define READLINE_MSG "\001\033[1;36m\002minishell\001\033[34m\002$> \001\033[0m\002"
 
 extern int	g_signal;
 typedef struct s_redir t_redir;

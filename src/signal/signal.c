@@ -6,7 +6,7 @@
 /*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 18:58:56 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/05/31 12:12:26 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/06/03 20:44:48 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,41 +14,45 @@
 
 int	g_signal;
 
-static void	handler_heredoc(void)
-{
-	if (g_signal == S_HEREDOC)
-	{
-		ioctl(0, TIOCSTI, '\n');
-		exit(0);
-	}
-	else if (g_signal == S_HEREDOC_CANCEL)
-	{
-		ft_putstr_fd("\n", 1);
-		g_signal = S_HEREDOC_CANCEL;
-	}
-	else if (g_signal == S_BASE || g_signal == S_HEREDOC)
-		g_signal = S_SIGINT;
-}
+// static void	handler_heredoc(void)
+// {
+// 	if (g_signal == S_HEREDOC)
+// 	{
+// 		write(STDOUT_FILENO, "\n", 1);
+// 		exit(0);
+// 	}
+// 	else if (g_signal == S_HEREDOC_CANCEL)
+// 	{
+// 		ft_putstr_fd("\n", 1);
+// 		g_signal = S_HEREDOC_CANCEL;
+// 	}
+// 	else if (g_signal == S_BASE || g_signal == S_HEREDOC)
+// 		g_signal = S_SIGINT;
+// }
 
 static void	sigint_handler(int sig)
 {
 	(void)sig;
-	if (g_signal == S_BASE || g_signal == S_SIGINT)
+	if (g_signal == S_HEREDOC)
 	{
-		rl_on_new_line();
-		rl_redisplay();
 		ft_putstr_fd("\n", 1);
-		rl_replace_line("", 0);
-		rl_on_new_line();
-		rl_redisplay();
+		g_signal = S_HEREDOC_CANCEL;
 	}
 	else if (g_signal == S_CMD)
 	{
 		g_signal = S_SIGINT_CMD;
 		ft_putstr_fd("\n", 1);
 		rl_on_new_line();
+		rl_redisplay();
 	}
-	handler_heredoc();
+	else if (g_signal == S_BASE || g_signal == S_SIGINT)
+	{
+		ft_putstr_fd("\n", 1);
+		rl_replace_line("", 0);
+		rl_on_new_line();
+		rl_redisplay();
+		g_signal = S_SIGINT;
+	}
 }
 
 void	init_signal(void)

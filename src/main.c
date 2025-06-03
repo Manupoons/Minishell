@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jdorazio <jdorazio@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 16:05:08 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/05/29 19:39:28 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/06/03 22:18:39 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ static void	ft_minishell(t_shell *mini, char **envp)
 		if (!line)
 			break ;
 		temp = ft_strtrim(line, " \t\n\v\f\r");  
-		if (temp[0] != '\0')
+		if (temp && *temp)
 			add_history(temp);
 		if (ft_prev_exec(mini, temp))
 			continue;
@@ -37,10 +37,10 @@ static void	ft_minishell(t_shell *mini, char **envp)
 			ft_cmd_exec(mini);
 		ft_memfree(temp);
 		ft_memfree(line);
+		g_signal = S_BASE;
 	}
 	ft_free_env(&mini->env);
 }
-
 
 
 int	ft_prev_exec(t_shell *mini, char *temp)
