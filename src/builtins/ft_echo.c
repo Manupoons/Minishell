@@ -38,10 +38,13 @@ void	ft_echo(t_shell *mini)
 	int		i;
 	char	*expanded_arg;
 
-	i = 1;
 	mini->status = 0;
+	i = 1;
 	if (mini->arg->argv[i] && !ft_strncmp(mini->arg->argv[i], "-n", 2))
 		i++;
+	fd = 1;
+	if (mini->arg->redirs)
+		fd =  mini->arg->redirs->fd_out;
 	while (mini->arg->argv[i])
 	{
 		if (mini->arg->argv[i][0] == '$')
@@ -55,5 +58,5 @@ void	ft_echo(t_shell *mini)
 		i++;
 	}
 	if (!(mini->arg->argv[1] && !ft_strncmp(mini->arg->argv[1], "-n", 2)))
-		ft_putchar_fd('\n', mini->parser->fd_out);
+		ft_putchar_fd('\n', fd);
 }

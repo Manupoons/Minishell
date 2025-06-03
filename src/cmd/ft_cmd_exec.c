@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_cmd_exec.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mamaratr <mamaratr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jdorazio <jdorazio@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 19:14:03 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/05/29 18:15:08 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/06/02 20:05:11 by jdorazio         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,16 @@ static void	run_cmd(t_shell *mini)
 	char	**envp;
 
 	envp = ft_env_to_array(mini);
-	if (mini->parser->fd_in != 0)
-		dup2(mini->parser->fd_in, STDIN_FILENO);
-	if (mini->parser->fd_out != 1)
-		dup2(mini->parser->fd_out, STDOUT_FILENO);
+	if (mini->arg->redirs)
+	{
+		if (mini->arg->redirs->fd_in != 0)
+			dup2(mini->arg->redirs->fd_in, STDIN_FILENO);
+		if (mini->arg->redirs->fd_out != 1)
+			dup2(mini->arg->redirs->fd_out, STDOUT_FILENO);
+	}
 	path = ft_get_path(mini->arg->argv[0], mini->env);
-	if (!ft_isalnum(mini->arg->argv[0][0]))
+	printf("Path: %s\n", path);
+	if (!mini->arg->argv || !mini->arg->argv[0] || !ft_isalnum(mini->arg->argv[0][0]))
 	{
 		ft_memfree(path);
 		path = mini->arg->argv[0];
@@ -42,52 +46,155 @@ static void	handle_status(t_shell *mini)
 
 static void	ft_next_cmd(t_shell *mini)
 {
-	t_parser	*next;
+	t_redir	*next;
+	t_arg	*tmp;
 
-	ft_memfree(mini->parser->cmd);
 	ft_memfree_all(mini->arg->argv);
-	if (mini->parser->fd_in != 0)
-		close(mini->parser->fd_in);
-	if (mini->parser->fd_out != 1)
-		close(mini->parser->fd_out);
-	next = mini->parser;
-	mini->parser = mini->parser->next;
-	ft_memfree(next);
+	if (mini->arg->redirs)
+	{
+		ft_memfree(mini->arg->redirs->cmd);
+		if (mini->arg->redirs->fd_in != 0)
+			close(mini->arg->redirs->fd_in);
+		if (mini->arg->redirs->fd_out != 1)
+			close(mini->arg->redirs->fd_out);
+		next = mini->arg->redirs;
+		mini->arg->redirs = mini->arg->redirs->next;
+		ft_memfree(next);
+	}
+	tmp = mini->arg;
+	mini->arg = mini->arg->next;
+	ft_memfree(tmp);
 }
 
-static void	child_proccess(t_shell *msh)
+
+
+static void	child_process(t_shell *msh)
 {
+	if (msh->arg->pipe_in != 0 )
+	{
+		dup2(msh->arg->pipe_in, STDIN_FILENO);
+		close(msh->arg->pipe_in);
+	}
+	if (msh->arg->pipe_out!= 1)
+	{
+		dup2(msh->arg->pipe_out, STDOUT_FILENO);
+		close(msh->arg->pipe_out);
+	}
+	if (msh->arg->redirs)
+	{
+		if (msh->arg->redirs->fd_in != 0)
+			dup2(msh->arg->redirs->fd_in, STDIN_FILENO);
+		if (msh->arg->redirs->fd_out != 1)
+			dup2(msh->arg->redirs->fd_out, STDOUT_FILENO);
+	}
+
 	if (is_comms(msh))
 		ft_comms(msh);
 	else
 		run_cmd(msh);
+	exit(127); // safety exit if exec fails
 }
 
-void	ft_cmd_exec(t_shell *mini)
+bool	init_pipes(t_shell *mini)
+{
+	t_arg	*current;
+	int		pipefd[2];
+
+	current = mini->arg;
+	if (!current || !current->next)
+		return (true);  // no piping needed
+	while(current && current->next)
+	{
+		if (pipe(pipefd) < 0)
+			return (false);
+		current->pipe_out = pipefd[1];
+		current->next->pipe_in = pipefd[0];
+		current = current->next;
+	}
+	return (true);
+}
+
+
+int	close_pipes(t_arg *current, int prev_fd_in)
+{
+	if (current->pipe_out != 1)
+		close(current->pipe_out);
+	if (prev_fd_in != -1 && prev_fd_in != 0)
+		close(prev_fd_in);
+	prev_fd_in = current->pipe_in;
+	return (prev_fd_in);
+}
+
+void	execute_pipeline(t_shell *mini)
 {
 	pid_t	pid;
+	int		prev_fd_in;
+	t_arg	*current;
 
-	if (!mini || !mini->parser || !mini->arg)
-		return ;
-	while (mini->parser)
+	prev_fd_in = -1;
+	if(!init_pipes(mini))
+		error_message("failed init pipe");
+	current = mini->arg;
+		while (current) //total de listas generadas
 	{
-		if (!ft_isascii(mini->parser->cmd[0]))
+		pid = fork();
+		if (pid < 0)
+			error_message("error creating fork");
+		if (pid == 0)
 		{
-			mini->status = 1;
-			break ;
+			mini->arg = current;
+			child_process(mini);
+			exit(EXIT_FAILURE);
 		}
-		mini->arg->argv = shell_split(mini, mini->parser->cmd, ' ');
+		else
+			prev_fd_in = close_pipes(current, prev_fd_in);
+		current = current->next;
+	}
+	while (wait(NULL) > 0)
+		;
+	handle_status(mini);
+	ft_next_cmd(mini);
+}
+
+void	execute(t_shell *mini)
+{
+	pid_t pid;
+	
+	while (mini->arg)
+	{
+		if (mini->arg->redirs)
+		{
+			if (!mini->arg->redirs->cmd || !mini->arg->redirs->cmd[0] || !ft_isascii(mini->arg->redirs->cmd[0]))
+			{
+				mini->status = 1;
+				break;
+			}
+		}
 		if (is_comms(mini))
 			ft_comms(mini);
 		else
 		{
-			pid = fork();
-			if (pid == 0)
-				child_proccess(mini);
+			pid = fork(); // lo necesitamos porque llama a child y mantiene en espere el proceso de reinicir Shell
+			 if (pid < 0)
+			 	error_message("failed to fork\n");
+			 if (pid == 0)
+				child_process(mini);
 			else
-				waitpid(-1, &mini->status, 0);
+				waitpid(pid, &mini->status, 0);
 			handle_status(mini);
 		}
 		ft_next_cmd(mini);
 	}
+}
+
+
+void	ft_cmd_exec(t_shell *mini)
+{
+	//printf("entering ft_cmd_execc\n");
+	if (!mini || !mini->arg)
+		return ;
+	if (mini->arg && mini->arg->next)
+		execute_pipeline(mini);
+	else
+		execute(mini);	
 }

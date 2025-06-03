@@ -6,7 +6,7 @@
 /*   By: mamaratr <mamaratr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 17:41:35 by jdorazio          #+#    #+#             */
-/*   Updated: 2025/06/02 18:59:31 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/05/29 19:40:25 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ int	handle_space(char *input, int i)
 	return (i);
 }
 
-int	handle_quoted_token(char *input, t_token **token_list,  int i)
+int handle_quoted_token(char *input, t_token **token_list,  int i)
 {
 	char	*str;
 	char	quote;
@@ -61,6 +61,12 @@ int	handle_operator(char *input, t_token **token_list,  int i)
 	return (0);
 }
 
+int	is_space(char c)
+{
+	return (c == ' ' || c == '\t' || c == '\n'
+		|| c == '\r' || c == '\v' || c == '\f');
+}
+
 int	handle_word(char *input, t_token **token_list, int i) // for echo
 {
 	int		start;
@@ -68,7 +74,8 @@ int	handle_word(char *input, t_token **token_list, int i) // for echo
 	char	*str;
 
 	start = i;
-	while (input[i] && !(is_quotes(input[i])) && !(is_operator((input[i]))))
+	while (input[i] && !(is_quotes(input[i])) && !(is_operator((input[i]))) &&
+			(!is_space(input[i])))
 		i++;
 	len = i - start;
 	str = malloc(len + 1);
@@ -86,13 +93,16 @@ t_token	*tokenizer(char *input)
 	int	i;
 	int	count;
 
-	i = 0;
+    i = 0;
     token_list = NULL;
 	while (input[i])
 	{
 		i = handle_space(input, i);
 		if (!input[i])
+		{
+			printf("Exiting if enter\n");
 			break ;
+		}
 		if (is_quotes(input[i]))
 			count = handle_quoted_token(input, &token_list, i);
 		else if (is_operator(input[i]))
