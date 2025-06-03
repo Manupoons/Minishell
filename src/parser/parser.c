@@ -26,16 +26,16 @@ t_arg   *init_arg(int count)
 
     arg_list = malloc(sizeof(t_arg));
     if (!arg_list)
-        error_message("failed to alloc mem");
+        return (NULL);
     arg_list->args_count = count;
     arg_list->argv =  malloc(sizeof(char *) * (arg_list->args_count + 1));
     if (!arg_list->argv)
-        error_message("failed to alloc mem");
+        return (NULL);
     arg_list->argv[count] = NULL;
+    arg_list->pipe_in = 0;
+    arg_list->pipe_out = 1;
+    arg_list->redirs = NULL;
     arg_list->next = NULL;
-    if (!arg_list)
-        arg_list->prev = NULL;
-    arg_list->prev = arg_list;
     return (arg_list);    
 }
 
@@ -76,7 +76,8 @@ t_arg   *parse_tokens(t_token *tokens)
             index += handle_word_token(curr_arg, curr_token->token, index);
         else if (curr_token->type == TOKEN_PIPE)
             curr_arg = handle_pipe_token(curr_arg, curr_token->next, &index);
-        else
+        else if (curr_token->type == TOKEN_REDIR_IN || curr_token->type == TOKEN_REDIR_OUT
+        || curr_token->type == TOKEN_APPEND || curr_token->type == TOKEN_HEREDOC)
             handle_redir_token(curr_arg, curr_token);
         curr_token = curr_token->next;
     }
@@ -126,10 +127,10 @@ void    handle_redir_token(t_arg *curr_arg, t_token *token)
     else if (redir->type == TOKEN_REDIR_OUT || redir->type == TOKEN_APPEND)
         redir->fd_out = 1;
     redir->next = NULL;
-    printf("Adding redirection:\n");
-    printf("  Type: %d\n", redir->type);
-    printf("  Filename: %s\n", redir->cmd);
-    printf("  fd_in: %d, fd_out: %d\n", redir->fd_in, redir->fd_out);
+    // printf("Adding redirection:\n");
+    // printf("  Type: %d\n", redir->type);
+    // printf("  Filename: %s\n", redir->cmd);
+    // printf("  fd_in: %d, fd_out: %d\n", redir->fd_in, redir->fd_out);
     append_to_parser(&(curr_arg->redirs), redir);
 }
 
@@ -142,7 +143,7 @@ void    append_to_parser(t_redir **head, t_redir *redir)
         return ;
     if (!*head)
     {
-        printf("Initializing parser list with: %s\n", redir->cmd);
+        //printf("Initializing parser list with: %s\n", redir->cmd);
         *head = redir;
     }
     else
@@ -152,5 +153,5 @@ void    append_to_parser(t_redir **head, t_redir *redir)
             tmp = tmp->next;
         tmp->next =  redir; 
     }
-    printf("append to parser\n");
+    //printf("append to parser\n");
 }
