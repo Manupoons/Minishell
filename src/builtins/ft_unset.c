@@ -6,7 +6,7 @@
 /*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 12:09:06 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/06/02 10:15:04 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/06/04 16:02:44 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void	ft_unset(t_shell *mini)
 	while (mini->arg->argv[++i])
 	{
 		name = mini->arg->argv[i];
-		if(!check_export(name))
+		if (!check_export(name))
 		{
 			mini->status = 1;
 			continue ;

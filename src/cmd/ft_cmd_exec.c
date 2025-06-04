@@ -6,7 +6,7 @@
 /*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 19:14:03 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/06/03 22:05:39 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/06/04 16:09:14 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,8 @@ static void	run_cmd(t_shell *mini)
 	}
 	path = ft_get_path(mini->arg->argv[0], mini->env);
 	//printf("Path: %s\n", path);
-	if (!mini->arg->argv || !mini->arg->argv[0] || !ft_isalnum(mini->arg->argv[0][0]))
+	if (!mini->arg->argv || !mini->arg->argv[0]
+		|| !ft_isalnum(mini->arg->argv[0][0]))
 	{
 		ft_memfree(path);
 		path = mini->arg->argv[0];
@@ -105,8 +106,8 @@ bool	init_pipes(t_shell *mini)
 
 	current = mini->arg;
 	if (!current || !current->next)
-		return (true);  // no piping needed
-	while(current && current->next)
+		return (true); // no piping needed
+	while (current && current->next)
 	{
 		if (pipe(pipefd) < 0)
 			return (false);
@@ -116,7 +117,6 @@ bool	init_pipes(t_shell *mini)
 	}
 	return (true);
 }
-
 
 int	close_pipes(t_arg *current, int prev_fd_in)
 {
@@ -139,7 +139,7 @@ void	execute_pipeline(t_shell *mini)
 
 	last_pid = -1;
 	prev_fd_in = -1;
-	if(!init_pipes(mini))
+	if (!init_pipes(mini))
 		error_message("failed init pipe");
 	current = mini->arg;
 	while (current) //total de listas generadas
@@ -170,16 +170,17 @@ void	execute_pipeline(t_shell *mini)
 
 void	execute(t_shell *mini)
 {
-	pid_t pid;
-	
+	pid_t	pid;
+
 	while (mini->arg)
 	{
 		if (mini->arg->redirs)
 		{
-			if (!mini->arg->redirs->cmd || !mini->arg->redirs->cmd[0] || !ft_isascii(mini->arg->redirs->cmd[0]))
+			if (!mini->arg->redirs->cmd || !mini->arg->redirs->cmd[0]
+				|| !ft_isascii(mini->arg->redirs->cmd[0]))
 			{
 				mini->status = 1;
-				break;
+				break ;
 			}
 		}
 		if (is_comms(mini))
@@ -187,9 +188,9 @@ void	execute(t_shell *mini)
 		else
 		{
 			pid = fork(); // lo necesitamos porque llama a child y mantiene en espere el proceso de reinicir Shell
-			 if (pid < 0)
-			 	error_message("failed to fork\n");
-			 if (pid == 0)
+			if (pid < 0)
+				error_message("failed to fork\n");
+			if (pid == 0)
 				child_process(mini);
 			else
 				waitpid(pid, &mini->status, 0);
@@ -198,7 +199,6 @@ void	execute(t_shell *mini)
 		ft_next_cmd(mini);
 	}
 }
-
 
 void	ft_cmd_exec(t_shell *mini)
 {

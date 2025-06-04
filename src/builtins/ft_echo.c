@@ -6,7 +6,7 @@
 /*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 18:20:50 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/06/03 19:49:03 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/06/04 16:03:09 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,8 @@ char	*get_env_value_by_name(t_env *env, const char *name)
 
 char	*expand_var(char *arg, t_env *env)
 {
-	char *var_name;
-	
+	char	*var_name;
+
 	if (arg[0] != '$' || !arg[1])
 		return (ft_strdup(arg)); // Not a variable or just "$"
 	var_name = arg + 1; // skip '$'

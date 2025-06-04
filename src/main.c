@@ -6,7 +6,7 @@
 /*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 16:05:08 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/06/03 22:18:39 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/06/04 16:05:22 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,11 +28,11 @@ static void	ft_minishell(t_shell *mini, char **envp)
 		line = readline(READLINE_MSG);
 		if (!line)
 			break ;
-		temp = ft_strtrim(line, " \t\n\v\f\r");  
+		temp = ft_strtrim(line, " \t\n\v\f\r");
 		if (temp && *temp)
 			add_history(temp);
 		if (ft_prev_exec(mini, temp))
-			continue;
+			continue ;
 		if (g_signal != S_HEREDOC_CANCEL)
 			ft_cmd_exec(mini);
 		ft_memfree(temp);
@@ -41,7 +41,6 @@ static void	ft_minishell(t_shell *mini, char **envp)
 	}
 	ft_free_env(&mini->env);
 }
-
 
 int	ft_prev_exec(t_shell *mini, char *temp)
 {
@@ -56,12 +55,6 @@ int	ft_prev_exec(t_shell *mini, char *temp)
 	return (0);
 }
 
-
-//cat input.txt | grep error > output.log >> full.log | wc -l
-
-// For extra: cat input.txt | grep "error" > output.log >> full.log && echo Done
-
-
 int	main(int argc, char **argv, char **envp)
 {
 	t_shell	mini;
@@ -73,3 +66,6 @@ int	main(int argc, char **argv, char **envp)
 	ft_minishell(&mini, envp);
 	return (EXIT_SUCCESS);
 }
+
+//cat input.txt | grep error > output.log >> full.log | wc -l
+// For extra: cat input.txt | grep "error" > output.log >> full.log && echo Done

@@ -6,7 +6,7 @@
 /*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/31 12:15:39 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/06/03 22:21:11 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/06/04 15:56:03 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,9 +103,9 @@ typedef struct s_redir
 
 typedef struct s_env
 {
-	char *env_name;     // nombre de la variable
-	char *env_value;    // valor de la variable
-	struct s_env *next; //  siguiente elemento en la lista
+	char			*env_name;     // nombre de la variable
+	char			*env_value;    // valor de la variable
+	struct s_env	*next; //  siguiente elemento en la lista
 }	t_env;
 
 typedef struct s_shell
@@ -127,8 +127,8 @@ void	print_banner(void);
 
 
 //  ###--- HEADER ---### 
-int ft_isspace(char c);
-int is_quotes(char c);
+int		ft_isspace(char c);
+int		is_quotes(char c);
 //  ###--------------### 
 
 //  ###--- ERROR_HANDLER ---### 
@@ -145,21 +145,21 @@ t_token	*tokenizer(char *input);
 //  ###--------------### 
 
 //  ###--- TOKENIZER_UTILS ---### 
-int     is_quotes(char c);
-int     is_operator(char c);
-void    add_token(char *input, t_token **token_list, t_token_type type);
+int		is_quotes(char c);
+int		is_operator(char c);
+void	add_token(char *input, t_token **token_list, t_token_type type);
 //  ###--------------### 
 
 
 
 //  ###--- PARSER ---###
-int word_counter(t_token *tokens);
-t_arg   *init_arg(int count);
-t_arg   *parse_tokens(t_token *token_list);
-int handle_word_token(t_arg *arg, char *token, int index);
-t_arg   *handle_pipe_token(t_arg *curr_arg, t_token *next_tokens, int *index);
-void    handle_redir_token(t_arg *curr_arg, t_token *token);
-void    append_to_parser(t_redir **head, t_redir *redir);
+int		word_counter(t_token *tokens);
+t_arg	*init_arg(int count);
+t_arg	*parse_tokens(t_token *token_list);
+int		handle_word_token(t_arg *arg, char *token, int index);
+t_arg	*handle_pipe_token(t_arg *curr_arg, t_token *next_tokens, int *index);
+void	handle_redir_token(t_arg *curr_arg, t_token *token);
+void	append_to_parser(t_redir **head, t_redir *redir);
 
 //  ###--------------### 
 
