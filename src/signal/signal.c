@@ -3,32 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   signal.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: mamaratr <mamaratr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 18:58:56 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/06/03 20:44:48 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/06/04 19:14:24 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./minishell.h"
 
 int	g_signal;
-
-// static void	handler_heredoc(void)
-// {
-// 	if (g_signal == S_HEREDOC)
-// 	{
-// 		write(STDOUT_FILENO, "\n", 1);
-// 		exit(0);
-// 	}
-// 	else if (g_signal == S_HEREDOC_CANCEL)
-// 	{
-// 		ft_putstr_fd("\n", 1);
-// 		g_signal = S_HEREDOC_CANCEL;
-// 	}
-// 	else if (g_signal == S_BASE || g_signal == S_HEREDOC)
-// 		g_signal = S_SIGINT;
-// }
 
 static void	sigint_handler(int sig)
 {

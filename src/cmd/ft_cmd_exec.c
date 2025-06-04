@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_cmd_exec.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: mamaratr <mamaratr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 19:14:03 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/06/04 16:09:14 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/06/04 19:26:11 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,10 @@ static void	run_cmd(t_shell *mini)
 		ft_memfree(path);
 		path = mini->arg->argv[0];
 	}
+	if (!path)
+		exit(127);
 	execve(path, mini->arg->argv, envp);
+	perror("execve");
 	exit(127);
 }
 

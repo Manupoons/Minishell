@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: mamaratr <mamaratr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/31 12:15:39 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/06/04 16:49:47 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/06/04 19:15:28 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,6 @@
 #define READLINE_MSG "\001\033[1;36m\002minishell\001\033[34m\002$> \001\033[0m\002"
 
 extern int	g_signal;
-typedef struct s_redir t_redir;
 
 typedef enum e_signal
 {
@@ -80,6 +79,14 @@ typedef struct s_token
 	struct s_token	*next; // para recorrer lista
 }	t_token;
 
+typedef struct s_redir
+{
+	char			*cmd; // línea de entrada del usuario
+	int				fd_in; 
+	int				fd_out;
+	int				type; // redirection type
+	struct s_redir	*next; // estado de salida del comando
+}	t_redir;
 
 typedef struct s_arg
 {
@@ -91,15 +98,6 @@ typedef struct s_arg
 	struct s_arg	*next; // para manejar pipelines (|) entre comandos
 	struct s_arg	*prev; // para controlar previo a pipes
 }	t_arg;
-
-typedef struct s_redir 
-{
-	char			*cmd; // línea de entrada del usuario
-	int				fd_in; 
-	int				fd_out;
-	int				type; // redirection type
-	struct s_redir	*next; // estado de salida del comando
-}	t_redir;
 
 typedef struct s_env
 {
@@ -117,14 +115,9 @@ typedef struct s_shell
 	t_env		*env; // lista de variables de entorno
 }	t_shell;
 
-//  ###--- MAIN ---###
-//void    ft_minishell(t_shell *mini);
-//  ###--------------### 
-
 //  ###--- HEADER ---### 
 void	print_banner(void);
 //  ###-------------### 
-
 
 //  ###--- HEADER ---### 
 int		ft_isspace(char c);
@@ -134,7 +127,6 @@ int		is_quotes(char c);
 //  ###--- ERROR_HANDLER ---### 
 void	error_message(char *str);
 //  ###--------------### 
-
 
 //  ###--- TOKENIZER ---###
 int		handle_space(char *input, int i);
@@ -154,10 +146,10 @@ void	add_token(char *input, t_token **token_list, t_token_type type);
 
 //  ###--- PARSER ---###
 int		word_counter(t_token *tokens);
-t_arg	*init_arg(int count);
-t_arg	*parse_tokens(t_token *token_list);
 int		handle_word_token(t_arg *arg, char *token, int index);
 t_arg	*handle_pipe_token(t_arg *curr_arg, t_token *next_tokens, int *index);
+t_arg	*init_arg(int count);
+t_arg	*parse_tokens(t_token *token_list);
 void	handle_redir_token(t_arg *curr_arg, t_token *token);
 void	append_to_parser(t_redir **head, t_redir *redir);
 
@@ -196,12 +188,9 @@ void	add_arg_to_env(char *var, t_shell *mini);
 void	init_signal(void);
 int		check_export(char *argv);
 
-
-int	ft_prev_exec(t_shell *mini, char *temp);
-
 // DEBUGGIN
-void print_parser(t_arg *head);
-void print_tokens(t_token *tokens);
+void	print_parser(t_arg *head);
+void	print_tokens(t_token *tokens);
 
 void	free_args(t_arg *args);
 void	free_tokens(t_token *tokens);
