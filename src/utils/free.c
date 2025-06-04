@@ -6,7 +6,7 @@
 /*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 13:16:16 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/05/31 12:10:06 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/06/04 16:47:57 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,4 +40,52 @@ void	ft_free_list(t_env **env)
 		*env = temp;
 	}
 	*env = NULL;
+}
+
+void	free_tokens(t_token *tokens)
+{
+	t_token	*tmp;
+	
+	while (tokens)
+	{
+		tmp = tokens->next;
+		free(tokens->token); // free token string
+		free(tokens);
+		tokens = tmp;
+	}
+}
+
+void	free_redirs(t_redir *redirs)
+{
+	t_redir	*tmp;
+	
+	while (redirs)
+	{
+		tmp = redirs->next;
+		free(redirs->cmd);
+		free(redirs);
+		redirs = tmp;
+	}
+}
+
+void	free_args(t_arg *args)
+{
+	t_arg	*tmp;
+	int		i;
+
+	while (args)
+	{
+		tmp = args->next;
+		// Free argv strings
+		for (i = 0; i < args->args_count; i++)
+			free(args->argv[i]);
+		free(args->argv);
+
+		// Free redirections
+		if (args->redirs)
+			free_redirs(args->redirs);
+
+		free(args);
+		args = tmp;
+	}
 }

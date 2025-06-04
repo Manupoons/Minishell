@@ -6,7 +6,7 @@
 /*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/31 12:15:39 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/06/04 15:56:03 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/06/04 16:49:47 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -203,6 +203,9 @@ int	ft_prev_exec(t_shell *mini, char *temp);
 void print_parser(t_arg *head);
 void print_tokens(t_token *tokens);
 
+void	free_args(t_arg *args);
+void	free_tokens(t_token *tokens);
+void	free_redirs(t_redir *redirs);
 
 
 #endif

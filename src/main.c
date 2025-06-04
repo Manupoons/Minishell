@@ -6,7 +6,7 @@
 /*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 16:05:08 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/06/04 16:05:22 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/06/04 16:49:07 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,24 +21,65 @@ static void	ft_minishell(t_shell *mini, char **envp)
 	mini->env = NULL;
 	mini->arg = NULL;
 	ft_lst_env_init(&mini->env, envp);
+	// while (1)
+	// {
+	// 	if (g_signal == S_SIGINT)
+	// 		mini->status = 1;
+	// 	line = readline(READLINE_MSG);
+	// 	if (!line)
+	// 		break ;
+	// 	temp = ft_strtrim(line, " \t\n\v\f\r");
+	// 	if (temp && *temp)
+	// 		add_history(temp);
+	// 	if (ft_prev_exec(mini, temp))
+	// 	{
+	// 		ft_memfree(temp);
+	// 		ft_memfree(line);
+	// 		continue ;
+	// 	}
+	// 	if (g_signal != S_HEREDOC_CANCEL)
+	// 		ft_cmd_exec(mini);
+	// 	ft_memfree(temp);
+	// 	ft_memfree(line);
+	// 	g_signal = S_BASE;
+	// }
 	while (1)
 	{
 		if (g_signal == S_SIGINT)
 			mini->status = 1;
 		line = readline(READLINE_MSG);
 		if (!line)
-			break ;
+			break;
 		temp = ft_strtrim(line, " \t\n\v\f\r");
 		if (temp && *temp)
 			add_history(temp);
+		// === HERE: before parsing a new command, free old tokens and args ===
+		if (mini->tokens)
+		{
+			free_tokens(mini->tokens);
+			mini->tokens = NULL;
+		}
+		if (mini->arg)
+		{
+			free_args(mini->arg);
+			mini->arg = NULL;
+		}
 		if (ft_prev_exec(mini, temp))
-			continue ;
+		{
+			ft_memfree(temp);
+			ft_memfree(line);
+			continue;
+		}
 		if (g_signal != S_HEREDOC_CANCEL)
 			ft_cmd_exec(mini);
 		ft_memfree(temp);
 		ft_memfree(line);
 		g_signal = S_BASE;
 	}
+	if (mini->tokens)
+		free_tokens(mini->tokens);
+	if (mini->arg)
+		free_args(mini->arg);
 	ft_free_env(&mini->env);
 }
 
