@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenizer.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mamaratr <mamaratr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 17:41:35 by jdorazio          #+#    #+#             */
-/*   Updated: 2025/05/29 19:40:25 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/06/04 16:12:32 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ int	handle_space(char *input, int i)
 	return (i);
 }
 
-int handle_quoted_token(char *input, t_token **token_list,  int i)
+int	handle_quoted_token(char *input, t_token **token_list, int i)
 {
 	char	*str;
 	char	quote;
@@ -42,7 +42,7 @@ int handle_quoted_token(char *input, t_token **token_list,  int i)
 	return (j - i + 1);
 }
 
-int	handle_operator(char *input, t_token **token_list,  int i)
+int	handle_operator(char *input, t_token **token_list, int i)
 {
 	if (input[i] == '|')
 		return (add_token("|", token_list, TOKEN_PIPE), 1);
@@ -74,8 +74,8 @@ int	handle_word(char *input, t_token **token_list, int i) // for echo
 	char	*str;
 
 	start = i;
-	while (input[i] && !(is_quotes(input[i])) && !(is_operator((input[i]))) &&
-			(!is_space(input[i])))
+	while (input[i] && !(is_quotes(input[i])) && !(is_operator((input[i])))
+		&& (!is_space(input[i])))
 		i++;
 	len = i - start;
 	str = malloc(len + 1);
@@ -83,18 +83,18 @@ int	handle_word(char *input, t_token **token_list, int i) // for echo
 		error_message("failed to alloc mem.");
 	ft_strlcpy(str, input + start, len + 1);
 	add_token(str, token_list, TOKEN_WORD);
-    free(str);
+	free(str);
 	return (len);
 }
 
 t_token	*tokenizer(char *input)
 {
-    t_token *token_list;
-	int	i;
-	int	count;
+	t_token	*token_list;
+	int		i;
+	int		count;
 
-    i = 0;
-    token_list = NULL;
+	i = 0;
+	token_list = NULL;
 	while (input[i])
 	{
 		i = handle_space(input, i);
@@ -111,5 +111,5 @@ t_token	*tokenizer(char *input)
 			count = handle_word(input, &token_list, i);
 		i += count;
 	}
-    return (token_list);
+	return (token_list);
 }
