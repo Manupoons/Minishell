@@ -50,10 +50,7 @@ static void	ft_next_cmd(t_shell *mini)
 	t_redir	*next;
 	t_arg	*tmp;
 
-	printf("check aqui\n");
 	ft_memfree_all(mini->arg->argv);
-	printf("check MAL\n");
-
 	if (mini->arg->redirs)
 	{
 		ft_memfree(mini->arg->redirs->cmd);
@@ -87,22 +84,10 @@ bool	has_stdout_redirection(t_redir *redir)
 }
 
 
-static void	child_process(t_shell *msh)
-{	
-	// SECCION SE PUEDE MODULIZAR
+static void	execute_redir(t_shell *msh)
+{
 	t_redir	*redir;
 
-	if (msh->arg->pipe_in != STDIN_FILENO)
-	{
-		dup2(msh->arg->pipe_in, STDIN_FILENO);
-		close(msh->arg->pipe_in);
-	}
-	if ((msh->arg->pipe_out != STDOUT_FILENO)
-	&& !has_stdout_redirection(msh->arg->redirs))
-	{
-		dup2(msh->arg->pipe_out, STDOUT_FILENO);
-		close(msh->arg->pipe_out);
-	}
 	redir = msh->arg->redirs;
 	while (redir)
 	{
@@ -114,7 +99,6 @@ static void	child_process(t_shell *msh)
 		}
 		if (redir->type == TOKEN_REDIR_OUT || redir->type == TOKEN_APPEND)
 		{
-			printf("Duplicando redir: fd_out=%d → STDOUT_FILENO=%d\n", redir->fd_out, STDOUT_FILENO);
 			if (dup2(redir->fd_out, STDOUT_FILENO) == -1)
 				perror("dup2 redir out");
 			close(redir->fd_out);
@@ -122,14 +106,25 @@ static void	child_process(t_shell *msh)
 		}
 		redir = redir->next;
 	}
-	// HASTA AQUI
-	printf("validación %s\n", msh->arg->argv[0]);
+}
 
-	if (is_comms(msh))
+
+static void	child_process(t_shell *msh)
+{	
+	if (msh->arg->pipe_in != STDIN_FILENO)
 	{
-		printf("validación %s\n", msh->arg->argv[0]);
-		ft_comms(msh); 
+		dup2(msh->arg->pipe_in, STDIN_FILENO);
+		close(msh->arg->pipe_in);
 	}
+	if ((msh->arg->pipe_out != STDOUT_FILENO)
+	&& !has_stdout_redirection(msh->arg->redirs))
+	{
+		dup2(msh->arg->pipe_out, STDOUT_FILENO);
+		close(msh->arg->pipe_out);
+	}
+	execute_redir(msh);
+	if (is_comms(msh))
+		ft_comms(msh); 
 	else
 		run_cmd(msh);
 	exit(127); // safety exit if exec fails
@@ -184,9 +179,8 @@ void	execute_redir_token(t_arg *args)
 			if (redir->fd_out == -1)
 				perror("open redir out failed");
 		}
-			
 		if (redir->type == TOKEN_APPEND)
-			redir->fd_out = open(redir->cmd, O_WRONLY| O_CREAT | O_TRUNC, 0777);
+			redir->fd_out = open(redir->cmd, O_WRONLY| O_CREAT | O_APPEND, 0777);
 		if (redir->type == TOKEN_HEREDOC)
 			redir->fd_in = open(redir->cmd, O_RDONLY);
 		redir = redir->next;	
@@ -206,11 +200,9 @@ void	execute_pipeline(t_shell *mini)
 	if (!init_pipes(mini))
 		error_message("failed init pipe");
 	current = mini->arg;
-	while (current) //total de listas generadas
+	while (current)
 	{
-		printf("starting execute\n");
 		execute_redir_token(current);
-		printf("breaking here\n");
 		pid = fork();
 		if (pid < 0)
 			error_message("error creating fork");
@@ -233,7 +225,6 @@ void	execute_pipeline(t_shell *mini)
 		;
 	handle_status(mini);
 	ft_next_cmd(mini);
-	printf("pasa por aqui\n");
 }
 
 void	execute(t_shell *mini)
@@ -271,10 +262,8 @@ void	execute(t_shell *mini)
 
 void	ft_cmd_exec(t_shell *mini)
 {
-	printf("entering ft_cmd_execc\n");
-	if (!mini || !mini->arg)
+	if (!mini->arg)
 		return ;
-	printf("algun if\n");
 	if (mini->arg && (mini->arg->next || mini->arg->redirs)) //forzando la entrada a este if
 		execute_pipeline(mini);
 	else if (mini->arg && !mini->arg->next)
