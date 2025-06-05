@@ -65,7 +65,13 @@ int	count_pipes(t_shell *mini)
 		i++;
 		current = current->next;
 	}
-	return (i - 1); // return (N - 1). We always have at least 1 pipe		
+	return (i - 1);
+}
+
+int	is_redir(int type)
+{
+	return (type == TOKEN_REDIR_IN || type == TOKEN_REDIR_OUT
+			|| type == TOKEN_APPEND || type == TOKEN_HEREDOC);
 }
 
 t_arg	*parse_tokens(t_token *tokens)
@@ -90,11 +96,11 @@ t_arg	*parse_tokens(t_token *tokens)
 			index += handle_word_token(curr_arg, curr_token->token, index);
 		else if (curr_token->type == TOKEN_PIPE)
 			curr_arg = handle_pipe_token(curr_arg, curr_token->next, &index);
-		else if (curr_token->type == TOKEN_REDIR_IN
-			|| curr_token->type == TOKEN_REDIR_OUT
-			|| curr_token->type == TOKEN_APPEND
-			|| curr_token->type == TOKEN_HEREDOC)
+		else if (is_redir(curr_token->type))
+		{
 			handle_redir_token(curr_arg, curr_token);
+			curr_token = curr_token->next; // hacemos un doble salto porque sería ">" y archivo
+		}
 		curr_token = curr_token->next;
 	}
 	return (head_arg);
@@ -142,10 +148,6 @@ void	handle_redir_token(t_arg *curr_arg, t_token *token)
 	else if (redir->type == TOKEN_REDIR_OUT || redir->type == TOKEN_APPEND)
 		redir->fd_out = 1;
 	redir->next = NULL;
-	// printf("Adding redirection:\n");
-	// printf("  Type: %d\n", redir->type);
-	// printf("  Filename: %s\n", redir->cmd);
-	// printf("  fd_in: %d, fd_out: %d\n", redir->fd_in, redir->fd_out);
 	append_to_parser(&(curr_arg->redirs), redir);
 }
 
@@ -156,10 +158,7 @@ void	append_to_parser(t_redir **head, t_redir *redir)
 	if (!redir)
 		return ;
 	if (!*head)
-	{
-		//printf("Initializing parser list with: %s\n", redir->cmd);
 		*head = redir;
-	}
 	else
 	{
 		tmp = *head;
@@ -167,5 +166,4 @@ void	append_to_parser(t_redir **head, t_redir *redir)
 			tmp = tmp->next;
 		tmp->next = redir;
 	}
-	//printf("append to parser\n");
 }
