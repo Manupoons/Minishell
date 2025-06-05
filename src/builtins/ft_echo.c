@@ -37,27 +37,23 @@ void	ft_echo(t_shell *mini)
 {
 	int		i;
 	char	*expanded_arg;
-	int		fd;
 
 	mini->status = 0;
 	i = 1;
 	if (ft_strcmp(mini->arg->argv[i], "-n") == 0)
 		i++;
-	fd = 1;
-	if (mini->arg->redirs && mini->arg->redirs->fd_out != -1)
-		fd = mini->arg->redirs->fd_out;
 	while (mini->arg->argv[i])
 	{
 		if (mini->arg->argv[i][0] == '$')
 			expanded_arg = expand_var(mini->arg->argv[i], mini->env);
 		else
 			expanded_arg = ft_strdup(mini->arg->argv[i]);
-		ft_putstr_fd(expanded_arg, fd);
+		ft_putstr_fd(expanded_arg, STDOUT_FILENO);
 		ft_memfree(expanded_arg);
 		if (mini->arg->argv[i + 1])
-			ft_putchar_fd(' ', fd);
+			ft_putchar_fd(' ', STDOUT_FILENO);
 		i++;
 	}
 	if (!(mini->arg->argv[1] && ft_strcmp(mini->arg->argv[1], "-n") == 0))
-		ft_putchar_fd('\n', fd);
+		ft_putchar_fd('\n', STDOUT_FILENO);
 }
