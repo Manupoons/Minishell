@@ -6,7 +6,7 @@
 /*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/05 14:40:05 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/06/05 14:49:34 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/06/06 12:41:28 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,12 @@ t_arg	*init_arg(int count)
 	arg_list->redirs = NULL;
 	arg_list->next = NULL;
 	return (arg_list);
+}
+
+int	is_redir(int type)
+{
+	return (type == TOKEN_REDIR_IN || type == TOKEN_REDIR_OUT
+			|| type == TOKEN_APPEND || type == TOKEN_HEREDOC);
 }
 
 // return (N - 1). We always have at least 1 pipe

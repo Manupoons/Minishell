@@ -6,7 +6,7 @@
 /*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/31 12:15:39 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/06/05 16:17:18 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/06/06 12:41:39 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,6 +144,7 @@ void	handle_redir_token(t_arg *curr_arg, t_token *token);
 //###--- PARSER_UTILS---###
 int		word_counter(t_token *tokens);
 t_arg	*init_arg(int count);
+int		is_redir(int type);
 //###-------------------###
 
 //###--- SIGNAL ---###

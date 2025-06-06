@@ -6,7 +6,7 @@
 /*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 19:14:03 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/06/06 12:34:42 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/06/06 16:37:13 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,6 @@ bool	has_stdout_redirection(t_redir *redir)
 	}
 	return false;
 }
-
 
 static void	execute_redir(t_shell *msh)
 {
