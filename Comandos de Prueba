@@ -1,0 +1,84 @@
+Perfecto, Jose. Aquí tienes una **tabla de comandos de prueba**, con **resultado esperado exacto** para que puedas testear sin necesidad de comparar con bash. Te indico qué debe aparecer en pantalla o en archivos, según corresponda.
+
+---
+
+### ✅ 1. Builtins simples
+
+| Comando           | Resultado Esperado                                |
+| ----------------- | ------------------------------------------------- |
+| `echo hola mundo` | `hola mundo` + salto de línea                     |
+| `pwd`             | Ruta actual (ej. `/home/jose`)                    |
+| `export VAR1=42`  | _(No imprime nada, pero setea la variable)_       |
+| `echo $VAR1`      | `42`                                              |
+| `env`             | Lista que incluye `VAR1=42` (si exportaste antes) |
+
+---
+
+### ✅ 2. Builtins con redirecciones
+
+| Comando                   | Archivo     | Contenido Esperado   |
+| ------------------------- | ----------- | -------------------- |
+| `echo hola > test1.txt`   | `test1.txt` | `hola\n`             |
+| `echo mundo >> test1.txt` | `test1.txt` | `hola\nmundo\n`      |
+| `pwd > test2.txt`         | `test2.txt` | La ruta actual       |
+| `env > test3.txt`         | `test3.txt` | Variables de entorno |
+
+| Comando           | Resultado Esperado |
+| ----------------- | ------------------ |
+| `cat < test1.txt` | `hola\nmundo\n`    |
+
+---
+
+### ✅ 3. Pipes sin redirección
+
+| Comando               | Resultado Esperado |              |
+| --------------------- | ------------------ | ------------ |
+| \`echo hola mundo     | grep hola\`        | `hola mundo` |
+| \`echo uno\ndos\ntres | grep dos\`         | `dos`        |
+| \`echo uno\ndos\ntres | wc -l\`            | `3`          |
+
+---
+
+### ✅ 4. Pipes + redirecciones
+
+| Comando            | Archivo                        | Contenido Esperado |                           |
+| ------------------ | ------------------------------ | ------------------ | ------------------------- |
+| \`echo hola mundo  | grep hola > salida.txt\`       | `salida.txt`       | `hola mundo\n`            |
+| \`cat < salida.txt | wc -c\`                        | _(pantalla)_       | `11` (10 letras + 1 `\n`) |
+| \`env              | grep SHELL >> env_salida.txt\` | `env_salida.txt`   | Línea con `SHELL=`        |
+
+---
+
+### ✅ 5. Errores de sintaxis
+
+| Comando       | Error Esperado                                |             |                                    |     |
+| ------------- | --------------------------------------------- | ----------- | ---------------------------------- | --- |
+| `echo hola >` | `Syntax error: redirection without filename.` |             |                                    |     |
+| `>`           | `Syntax error: redirection without filename.` |             |                                    |     |
+| \`echo hola   |                                               | grep test\` | \`Syntax error: unexpected token ' | '\` |
+| `cat <`       | `Syntax error: redirection without filename.` |             |                                    |     |
+
+---
+
+### ✅ 6. Comandos externos simples
+
+| Comando            | Resultado Esperado                                                   |
+| ------------------ | -------------------------------------------------------------------- |
+| `ls`               | Lista de archivos en el directorio                                   |
+| `ls -l > list.txt` | `list.txt` contiene salida del `ls -l`                               |
+| `cat list.txt`     | Muestra el contenido de `list.txt`                                   |
+| `grep main *.c`    | Muestra líneas que contengan `main` en archivos `.c` (si hay alguno) |
+
+---
+
+### ✅ 7. Combinaciones completas
+
+| Comando                            | Resultado Esperado        |                                              |
+| ---------------------------------- | ------------------------- | -------------------------------------------- |
+| \`echo \$HOME                      | cat -e\`                  | Ruta del home + `$` al final (`/home/jose$`) |
+| \`echo hola                        | wc -c\`                   | `5` (4 letras + 1 `\n`)                      |
+| `export X=hola && echo $X > x.txt` | `x.txt` contiene `hola\n` |                                              |
+
+---
+
+Si quieres, puedo generar estos archivos y comandos como un script `.sh` que simplemente ejecutes dentro de tu shell para probarlo todo. ¿Quieres eso también?

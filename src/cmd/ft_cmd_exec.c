@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_cmd_exec.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mamaratr <mamaratr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 19:14:03 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/06/04 19:26:11 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/06/06 12:34:42 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ static void	run_cmd(t_shell *mini)
 			dup2(mini->arg->redirs->fd_out, STDOUT_FILENO);
 	}
 	path = ft_get_path(mini->arg->argv[0], mini->env);
-	//printf("Path: %s\n", path);
+	printf("Path: %s\n", path);
 	if (!mini->arg->argv || !mini->arg->argv[0]
 		|| !ft_isalnum(mini->arg->argv[0][0]))
 	{
@@ -57,46 +57,77 @@ static void	ft_next_cmd(t_shell *mini)
 	if (mini->arg->redirs)
 	{
 		ft_memfree(mini->arg->redirs->cmd);
+		
 		if (mini->arg->redirs->fd_in != 0)
 			close(mini->arg->redirs->fd_in);
+	
 		if (mini->arg->redirs->fd_out != 1)
 			close(mini->arg->redirs->fd_out);
+		
 		next = mini->arg->redirs;
 		mini->arg->redirs = mini->arg->redirs->next;
 		ft_memfree(next);
 	}
+
 	tmp = mini->arg;
+	
 	mini->arg = mini->arg->next;
 	ft_memfree(tmp);
 }
 
-static void	child_process(t_shell *msh)
+bool	has_stdout_redirection(t_redir *redir)
 {
-	if (msh->arg->redirs)
+	while (redir)
 	{
-		if (msh->arg->redirs->fd_in != STDIN_FILENO)
-		{
-			dup2(msh->arg->redirs->fd_in, STDIN_FILENO);
-			close(msh->arg->redirs->fd_in);
-		}
-		if (msh->arg->redirs->fd_out != STDOUT_FILENO)
-		{
-			dup2(msh->arg->redirs->fd_out, STDOUT_FILENO);
-			close(msh->arg->redirs->fd_out);
-		}
+		if (redir->type == TOKEN_REDIR_OUT || redir->type == TOKEN_APPEND)
+			return true;
+		redir = redir->next;
 	}
+	return false;
+}
+
+
+static void	execute_redir(t_shell *msh)
+{
+	t_redir	*redir;
+
+	redir = msh->arg->redirs;
+	while (redir)
+	{
+		if (redir->type == TOKEN_REDIR_IN || redir->type == TOKEN_HEREDOC)
+		{
+			if(dup2(redir->fd_in, STDIN_FILENO) == -1)
+				perror("dup2 redir out");
+			close(redir->fd_in);
+		}
+		if (redir->type == TOKEN_REDIR_OUT || redir->type == TOKEN_APPEND)
+		{
+			if (dup2(redir->fd_out, STDOUT_FILENO) == -1)
+				perror("dup2 redir out");
+			close(redir->fd_out);
+
+		}
+		redir = redir->next;
+	}
+}
+
+
+static void	child_process(t_shell *msh)
+{	
 	if (msh->arg->pipe_in != STDIN_FILENO)
 	{
 		dup2(msh->arg->pipe_in, STDIN_FILENO);
 		close(msh->arg->pipe_in);
 	}
-	if (msh->arg->pipe_out != STDOUT_FILENO)
+	if ((msh->arg->pipe_out != STDOUT_FILENO)
+	&& !has_stdout_redirection(msh->arg->redirs))
 	{
 		dup2(msh->arg->pipe_out, STDOUT_FILENO);
 		close(msh->arg->pipe_out);
 	}
+	execute_redir(msh);
 	if (is_comms(msh))
-		ft_comms(msh);
+		ft_comms(msh); 
 	else
 		run_cmd(msh);
 	exit(127); // safety exit if exec fails
@@ -133,6 +164,33 @@ int	close_pipes(t_arg *current, int prev_fd_in)
 	return (prev_fd_in);
 }
 
+
+void	execute_redir_token(t_arg *args)
+{
+	t_redir	*redir;
+
+	redir = args->redirs;
+	if (!redir)
+		return ;
+	while(redir)
+	{
+		if (redir->type == TOKEN_REDIR_IN)
+			redir->fd_in = open(redir->cmd, O_RDONLY);
+		if (redir->type == TOKEN_REDIR_OUT)
+		{
+			redir->fd_out = open(redir->cmd, O_WRONLY| O_CREAT | O_TRUNC, 0777);
+			if (redir->fd_out == -1)
+				perror("open redir out failed");
+		}
+		if (redir->type == TOKEN_APPEND)
+			redir->fd_out = open(redir->cmd, O_WRONLY| O_CREAT | O_APPEND, 0777);
+		if (redir->type == TOKEN_HEREDOC)
+			redir->fd_in = open(redir->cmd, O_RDONLY);
+		redir = redir->next;	
+	}
+}
+
+
 void	execute_pipeline(t_shell *mini)
 {
 	pid_t	pid;
@@ -145,8 +203,9 @@ void	execute_pipeline(t_shell *mini)
 	if (!init_pipes(mini))
 		error_message("failed init pipe");
 	current = mini->arg;
-	while (current) //total de listas generadas
+	while (current)
 	{
+		execute_redir_token(current);
 		pid = fork();
 		if (pid < 0)
 			error_message("error creating fork");
@@ -190,6 +249,7 @@ void	execute(t_shell *mini)
 			ft_comms(mini);
 		else
 		{
+			execute_redir_token(mini->arg);
 			pid = fork(); // lo necesitamos porque llama a child y mantiene en espere el proceso de reinicir Shell
 			if (pid < 0)
 				error_message("failed to fork\n");
@@ -205,10 +265,9 @@ void	execute(t_shell *mini)
 
 void	ft_cmd_exec(t_shell *mini)
 {
-	//printf("entering ft_cmd_execc\n");
-	if (!mini || !mini->arg)
+	if (!mini->arg)
 		return ;
-	if (mini->arg && mini->arg->next)
+	if (mini->arg && (mini->arg->next || mini->arg->redirs)) //forzando la entrada a este if
 		execute_pipeline(mini);
 	else if (mini->arg && !mini->arg->next)
 		execute(mini);
