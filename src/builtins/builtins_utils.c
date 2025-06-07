@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/05 16:14:14 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/06/05 16:16:30 by mamaratr         ###   ########.fr       */
+/*   Created: 2025/06/06 17:00:16 by mamaratr          #+#    #+#             */
+/*   Updated: 2025/06/07 10:24:19 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,23 @@ static int	check_variable(char *name, char *value, t_shell *mini)
 	return (0);
 }
 
+void	add_arg_to_env(char *var, t_shell *mini)
+{
+	t_env	*env;
+	char	*name;
+	char	*value;
+
+	if (!ft_strrchr(var, '='))
+		return ;
+	name = get_env_name(var);
+	value = get_env_value(var);
+	if (!check_variable(name, value, mini))
+	{
+		env = ft_lst_new_env(name, value, 0);
+		ft_add_back_env(&mini->env, env);
+	}
+}
+
 int	check_export(char *argv)
 {
 	int		i;
@@ -57,21 +74,4 @@ int	check_export(char *argv)
 		}
 	}
 	return (ft_memfree(name), 1);
-}
-
-void	add_arg_to_env(char *var, t_shell *mini)
-{
-	t_env	*env;
-	char	*name;
-	char	*value;
-
-	if (!ft_strrchr(var, '='))
-		return ;
-	name = get_env_name(var);
-	value = get_env_value(var);
-	if (!check_variable(name, value, mini))
-	{
-		env = ft_lst_new_env(name, value, 0);
-		ft_add_back_env(&mini->env, env);
-	}
 }

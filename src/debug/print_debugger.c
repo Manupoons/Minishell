@@ -5,12 +5,12 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/05 16:22:25 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/06/05 16:24:27 by mamaratr         ###   ########.fr       */
+/*   Created: 2025/06/07 10:14:22 by mamaratr          #+#    #+#             */
+/*   Updated: 2025/06/07 10:20:49 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "./inc/minishell.h"
+#include "./minishell.h"
 
 void	print_tokens(t_token *tokens)
 {
@@ -37,8 +37,8 @@ void	print_parser(t_arg *head)
 	{
 		printf("\n=== Command %d ===\n", cmd_num++);
 		printf("Arguments count: %d\n", head->args_count);
-		while (i < head->args_count)
-			printf("argv[%d]: %s\n", i, head->argv[i++]);
+		while (i++ < head->args_count)
+			printf("argv[%d]: %s\n", i, head->argv[i]);
 		redir = head->redirs;
 		if (redir)
 			printf("Redirections:\n");

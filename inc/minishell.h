@@ -6,7 +6,7 @@
 /*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/31 12:15:39 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/06/06 12:41:39 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/06/07 10:18:57 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,6 @@
 #define READLINE_MSG "\001\033[1;36m\002minishell\001\033[34m\002$> \001\033[0m\002"
 
 extern int	g_signal;
-
 typedef enum e_signal
 {
 	S_BASE,						//Señal base
@@ -135,6 +134,18 @@ void	add_arg_to_env(char *var, t_shell *mini);
 //###--- CMD ---###
 void	ft_cmd_exec(t_shell *mini);
 //###-----------###
+
+//###--- CMD_UTILS ---###
+bool	has_stdout_redirection(t_redir *redir);
+bool	init_pipes(t_shell *mini);
+int		close_pipes(t_arg *current, int prev_fd_in);
+void	execute_redir(t_shell *msh);
+void	handle_status(t_shell *mini);
+void	execute_pipeline_commands(t_shell *mini, pid_t *last_pid);
+void	execute_redir_token(t_arg *args);
+void	child_process(t_shell *msh);
+//###-----------------###
+
 
 //###--- PARSER ---###
 t_arg	*parse_tokens(t_token *tokens);

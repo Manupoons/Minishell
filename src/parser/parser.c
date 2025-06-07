@@ -6,7 +6,7 @@
 /*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 15:59:31 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/06/06 16:34:49 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/06/07 10:23:15 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,23 @@ static t_arg	*handle_pipe_token(t_arg *curr_arg, t_token *next_tokens,
 	curr_arg->next = new;
 	*index = 0;
 	return (new);
+}
+
+static void	append_to_parser(t_redir **head, t_redir *redir)
+{
+	t_redir	*tmp;
+
+	if (!redir)
+		return ;
+	if (!*head)
+		*head = redir;
+	else
+	{
+		tmp = *head;
+		while (tmp->next)
+			tmp = tmp->next;
+		tmp->next = redir;
+	}
 }
 
 //printf("Initializing parser list with: %s\n", redir->cmd);
@@ -75,24 +92,29 @@ void	handle_redir_token(t_arg *curr_arg, t_token *token)
 	append_to_parser(&(curr_arg->redirs), redir);
 }
 
-static void	process_tokens(t_arg **head_arg, t_arg **curr_arg,
-						t_token **curr_token, int *index)
+static void	process_tokens(t_arg **curr_arg, t_token *token, int *index)
 {
-	if (!(*curr_arg) && !((*curr_token)->type == TOKEN_PIPE))
-		{
-			*curr_arg = init_arg(word_counter(*curr_token));
-			*head_arg = *curr_arg;
-		}
-		if ((*curr_token)->type == TOKEN_WORD)
-		{
-			(*curr_arg)->argv[*index] = strdup((*curr_token)->token);
-			(*index)++;
-		}
-		else if ((*curr_token)->type == TOKEN_PIPE)
-			*curr_arg = handle_pipe_token(*curr_arg, (*curr_token)->next, index);
-		else if (is_redir((*curr_token)->type))
-			handle_redir_token(*curr_arg, *curr_token);
-		*curr_token = (*curr_token)->next;
+	if (token->type == TOKEN_WORD)
+	{
+		if (!(*curr_arg))
+			error_message("word with no arg");
+		(*curr_arg)->argv[*index] = strdup(token->token);
+		if (!(*curr_arg)->argv[*index])
+			error_message("strdup failed");
+		(*index)++;
+	}
+	else if (token->type == TOKEN_PIPE)
+	{
+		*curr_arg = handle_pipe_token(*curr_arg, token->next, index);
+		if (!(*curr_arg))
+			error_message("pipe init failed");
+	}
+	else if (is_redir(token->type))
+	{
+		if (!(*curr_arg))
+			error_message("redir with no arg");
+		handle_redir_token(*curr_arg, token);
+	}
 }
 
 t_arg	*parse_tokens(t_token *tokens)
@@ -108,7 +130,17 @@ t_arg	*parse_tokens(t_token *tokens)
 	index = 0;
 	while (curr_token)
 	{
-		process_tokens(&head_arg, &curr_arg, &curr_token, &index);
+		if (!curr_arg && curr_token->type != TOKEN_PIPE)
+		{
+			curr_arg = init_arg(word_counter(curr_token));
+			if (!curr_arg)
+				error_message("init_arg failed");
+			head_arg = curr_arg;
+		}
+		process_tokens(&curr_arg, curr_token, &index);
+		if (is_redir(curr_token->type) && curr_token->next)
+			curr_token = curr_token->next;
+		curr_token = curr_token->next;
 	}
 	return (head_arg);
 }

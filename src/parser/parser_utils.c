@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/05 14:40:05 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/06/06 12:41:28 by mamaratr         ###   ########.fr       */
+/*   Created: 2025/06/06 17:24:18 by mamaratr          #+#    #+#             */
+/*   Updated: 2025/06/07 10:24:34 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,24 +53,23 @@ t_arg	*init_arg(int count)
 	return (arg_list);
 }
 
+int	count_pipes(t_shell *mini)
+{
+	int		i;
+	t_arg	*current;
+
+	i = 0;
+	current = mini->arg;
+	while (current)
+	{
+		i++;
+		current = current->next;
+	}
+	return (i - 1);
+}
+
 int	is_redir(int type)
 {
 	return (type == TOKEN_REDIR_IN || type == TOKEN_REDIR_OUT
-			|| type == TOKEN_APPEND || type == TOKEN_HEREDOC);
+		|| type == TOKEN_APPEND || type == TOKEN_HEREDOC);
 }
-
-// return (N - 1). We always have at least 1 pipe
-// int	count_pipes(t_shell *mini)
-// {
-// 	int		i;
-// 	t_arg	*current;
-
-// 	i = 0;
-// 	current = mini->arg;
-// 	while (current)
-// 	{
-// 		i++;
-// 		current = current->next;
-// 	}
-// 	return (i - 1);
-// }
