@@ -2,6 +2,7 @@
 	"files.associations": {
 		"*.ejs": "html",
 		"libft.h": "c",
-		"cstdlib": "c"
+		"cstdlib": "c",
+		"minishell.h": "c"
 	}
 }

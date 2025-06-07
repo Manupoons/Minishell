@@ -6,20 +6,15 @@
 /*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 17:41:35 by jdorazio          #+#    #+#             */
-/*   Updated: 2025/06/04 16:12:32 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/06/06 17:11:47 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./minishell.h"
 
-int	handle_space(char *input, int i)
-{
-	while (input[i] == ' ' || input[i] == '\t' || input[i] == '\n'
-		|| input[i] == '\r' || input[i] == '\v' || input[i] == '\f')
-		i++;
-	return (i);
-}
-
+//	quote = input[i]; esto confirma quote que finalice el loop sean iguales
+// 	while (input[j] != quote && input[j]) solo sale si las loops son iguales
+//	ft_strlcpy(str, input + i + 1, len + 1); revisar funcion returns input
 int	handle_quoted_token(char *input, t_token **token_list, int i)
 {
 	char	*str;
@@ -27,9 +22,9 @@ int	handle_quoted_token(char *input, t_token **token_list, int i)
 	int		j;
 	int		len;
 
-	quote = input[i]; // esto confirma quote que finalice el loop sean iguales
+	quote = input[i];
 	j = 1 + i;
-	while (input[j] != quote && input[j]) // solo sale si las loops son iguales
+	while (input[j] != quote && input[j])
 		j++;
 	if (input[j] == '\0')
 		error_message("missing closing quotes.");
@@ -37,7 +32,7 @@ int	handle_quoted_token(char *input, t_token **token_list, int i)
 	str = malloc(len + 1);
 	if (!str)
 		error_message("failed to alloc mem.");
-	ft_strlcpy(str, input + i + 1, len + 1); //revisar funcion returns input
+	ft_strlcpy(str, input + i + 1, len + 1);
 	add_token(str, token_list, TOKEN_WORD);
 	return (j - i + 1);
 }
@@ -61,13 +56,7 @@ int	handle_operator(char *input, t_token **token_list, int i)
 	return (0);
 }
 
-int	is_space(char c)
-{
-	return (c == ' ' || c == '\t' || c == '\n'
-		|| c == '\r' || c == '\v' || c == '\f');
-}
-
-int	handle_word(char *input, t_token **token_list, int i) // for echo
+int	handle_word(char *input, t_token **token_list, int i)
 {
 	int		start;
 	int		len;

@@ -6,113 +6,14 @@
 /*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 15:59:31 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/06/04 16:02:11 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/06/07 08:35:38 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./minishell.h"
 
-int	word_counter(t_token *tokens)
-{
-	int	count;
-
-	count = 0;
-	while (tokens && tokens->type != TOKEN_PIPE)
-	{
-		if (tokens->type == TOKEN_WORD)
-			count++;
-		else if (tokens->type == TOKEN_REDIR_IN
-			|| tokens->type == TOKEN_REDIR_OUT
-			|| tokens->type == TOKEN_APPEND
-			|| tokens->type == TOKEN_HEREDOC)
-		{
-			if (tokens->next)
-				tokens = tokens->next;
-		}
-		tokens = tokens->next;
-	}
-	return (count);
-}
-
-t_arg	*init_arg(int count)
-{
-	t_arg	*arg_list;
-
-	arg_list = malloc(sizeof(t_arg));
-	if (!arg_list)
-		return (NULL);
-	arg_list->args_count = count;
-	arg_list->argv = malloc(sizeof(char *) * (arg_list->args_count + 1));
-	if (!arg_list->argv)
-		return (NULL);
-	arg_list->argv[count] = NULL;
-	arg_list->pipe_in = 0;
-	arg_list->pipe_out = 1;
-	arg_list->redirs = NULL;
-	arg_list->next = NULL;
-	return (arg_list);
-}
-
-int	count_pipes(t_shell *mini)
-{
-	int		i;
-	t_arg	*current;
-
-	i = 0;
-	current = mini->arg;
-	while (current)
-	{
-		i++;
-		current = current->next;
-	}
-	return (i - 1);
-}
-
-int	is_redir(int type)
-{
-	return (type == TOKEN_REDIR_IN || type == TOKEN_REDIR_OUT
-			|| type == TOKEN_APPEND || type == TOKEN_HEREDOC);
-}
-
-t_arg	*parse_tokens(t_token *tokens)
-{
-	t_arg	*head_arg;
-	t_arg	*curr_arg;
-	t_token	*curr_token;
-	int		index;
-
-	head_arg = NULL;
-	curr_arg = NULL;
-	curr_token = tokens;
-	index = 0;
-	while (curr_token)
-	{
-		if (!curr_arg && !(curr_token->type == TOKEN_PIPE))
-		{
-			curr_arg = init_arg(word_counter(curr_token));
-			head_arg = curr_arg;
-		}
-		if (curr_token->type == TOKEN_WORD)
-			index += handle_word_token(curr_arg, curr_token->token, index);
-		else if (curr_token->type == TOKEN_PIPE)
-			curr_arg = handle_pipe_token(curr_arg, curr_token->next, &index);
-		else if (is_redir(curr_token->type))
-		{
-			handle_redir_token(curr_arg, curr_token);
-			curr_token = curr_token->next; // hacemos un doble salto porque sería ">" y archivo
-		}
-		curr_token = curr_token->next;
-	}
-	return (head_arg);
-}
-
-int	handle_word_token(t_arg *curr_arg, char *token, int index)
-{
-	curr_arg->argv[index] = strdup(token);
-	return (1);
-}
-
-t_arg	*handle_pipe_token(t_arg *curr_arg, t_token *next_tokens, int *index)
+static t_arg	*handle_pipe_token(t_arg *curr_arg, t_token *next_tokens,
+								int *index)
 {
 	t_arg	*new;
 
@@ -124,6 +25,23 @@ t_arg	*handle_pipe_token(t_arg *curr_arg, t_token *next_tokens, int *index)
 	curr_arg->next = new;
 	*index = 0;
 	return (new);
+}
+
+static void	append_to_parser(t_redir **head, t_redir *redir)
+{
+	t_redir	*tmp;
+
+	if (!redir)
+		return ;
+	if (!*head)
+		*head = redir;
+	else
+	{
+		tmp = *head;
+		while (tmp->next)
+			tmp = tmp->next;
+		tmp->next = redir;
+	}
 }
 
 void	handle_redir_token(t_arg *curr_arg, t_token *token)
@@ -151,19 +69,55 @@ void	handle_redir_token(t_arg *curr_arg, t_token *token)
 	append_to_parser(&(curr_arg->redirs), redir);
 }
 
-void	append_to_parser(t_redir **head, t_redir *redir)
+static void	process_tokens(t_arg **curr_arg, t_token *token, int *index)
 {
-	t_redir	*tmp;
-
-	if (!redir)
-		return ;
-	if (!*head)
-		*head = redir;
-	else
+	if (token->type == TOKEN_WORD)
 	{
-		tmp = *head;
-		while (tmp->next)
-			tmp = tmp->next;
-		tmp->next = redir;
+		if (!(*curr_arg))
+			error_message("word with no arg");
+		(*curr_arg)->argv[*index] = strdup(token->token);
+		if (!(*curr_arg)->argv[*index])
+			error_message("strdup failed");
+		(*index)++;
 	}
+	else if (token->type == TOKEN_PIPE)
+	{
+		*curr_arg = handle_pipe_token(*curr_arg, token->next, index);
+		if (!(*curr_arg))
+			error_message("pipe init failed");
+	}
+	else if (is_redir(token->type))
+	{
+		if (!(*curr_arg))
+			error_message("redir with no arg");
+		handle_redir_token(*curr_arg, token);
+	}
+}
+
+t_arg	*parse_tokens(t_token *tokens)
+{
+	t_arg	*head_arg;
+	t_arg	*curr_arg;
+	t_token	*curr_token;
+	int		index;
+
+	head_arg = NULL;
+	curr_arg = NULL;
+	curr_token = tokens;
+	index = 0;
+	while (curr_token)
+	{
+		if (!curr_arg && curr_token->type != TOKEN_PIPE)
+		{
+			curr_arg = init_arg(word_counter(curr_token));
+			if (!curr_arg)
+				error_message("init_arg failed");
+			head_arg = curr_arg;
+		}
+		process_tokens(&curr_arg, curr_token, &index);
+		if (is_redir(curr_token->type) && curr_token->next)
+			curr_token = curr_token->next;
+		curr_token = curr_token->next;
+	}
+	return (head_arg);
 }
