@@ -12,17 +12,12 @@
 
 #include "./minishell.h"
 
-//	quote = input[i]; esto confirma quote que finalice el loop sean iguales
-// 	while (input[j] != quote && input[j]) solo sale si las loops son iguales
-//	ft_strlcpy(str, input + i + 1, len + 1); revisar funcion returns input
-int	handle_quoted_token(char *input, t_token **token_list, int i)
+int	handle_quoted_token(char *input, t_token **token_list, int i, char quote)
 {
 	char	*str;
-	char	quote;
 	int		j;
 	int		len;
 
-	quote = input[i];
 	j = 1 + i;
 	while (input[j] != quote && input[j])
 		j++;
@@ -33,25 +28,25 @@ int	handle_quoted_token(char *input, t_token **token_list, int i)
 	if (!str)
 		error_message("failed to alloc mem.");
 	ft_strlcpy(str, input + i + 1, len + 1);
-	add_token(str, token_list, TOKEN_WORD);
+	add_token(str, token_list, TOKEN_WORD, quote);
 	return (j - i + 1);
 }
 
 int	handle_operator(char *input, t_token **token_list, int i)
 {
 	if (input[i] == '|')
-		return (add_token("|", token_list, TOKEN_PIPE), 1);
+		return (add_token("|", token_list, TOKEN_PIPE, 0), 1);
 	else if (input[i] == '<')
 	{
 		if (input[i + 1] == '<')
-			return (add_token("<<", token_list, TOKEN_HEREDOC), 2);
-		return (add_token("<", token_list, TOKEN_REDIR_IN), 1);
+			return (add_token("<<", token_list, TOKEN_HEREDOC, 0), 2);
+		return (add_token("<", token_list, TOKEN_REDIR_IN, 0), 1);
 	}
 	else if (input[i] == '>')
 	{
 		if (input[i + 1] == '>')
-			return (add_token(">>", token_list, TOKEN_APPEND), 2);
-		return (add_token(">", token_list, TOKEN_REDIR_OUT), 1);
+			return (add_token(">>", token_list, TOKEN_APPEND, 0), 2);
+		return (add_token(">", token_list, TOKEN_REDIR_OUT, 0), 1);
 	}
 	return (0);
 }
@@ -71,7 +66,7 @@ int	handle_word(char *input, t_token **token_list, int i)
 	if (!str)
 		error_message("failed to alloc mem.");
 	ft_strlcpy(str, input + start, len + 1);
-	add_token(str, token_list, TOKEN_WORD);
+	add_token(str, token_list, TOKEN_WORD, 0);
 	free(str);
 	return (len);
 }
@@ -81,6 +76,7 @@ t_token	*tokenizer(char *input)
 	t_token	*token_list;
 	int		i;
 	int		count;
+	char	quote;
 
 	i = 0;
 	token_list = NULL;
@@ -88,12 +84,10 @@ t_token	*tokenizer(char *input)
 	{
 		i = handle_space(input, i);
 		if (!input[i])
-		{
-			printf("Exiting if enter\n");
-			break ;
-		}
-		if (is_quotes(input[i]))
-			count = handle_quoted_token(input, &token_list, i);
+		break ;
+		quote = is_quotes(input[i]);
+		if (quote != 0)
+			count = handle_quoted_token(input, &token_list, i, quote);
 		else if (is_operator(input[i]))
 			count = handle_operator(input, &token_list, i);
 		else

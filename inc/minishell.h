@@ -75,6 +75,7 @@ typedef struct s_token
 {
 	t_token_type	type;
 	char			*token;
+	char			quote_type;
 	struct s_token	*next;		// para recorrer lista
 }	t_token;
 
@@ -148,7 +149,7 @@ void	child_process(t_shell *msh);
 
 
 //###--- PARSER ---###
-t_arg	*parse_tokens(t_token *tokens);
+t_arg	*parse_tokens(t_token *tokens, t_env *env, int status);
 void	handle_redir_token(t_arg *curr_arg, t_token *token);
 //###--------------###
 
@@ -163,7 +164,7 @@ void	init_signal(void);
 //###--------------###
 
 //###--- TOKENIZER ---###
-int		handle_quoted_token(char *input, t_token **token_list, int i);
+int		handle_quoted_token(char *input, t_token **token_list, int i, char quote);
 int		handle_operator(char *input, t_token **token_list, int i);
 int		handle_word(char *input, t_token **token_list, int i);
 t_token	*tokenizer(char *input);
@@ -174,8 +175,17 @@ int		is_quotes(char c);
 int		is_operator(char c);
 int		is_space(char c);
 int		handle_space(char *input, int i);
-void	add_token(char *input, t_token **token_list, t_token_type type);
+void	add_token(char *input, t_token **token_list, t_token_type type, char quote);
 //###-----------------------###
+
+
+//###--- EXPAND_VAR ---###
+char	*expand(t_token *token, t_env *env, int status);
+char	*check_var(char *token);
+char	*get_env_value_by_name(t_env *env, const char *name);
+//###-----------------------###
+
+
 
 //###--- MINISHELL_UTILS ---###
 void	ft_add_back_env(t_env **lst, t_env *new);

@@ -26,7 +26,6 @@ static void	run_cmd(t_shell *mini)
 			dup2(mini->arg->redirs->fd_out, STDOUT_FILENO);
 	}
 	path = ft_get_path(mini->arg->argv[0], mini->env);
-	printf("Path: %s\n", path);
 	if (!mini->arg->argv || !mini->arg->argv[0]
 		|| !ft_isalnum(mini->arg->argv[0][0]))
 	{
