@@ -6,7 +6,7 @@
 /*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 15:59:31 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/06/07 10:23:15 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/06/09 18:57:41 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,23 +25,6 @@ static t_arg	*handle_pipe_token(t_arg *curr_arg, t_token *next_tokens,
 	curr_arg->next = new;
 	*index = 0;
 	return (new);
-}
-
-static void	append_to_parser(t_redir **head, t_redir *redir)
-{
-	t_redir	*tmp;
-
-	if (!redir)
-		return ;
-	if (!*head)
-		*head = redir;
-	else
-	{
-		tmp = *head;
-		while (tmp->next)
-			tmp = tmp->next;
-		tmp->next = redir;
-	}
 }
 
 //printf("Initializing parser list with: %s\n", redir->cmd);

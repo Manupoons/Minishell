@@ -6,7 +6,7 @@
 /*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/31 12:15:39 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/06/07 10:18:57 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/06/09 18:32:44 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -178,11 +178,12 @@ void	add_token(char *input, t_token **token_list, t_token_type type);
 //###-----------------------###
 
 //###--- MINISHELL_UTILS ---###
-void	ft_add_back_env(t_env **lst, t_env *new);
-t_env	*ft_lst_new_env(char *name, char *value, int alloc);
-void	ft_lst_env_init(t_env **env, char **envp);
-char	*get_env_name(char *name);
-char	*get_env_value(char *value);
+	void ft_add_back_env(t_env **lst, t_env * new);
+	t_env	*ft_lst_new_env(char *name, char *value);
+	t_env	*get_env_node(t_env *env, const char *name);
+	void ft_lst_env_init(t_shell * mini, char **envp);
+	char *get_env_name(char *name);
+	char *get_env_value(char *value);
 //###-----------------------###
 void	error_message(char *str);
 //###-----------------------###

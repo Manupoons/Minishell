@@ -6,7 +6,7 @@
 /*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 17:00:16 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/06/07 10:24:19 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/06/09 19:04:14 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,9 +46,11 @@ void	add_arg_to_env(char *var, t_shell *mini)
 	value = get_env_value(var);
 	if (!check_variable(name, value, mini))
 	{
-		env = ft_lst_new_env(name, value, 0);
+		env = ft_lst_new_env(name, value);
 		ft_add_back_env(&mini->env, env);
 	}
+	ft_memfree(name);
+	ft_memfree(value);
 }
 
 int	check_export(char *argv)

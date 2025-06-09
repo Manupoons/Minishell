@@ -15,8 +15,8 @@ INC = ./inc/minishell.h
 
 CC = gcc
 RM = rm -f
-CFLAGS = -Wall -Wextra -Werror -MMD -I./inc -g -I$(LIBFT_DIR)
-LDFLAGS = -lreadline
+CFLAGS = -Wall -Wextra -Werror -MMD -I./inc -g -fsanitize=address -I$(LIBFT_DIR)
+LDFLAGS = -lreadline -fsanitize=address
 
 .c.o:
 	@${CC} ${CFLAGS} -c $< -o ${<:.c=.o}

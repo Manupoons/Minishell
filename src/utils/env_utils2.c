@@ -6,7 +6,7 @@
 /*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 16:56:25 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/06/07 10:24:41 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/06/09 18:59:04 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,4 +47,15 @@ char	*get_env_value(char *value)
 		return (tmp);
 	}
 	return (val);
+}
+
+t_env	*get_env_node(t_env *env, const char *name)
+{
+	while (env)
+	{
+		if (env->env_name && ft_strcmp(env->env_name, name) == 0)
+			return (env);
+		env = env->next;
+	}
+	return (NULL);
 }
