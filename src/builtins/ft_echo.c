@@ -12,49 +12,44 @@
 
 #include "./minishell.h"
 
-// char	*get_env_value_by_name(t_env *env, const char *name)
-// {
-// 	while (env)
-// 	{
-// 		if (!ft_strcmp(env->env_name, name))
-// 			return (env->env_value);
-// 		env = env->next;
-// 	}
-// 	return ("");
-// }
+int	n_flag(char *str, int *flag)
+{
+	int	i;
 
-// char	*expand_var(char *arg, t_env *env)
-// {
-// 	char	*var_name;
-
-// 	if (arg[0] != '$' || !arg[1])
-// 		return (ft_strdup(arg));
-// 	var_name = arg + 1;
-// 	return (ft_strdup(get_env_value_by_name(env, var_name)));
-// }
-
+	if (!str || str[0]  != '-')
+		return (*flag);
+	i = 1;
+	if (str[i] == '\0')
+		return (*flag);
+	while (str[i])
+	{
+		if (str[i] != 'n')
+			return (*flag);
+		i++;
+	}
+	*flag = 1;
+	return (1);
+}
 
 void	ft_echo(t_shell *mini)
 {
 	int		i;
 	char	*arg;
+	int		flag;
 
 	mini->status = 0;
 	i = 1;
-	if (mini->arg->argv[i] && ft_strcmp(mini->arg->argv[i], "-n") == 0)
+	flag = 0;
+	if (mini->arg->argv[i] && n_flag(mini->arg->argv[i], &flag))
 		i++;
 	while (mini->arg->argv[i])
 	{
-		// if (mini->arg->argv[i][0] == '$')
-		// 	expanded_arg = expand_var(mini->arg->argv[i], mini->env);
-		// else
-		// 	expanded_arg = ft_strdup(mini->arg->argv[i]);
 		arg = mini->arg->argv[i];
 		ft_putstr_fd(arg, STDOUT_FILENO);
 		if (mini->arg->argv[i + 1])
 			ft_putchar_fd(' ', STDOUT_FILENO);
 		i++;
 	}
-	if (!(mini->arg->argv[1] && ft_strcmp(mini->arg->argv[1], "-n") == 0))
+	if (!(flag))
 		ft_putchar_fd('\n', STDOUT_FILENO);
 }
