@@ -6,7 +6,7 @@
 /*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 17:43:10 by jdorazio          #+#    #+#             */
-/*   Updated: 2025/06/06 17:09:49 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/06/10 17:07:44 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,8 @@ int	handle_space(char *input, int i)
 	return (i);
 }
 
-void	add_token(char *input, t_token **token_list, t_token_type type, char quote)
+void	add_token(char *input, t_token **token_list, t_token_type type,
+					char quote)
 {
 	t_token	*new;
 	t_token	*current;
@@ -49,8 +50,6 @@ void	add_token(char *input, t_token **token_list, t_token_type type, char quote)
 	if (!new)
 		error_message("Failed to alloc mem for token.");
 	new->token = ft_strdup(input);
-	if (!new->token)
-		error_message("Failed to dup line.");
 	new->type = type;
 	if (quote)
 		new->quote_type = quote;

@@ -6,7 +6,7 @@
 /*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 18:20:50 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/06/06 17:04:54 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/06/10 13:05:55 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ int	n_flag(char *str, int *flag)
 {
 	int	i;
 
-	if (!str || str[0]  != '-')
+	if (!str || str[0] != '-')
 		return (*flag);
 	i = 1;
 	if (str[i] == '\0')

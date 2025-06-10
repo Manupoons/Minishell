@@ -6,7 +6,7 @@
 /*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/31 12:15:39 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/06/07 09:54:55 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/06/10 18:42:54 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -178,19 +178,16 @@ int		handle_space(char *input, int i);
 void	add_token(char *input, t_token **token_list, t_token_type type, char quote);
 //###-----------------------###
 
-
 //###--- EXPAND_VAR ---###
 char	*expand(t_token *token, t_env *env, int status);
-char	*check_var(char *token);
+//char	*check_var(char *token);
 char	*get_env_value_by_name(t_env *env, const char *name);
 //###-----------------------###
 
-
-
 //###--- MINISHELL_UTILS ---###
 void	ft_add_back_env(t_env **lst, t_env *new);
-t_env	*ft_lst_new_env(char *name, char *value, int alloc);
-void	ft_lst_env_init(t_env **env, char **envp);
+t_env	*ft_lst_new_env(char *name, char *value);
+void	ft_lst_env_init(t_shell *mini, char **envp);
 char	*get_env_name(char *name);
 char	*get_env_value(char *value);
 //###-----------------------###
@@ -201,6 +198,7 @@ void	ft_free_list(t_env **env);
 void	free_tokens(t_token *tokens);
 void	free_redirs(t_redir *redirs);
 void	free_args(t_arg *args);
+void	free_args_and_exit(t_arg *args, const char *msg);
 //###-----------------------###
 char	*ft_get_path(char *cmd, t_env *env);
 char	**ft_env_to_array(t_shell *mini);

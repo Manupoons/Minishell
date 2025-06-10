@@ -6,7 +6,7 @@
 /*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 12:09:09 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/06/06 17:02:42 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/06/10 11:39:00 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,10 @@ static t_env	*copy_list(t_env *list)
 	while (temp)
 	{
 		if (!env)
-			env = ft_lst_new_env(temp->env_name, temp->env_value, 1);
+			env = ft_lst_new_env(temp->env_name, temp->env_value);
 		else
 			ft_add_back_env(&env, ft_lst_new_env(temp->env_name,
-					temp->env_value, 1));
+					temp->env_value));
 		temp = temp->next;
 	}
 	return (env);
@@ -37,7 +37,7 @@ static	t_env	*sort_list(t_env *list)
 	t_env	*aux;
 
 	temp = list;
-	aux = ft_lst_new_env("", "", 0);
+	aux = ft_lst_new_env("", "");
 	while (list->next != NULL)
 	{
 		if (list->next && ft_strcmp(list->env_name, list->next->env_name) > 0)

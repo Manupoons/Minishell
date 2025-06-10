@@ -6,7 +6,7 @@
 /*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 17:41:35 by jdorazio          #+#    #+#             */
-/*   Updated: 2025/06/06 17:11:47 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/06/10 17:02:53 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ int	handle_quoted_token(char *input, t_token **token_list, int i, char quote)
 		error_message("failed to alloc mem.");
 	ft_strlcpy(str, input + i + 1, len + 1);
 	add_token(str, token_list, TOKEN_WORD, quote);
+	free(str);
 	return (j - i + 1);
 }
 
@@ -84,7 +85,7 @@ t_token	*tokenizer(char *input)
 	{
 		i = handle_space(input, i);
 		if (!input[i])
-		break ;
+			break ;
 		quote = is_quotes(input[i]);
 		if (quote != 0)
 			count = handle_quoted_token(input, &token_list, i, quote);
