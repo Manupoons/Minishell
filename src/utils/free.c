@@ -6,7 +6,7 @@
 /*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 13:16:16 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/06/07 10:21:17 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/06/10 19:07:24 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,10 +73,10 @@ void	free_args(t_arg *args)
 	t_arg	*tmp;
 	int		i;
 
-	i = 0;
 	while (args)
 	{
 		tmp = args->next;
+		i = 0;
 		while (i < args->args_count)
 		{
 			free(args->argv[i]);
@@ -88,4 +88,12 @@ void	free_args(t_arg *args)
 		free(args);
 		args = tmp;
 	}
+}
+
+void	free_args_and_exit(t_arg *args, const char *msg)
+{
+	if (msg)
+		fprintf(stderr, "minishell: %s\n", msg);
+	free_args(args);
+	exit(EXIT_FAILURE);
 }

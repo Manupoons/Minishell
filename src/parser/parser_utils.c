@@ -6,7 +6,7 @@
 /*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 17:24:18 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/06/07 10:24:34 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/06/10 19:06:47 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,10 @@ t_arg	*init_arg(int count)
 	arg_list->args_count = count;
 	arg_list->argv = malloc(sizeof(char *) * (arg_list->args_count + 1));
 	if (!arg_list->argv)
+	{
+		free_args(arg_list);
 		return (NULL);
+	}
 	arg_list->argv[count] = NULL;
 	arg_list->pipe_in = 0;
 	arg_list->pipe_out = 1;

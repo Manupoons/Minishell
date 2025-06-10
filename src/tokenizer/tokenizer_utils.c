@@ -6,7 +6,7 @@
 /*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 17:43:10 by jdorazio          #+#    #+#             */
-/*   Updated: 2025/06/07 10:21:58 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/06/10 19:06:59 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,11 @@
 
 int	is_quotes(char c)
 {
-	return (c == 34 || c == 39);
+	if (c == 39)
+		return (39);
+	else if (c == 34)
+		return (34);
+	return (0);
 }
 
 int	is_operator(char c)
@@ -36,7 +40,8 @@ int	handle_space(char *input, int i)
 	return (i);
 }
 
-void	add_token(char *input, t_token **token_list, t_token_type type)
+void	add_token(char *input, t_token **token_list, t_token_type type,
+					char quote)
 {
 	t_token	*new;
 	t_token	*current;
@@ -45,9 +50,9 @@ void	add_token(char *input, t_token **token_list, t_token_type type)
 	if (!new)
 		error_message("Failed to alloc mem for token.");
 	new->token = ft_strdup(input);
-	if (!new->token)
-		error_message("Failed to dup line.");
 	new->type = type;
+	if (quote)
+		new->quote_type = quote;
 	new->next = NULL;
 	if (!*token_list)
 		*token_list = new;

@@ -6,7 +6,7 @@
 /*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 15:59:31 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/06/09 18:57:41 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/06/10 19:06:52 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,9 @@ static t_arg	*handle_pipe_token(t_arg *curr_arg, t_token *next_tokens,
 	t_arg	*new;
 
 	if (!curr_arg)
-		error_message("pipe without command before it.\n");
+		free_args_and_exit(curr_arg, "pipe without command before it.\n");
 	if (!next_tokens)
-		error_message("pipe without command after it.\n");
+		free_args_and_exit(curr_arg, "pipe without command after it.\n");
 	new = init_arg(word_counter(next_tokens));
 	curr_arg->next = new;
 	*index = 0;
@@ -75,15 +75,17 @@ void	handle_redir_token(t_arg *curr_arg, t_token *token)
 	append_to_parser(&(curr_arg->redirs), redir);
 }
 
-static void	process_tokens(t_arg **curr_arg, t_token *token, int *index)
+static void	process_tokens(t_arg **curr_arg, t_token *token, int *index,
+							t_env *env, int status)
 {
+	char	*expanded;
+
 	if (token->type == TOKEN_WORD)
 	{
 		if (!(*curr_arg))
 			error_message("word with no arg");
-		(*curr_arg)->argv[*index] = strdup(token->token);
-		if (!(*curr_arg)->argv[*index])
-			error_message("strdup failed");
+		expanded = expand(token, env, status);
+		(*curr_arg)->argv[*index] = expanded;
 		(*index)++;
 	}
 	else if (token->type == TOKEN_PIPE)
@@ -100,7 +102,7 @@ static void	process_tokens(t_arg **curr_arg, t_token *token, int *index)
 	}
 }
 
-t_arg	*parse_tokens(t_token *tokens)
+t_arg	*parse_tokens(t_token *tokens, t_env *env, int status)
 {
 	t_arg	*head_arg;
 	t_arg	*curr_arg;
@@ -120,7 +122,7 @@ t_arg	*parse_tokens(t_token *tokens)
 				error_message("init_arg failed");
 			head_arg = curr_arg;
 		}
-		process_tokens(&curr_arg, curr_token, &index);
+		process_tokens(&curr_arg, curr_token, &index, env, status);
 		if (is_redir(curr_token->type) && curr_token->next)
 			curr_token = curr_token->next;
 		curr_token = curr_token->next;

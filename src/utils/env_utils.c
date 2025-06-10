@@ -6,7 +6,7 @@
 /*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 19:04:03 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/06/09 19:06:14 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/06/10 19:07:18 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,17 +57,17 @@ static void	free_name_value(char *name, char *value)
 
 static void	init_pwd(t_shell *mini)
 {
-	char	*cwd;
+	char	*cpwd;
 	char	*oldpwd;
 
-	cwd = getcwd(NULL, 0);
-	if (cwd)
+	cpwd = getcwd(NULL, 0);
+	if (cpwd)
 	{
-		oldpwd = ft_strjoin("OLDPWD=", cwd);
+		oldpwd = ft_strjoin("OLDPWD=", cpwd);
 		if (oldpwd)
 			add_arg_to_env(oldpwd, mini);
 		ft_memfree(oldpwd);
-		ft_memfree(cwd);
+		ft_memfree(cpwd);
 	}
 }
 
