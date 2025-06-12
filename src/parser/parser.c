@@ -69,18 +69,44 @@ void	handle_redir_token(t_arg *curr_arg, t_token *token)
 	append_to_parser(&(curr_arg->redirs), redir);
 }
 
-static void	process_tokens(t_arg **curr_arg, t_token *token, int *index, t_env *env, int status)
+
+static void	split_tokens(int *index, char **expanded, t_arg **curr)
+{
+	char	**splitted;
+	int		j;
+
+	splitted = ft_split(*expanded, ' ');
+	free(expanded);
+	if (!splitted)
+		error_message("split failed");
+	j = 0;
+	while (splitted[j])
+		(*curr)->argv[(*index)++] = ft_strdup(splitted[j++]);
+	j = 0;
+	while (splitted[j])
+		free(splitted[j++]);
+	free(splitted);
+}
+
+
+static void	process_word_token(t_arg **curr, t_token *token, int *index, t_env *env, int status)
 {
 	char	*expanded;
 
-	if (token->type == TOKEN_WORD)
+	expanded = expand(token, env, status);
+	if (*index == 0 && ft_strchr(expanded, ' '))
+		split_tokens(index, &expanded, curr);
+	else
 	{
-		if (!(*curr_arg))
-			error_message("word with no arg");
-		expanded = expand(token, env, status);
-		(*curr_arg)->argv[*index] = expanded;
+		(*curr)->argv[*index] = expanded;
 		(*index)++;
 	}
+}
+
+static void	process_tokens(t_arg **curr_arg, t_token *token, int *index, t_env *env, int status)
+{
+	if (token->type == TOKEN_WORD)
+		process_word_token(curr_arg, token, index, env, status);
 	else if (token->type == TOKEN_PIPE)
 	{
 		*curr_arg = handle_pipe_token(*curr_arg, token->next, index);

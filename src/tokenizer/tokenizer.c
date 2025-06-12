@@ -15,21 +15,22 @@
 char	*handle_quoted_token(char *input, int *i, char quote)
 {
 	char	*str;
-	int		j;
+	int		end;
+	int		start;
 	int		len;
 
-	j = 1 + (*i);
-	while (input[j] != quote && input[j])
-		j++;
-	if (input[j] == '\0')
+	start = (*i);
+	end = 1 + start;
+	while (input[end] != quote && input[end])
+		end++;
+	if (!input[end])
 		error_message("missing closing quotes.");
-	len = j - (*i) - 1;
+	len = end - start - 1;
 	str = malloc(len + 1);
 	if (!str)
 		error_message("failed to alloc mem.");
-	ft_strlcpy(str, input + (*i) + 1, len + 1);
-	(*i) = j + 1;
-	//add_token(str, token_list, TOKEN_WORD, quote);
+	ft_strlcpy(str, input + start + 1, len + 1);
+	(*i) = end + 1;
 	return (str);
 }
 
@@ -67,18 +68,17 @@ char *handle_word(char *input, int *i)
 	if (!str)
 		error_message("failed to alloc mem.");
 	ft_strlcpy(str, input + start, len + 1);
-	//add_token(str, token_list, TOKEN_WORD, 0);
 	return (str);
 }
 
-char	ft_strjoin_free(char *dst, char *src)
+char	*ft_strjoin_free(char *dst, char *src)
 {
 	char	*joined;
 
-	temp = ft_strjoin(dst, src);
+	joined = ft_strjoin(dst, src);
 	free(src);
 	free(dst);
-	return(temp);
+	return (joined);
 }
 
 int	handle_compound_words(char *input, t_token **token_list, int i)
@@ -86,10 +86,8 @@ int	handle_compound_words(char *input, t_token **token_list, int i)
 	char	quote;
 	char	*cw;
 	int		start;
-	int		quote_flag;
 
 	start = i;
-	quote_flag = 0;
 	cw = ft_strdup("");
 	while (input[i]  && !is_space(input[i]) && !is_operator(input[i]))
 	{
