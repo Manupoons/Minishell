@@ -6,7 +6,7 @@
 /*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 16:05:08 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/06/06 17:12:08 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/06/10 11:33:30 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ static void	ft_minishell(t_shell *mini, char **envp)
 	mini->tokens = NULL;
 	mini->env = NULL;
 	mini->arg = NULL;
-	ft_lst_env_init(&mini->env, envp);
+	ft_lst_env_init(mini, envp);
 	while (1)
 	{
 		if (g_signal == S_SIGINT)

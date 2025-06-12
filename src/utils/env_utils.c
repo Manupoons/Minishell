@@ -6,7 +6,7 @@
 /*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 19:04:03 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/06/06 16:58:59 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/06/10 11:36:59 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,29 +29,21 @@ void	ft_add_back_env(t_env **lst, t_env *new)
 	tmp->next = new;
 }
 
-t_env	*ft_lst_new_env(char *name, char *value, int alloc)
+t_env	*ft_lst_new_env(char *name, char *value)
 {
 	t_env	*new_node;
 
 	new_node = ft_calloc(1, sizeof(t_env));
 	if (!new_node)
 		return (NULL);
-	if (alloc)
+	new_node->env_name = ft_strdup(name);
+	new_node->env_value = ft_strdup(value);
+	if (!new_node->env_name || !new_node->env_value)
 	{
-		new_node->env_name = ft_strdup(name);
-		new_node->env_value = ft_strdup(value);
-		if (!new_node->env_name || !new_node->env_value)
-		{
-			ft_memfree(new_node->env_name);
-			ft_memfree(new_node->env_value);
-			ft_memfree(new_node);
-			return (NULL);
-		}
-	}
-	else
-	{
-		new_node->env_name = name;
-		new_node->env_value = value;
+		ft_memfree(new_node->env_name);
+		ft_memfree(new_node->env_value);
+		ft_memfree(new_node);
+		return (NULL);
 	}
 	new_node->next = NULL;
 	return (new_node);
@@ -63,14 +55,30 @@ static void	free_name_value(char *name, char *value)
 	ft_memfree(value);
 }
 
-void	ft_lst_env_init(t_env **env, char **envp)
+static void	init_pwd(t_shell *mini)
+{
+	char	*cpwd;
+	char	*oldpwd;
+
+	cpwd = getcwd(NULL, 0);
+	if (cpwd)
+	{
+		oldpwd = ft_strjoin("OLDPWD=", cpwd);
+		if (oldpwd)
+			add_arg_to_env(oldpwd, mini);
+		ft_memfree(oldpwd);
+		ft_memfree(cpwd);
+	}
+}
+
+void	ft_lst_env_init(t_shell *mini, char **envp)
 {
 	t_env	*new;
 	int		i;
 	char	*name;
 	char	*value;
 
-	if (!env || !envp)
+	if (!mini || !envp)
 		return ;
 	i = 0;
 	while (envp[i])
@@ -79,13 +87,14 @@ void	ft_lst_env_init(t_env **env, char **envp)
 		value = get_env_value(envp[i]);
 		if (name && value)
 		{
-			new = ft_lst_new_env(name, value, 1);
+			new = ft_lst_new_env(name, value);
 			if (new)
-				ft_add_back_env(env, new);
+				ft_add_back_env(&mini->env, new);
 			else
 				free_name_value(name, value);
 		}
 		free_name_value(name, value);
 		i++;
 	}
+	init_pwd(mini);
 }

@@ -6,7 +6,7 @@
 /*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 15:59:31 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/06/07 08:35:38 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/06/10 18:57:54 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,9 @@ static t_arg	*handle_pipe_token(t_arg *curr_arg, t_token *next_tokens,
 	t_arg	*new;
 
 	if (!curr_arg)
-		error_message("pipe without command before it.\n");
+		free_args_and_exit(curr_arg, "pipe without command before it.\n");
 	if (!next_tokens)
-		error_message("pipe without command after it.\n");
+		free_args_and_exit(curr_arg, "pipe without command after it.\n");
 	new = init_arg(word_counter(next_tokens));
 	curr_arg->next = new;
 	*index = 0;
@@ -89,7 +89,8 @@ static void	split_tokens(int *index, char **expanded, t_arg **curr)
 }
 
 
-static void	process_word_token(t_arg **curr, t_token *token, int *index, t_env *env, int status)
+static void	process_word_token(t_arg **curr, t_token *token, int *index,
+							t_env *env, int status)
 {
 	char	*expanded;
 

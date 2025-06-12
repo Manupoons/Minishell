@@ -6,7 +6,7 @@
 /*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 18:20:52 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/06/06 17:03:14 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/06/10 18:24:44 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,6 @@ void	ft_cd(t_shell *mini)
 	if (chdir(path))
 		perror("cd");
 	else
-		ft_pwd(mini);
+		ft_change_pwd(mini);
 	ft_memfree(path);
-	ft_change_pwd(mini);
 }

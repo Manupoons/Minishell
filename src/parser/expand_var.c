@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand_var.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jdorazio <jdorazio@student.42.madrid.co    +#+  +:+       +#+        */
+/*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/09 00:44:40 by jdorazio          #+#    #+#             */
-/*   Updated: 2025/06/09 00:44:40 by jdorazio         ###   ########.fr       */
+/*   Updated: 2025/06/10 13:03:10 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ static char	*replace_especial(char *expanded, int status, int *i)
 	char	*joined;
 	char	*status_str;
 
-	status_str =ft_itoa(status);
+	status_str = ft_itoa(status);
 	if (!status_str)
 		return (expanded);
 	joined = ft_strjoin(expanded, status_str);
@@ -73,8 +73,8 @@ static char	*replace_env_var(char *token, t_env *env, char *expanded, int *i)
 	return (joined);
 }
 
-
-static void	expand_var_token(char **expanded, char *token, t_env *env, int status)
+static void	expand_var_token(char **expanded, char *token, t_env *env,
+							int status)
 {
 	int		i;
 
@@ -101,7 +101,6 @@ static void	expand_var_token(char **expanded, char *token, t_env *env, int statu
 		}
 	}
 }
-
 
 char	*expand(t_token *token, t_env *env, int status)
 {
