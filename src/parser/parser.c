@@ -25,14 +25,17 @@ static t_arg	*handle_pipe_token(t_arg *curr_arg, t_token *next_tokens)
 	return (new);
 }
 
-static void	handle_redir_token(t_arg *curr_arg, t_token *token)
+static int	handle_redir_token(t_arg *curr_arg, t_token *token)
 {
 	t_token	*file_token;
 	t_redir	*redir;
 
 	file_token = token->next;
 	if (!file_token || file_token->type != TOKEN_WORD)
-		error_message("Syntax error_ redirection without filename.");
+	{
+		printf("- bash: syntax error near unexpected token `newline'");
+		return (1);
+	}
 	redir = malloc(sizeof(t_redir));
 	if (!redir)
 		error_message("failed to alloc.");
@@ -47,7 +50,7 @@ static void	handle_redir_token(t_arg *curr_arg, t_token *token)
 	else if (redir->type == TOKEN_REDIR_OUT || redir->type == TOKEN_APPEND)
 		redir->fd_out = 1;
 	redir->next = NULL;
-	append_to_parser(&(curr_arg->redirs), redir);
+	return(append_to_parser(&(curr_arg->redirs), redir), 0);
 }
 
 static void	process_word_token(t_arg **curr, t_token *token, t_env *env, int status)
@@ -75,7 +78,7 @@ static void	process_word_token(t_arg **curr, t_token *token, t_env *env, int sta
 
 }
 
-static void	process_tokens(t_arg **curr_arg, t_token *token, t_env *env, int status)
+static int	process_tokens(t_arg **curr_arg, t_token *token, t_env *env, int status)
 {
 	if (token->type == TOKEN_WORD)
 		process_word_token(curr_arg, token, env, status);
@@ -88,9 +91,14 @@ static void	process_tokens(t_arg **curr_arg, t_token *token, t_env *env, int sta
 	else if (is_redir(token->type))
 	{
 		if (!(*curr_arg))
-			error_message("redir with no arg");
-		handle_redir_token(*curr_arg, token);
+		{
+			printf("redir with no arg");
+			return (1);
+		}
+		if (handle_redir_token(*curr_arg, token))
+			return (1);
 	}
+	return (0);
 }
 
 t_arg	*parse_tokens(t_token *tokens, t_env *env, int status)
@@ -111,7 +119,8 @@ t_arg	*parse_tokens(t_token *tokens, t_env *env, int status)
 				error_message("init_arg failed");
 			head_arg = curr_arg;
 		}
-		process_tokens(&curr_arg, curr_token, env, status);
+		if (process_tokens(&curr_arg, curr_token, env, status))
+			return (free_args(head_arg), NULL);
 		if (is_redir(curr_token->type) && curr_token->next)
 			curr_token = curr_token->next;
 		curr_token = curr_token->next;
