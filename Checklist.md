@@ -123,20 +123,20 @@
 
 | Comando                        | Resultado Esperado                           | Comentarios                                         |
 | ------------------------------ | -------------------------------------------- | --------------------------------------------------- |
-| echo hola >                    | Error de sintaxis                            | NAE❌: leaks                                        |
-| >                              | Error de sintaxis                            | NAE❌: leaks                                        |
-| >>                             | Error de sintaxis                            | NAE❌: leaks                                        |
+| echo hola >                    | Error de sintaxis                            | ✅                                                  |
+| >                              | Error de sintaxis                            | ✅                                                  |
+| >>                             | Error de sintaxis                            | ✅                                                  |
 | echo hola > /dev/full          | No space left on device                      | NAE❌                                               |
 | echo \$NOEXISTE                | línea vacía                                  | ✅                                                  |
 | echo "\$NOEXISTE"              | línea vacía                                  | ✅                                                  |
 | export VAR=hello \| cat        | no rompe pipeline                            | ✅                                                  |
 | cd .. \| ls                    | cd sin efecto, ls se ejecuta                 | ✅                                                  |
 | exit \| echo hola              | echo no se ejecuta                           | ✅                                                  |
-| cat <<                         | Error de sintaxis                            | NAE❌: funciona pero no debe hacer exit             |
+| cat <<                         | Error de sintaxis                            | ✅                                                  |
 | cat << EOF (Ctrl+D sin cerrar) | Debe interrumpirse                           | NAE❌: no se como comprobar                         |
 | echo \\                        | Error o literal "\\"                         | ✅                                                  |
-| echo "                         | Error por comillas no cerradas               | NAE❌                                               |
-| echo '                         | Error por comillas no cerradas               | NAE❌                                               |
+| echo "                         | Error por comillas no cerradas               | ✅                                                  |
+| echo '                         | Error por comillas no cerradas               | ✅                                                  |
 | sleep 3 & echo done            | done se imprime, sleep sigue (si & hay)      | NAE❌: no gestionamos & porque no hemos hecho bonus |
 | (echo hola)                    | ejecuta echo hola (si subshell implementado) | ✅                                                  |
 | echo "'hola'"                  | 'hola'                                       | ✅                                                  |
