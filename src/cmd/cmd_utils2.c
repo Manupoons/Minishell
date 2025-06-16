@@ -17,6 +17,8 @@ static void	run_cmd(t_shell *mini)
 	char	*path;
 	char	**envp;
 
+	if (!mini->arg || !mini->arg->argv || !mini->arg->argv[0])
+		exit(127);
 	envp = ft_env_to_array(mini);
 	if (mini->arg->redirs)
 	{

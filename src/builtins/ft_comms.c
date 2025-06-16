@@ -14,6 +14,8 @@
 
 int	is_comms(t_shell *mini)
 {
+	if (!mini->arg || !mini->arg->argv || !mini->arg->argv[0])
+		return (0);
 	if (ft_strcmp(mini->arg->argv[0], "echo") == 0)
 		return (1);
 	else if (ft_strcmp(mini->arg->argv[0], "cd") == 0)
@@ -34,6 +36,8 @@ int	is_comms(t_shell *mini)
 
 void	ft_comms(t_shell *mini)
 {
+	if (!mini->arg || !mini->arg->argv || !mini->arg->argv[0])
+		return ;
 	if (ft_strcmp(mini->arg->argv[0], "echo") == 0)
 		ft_echo(mini);
 	else if (ft_strcmp(mini->arg->argv[0], "cd") == 0)

@@ -24,11 +24,11 @@ char	*handle_quoted_token(char *input, int *i, char quote)
 	while (input[end] != quote && input[end])
 		end++;
 	if (!input[end])
-		error_message("missing closing quotes.");
+		return (printf("missing closing quotes.\n"), NULL);
 	len = end - start - 1;
 	str = malloc(len + 1);
 	if (!str)
-		error_message("failed to alloc mem.");
+		return (NULL);
 	ft_strlcpy(str, input + start + 1, len + 1);
 	(*i) = end + 1;
 	return (str);
@@ -93,9 +93,13 @@ int	handle_compound_words(char *input, t_token **token_list, int i)
 	{
 		quote = is_quotes(input[i]);
 		if (quote != 0)
-			cw = ft_strjoin(cw, handle_quoted_token(input, &i, quote));
+		{
+			cw = ft_strjoin_free(cw, handle_quoted_token(input, &i, quote));
+			if (!cw)
+				return(free(cw), -1);
+		}
 		else
-			cw = ft_strjoin(cw, handle_word(input, &i));
+			cw = ft_strjoin_free(cw, handle_word(input, &i));
 	}
 	add_token(cw, token_list, TOKEN_WORD, quote);
 	free(cw);
@@ -119,6 +123,12 @@ t_token	*tokenizer(char *input)
 			count = handle_operator(input, &token_list, i);
 		else
 			count = handle_compound_words(input, &token_list, i);
+		if (count == -1)
+		{
+			if (token_list)
+				free_tokens(token_list);
+			return (NULL);
+		}
 		i += count;
 	}
 	return (token_list);

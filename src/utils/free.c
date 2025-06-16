@@ -76,15 +76,18 @@ void	free_args(t_arg *args)
 	while (args)
 	{
 		tmp = args->next;
-		i = 0;
-		while (i < args->args_count)
+		if (args->argv)
 		{
-			free(args->argv[i]);
-			i++;
+			i = 0;
+			while (args->argv[i])
+			{
+				free(args->argv[i]);
+				i++;
+			}
+			free(args->argv);
+			if (args->redirs)
+				free_redirs(args->redirs);
 		}
-		free(args->argv);
-		if (args->redirs)
-			free_redirs(args->redirs);
 		free(args);
 		args = tmp;
 	}
@@ -96,4 +99,14 @@ void	free_args_and_exit(t_arg *args, const char *msg)
 		fprintf(stderr, "minishell: %s\n", msg);
 	free_args(args);
 	exit(EXIT_FAILURE);
+}
+
+void	free_array_split(char **arr)
+{
+	int	i;
+
+	i = 0;
+	while(arr[i])
+		free(arr[i++]);
+	free(arr);
 }

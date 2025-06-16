@@ -48,3 +48,14 @@ char	*get_env_value(char *value)
 	}
 	return (val);
 }
+
+char	*get_env_value_by_name(t_env *env, const char *name)
+{
+	while (env)
+	{
+		if (!ft_strcmp(env->env_name, name))
+			return (env->env_value);
+		env = env->next;
+	}
+	return (NULL);
+}

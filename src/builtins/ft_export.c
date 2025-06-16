@@ -34,27 +34,25 @@ static t_env	*copy_list(t_env *list)
 static	t_env	*sort_list(t_env *list)
 {
 	t_env	*temp;
-	t_env	*aux;
+	t_env	aux;
 
 	temp = list;
-	aux = ft_lst_new_env("", "");
 	while (list->next != NULL)
 	{
 		if (list->next && ft_strcmp(list->env_name, list->next->env_name) > 0)
 		{
-			aux->env_name = list->env_name;
-			aux->env_value = list->env_value;
+			aux.env_name = list->env_name;
+			aux.env_value = list->env_value;
 			list->env_name = list->next->env_name;
 			list->env_value = list->next->env_value;
-			list->next->env_name = aux->env_name;
-			list->next->env_value = aux->env_value;
+			list->next->env_name = aux.env_name;
+			list->next->env_value = aux.env_value;
 			list = list->next;
 		}
 		else
 			list = list->next;
 	}
 	list = temp;
-	ft_memfree(aux);
 	return (list);
 }
 
@@ -83,7 +81,7 @@ void	ft_export(t_shell *mini)
 	int	i;
 
 	mini->status = 0;
-	if (mini->arg->args_count == 1)
+	if (mini->arg->args_count == 1 || mini->arg->argv[1] == NULL)
 		ft_exp_no_arg(mini);
 	else
 	{

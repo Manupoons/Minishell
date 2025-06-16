@@ -82,9 +82,12 @@ int	check_export(char *argv)
 
 	i = 0;
 	name = get_env_name(argv);
-	if (ft_isdigit(name[i]))
+	if (ft_isdigit(name[i]) || !*name)
 	{
-		printf("export: %s: not a valid identifier\n", argv);
+		if (!*name)
+			printf("export: `': not a valid identifier\n");
+		else
+			printf("export: %s: not a valid identifier\n", argv);
 		return (ft_memfree(name), 0);
 	}
 	while (name[i])
