@@ -19,42 +19,42 @@
 
 ## 🗣️ Categoría: Comando `echo`
 
-| Comando                     | Resultado Esperado        | Comentarios                                       |
-| --------------------------- | ------------------------- | ------------------------------------------------- |
-| echo $$$$                   | $$$$                      | ✅ No hace falta implementar PID                  |
-| echo -nnnnnn hola           | hola (sin salto de línea) | ✅                                                |
-| echo -nnnnp hola            | -nnp hola                 | ✅                                                |
-| echo "Hello \\"World\\""    | Hello "World"             | ✅ No hace falta interpretar \                    |
-| echo "\$USER '\$USER'"      | usuario 'usuario'         | ✅                                                |
-| echo "'\$USER'"             | 'usuario'                 | ✅                                                |
-| echo "ls \| wc -l"          | ls \| wc -l               | ✅                                                |
-| echo " hola"                | hola                      | ✅                                                |
-| echo                        | (salto de línea)          | ✅                                                |
-| echo hola -n hola           | hola -n hola              | ✅                                                |
-| echo '\$'\$'\$'\$'\$'\$'\$' | \$\$\$\$\$\$\$            | **NAE❌: Funciona pero ligera diferencia con OG** |
-| echo \$HOME                 | /home/user                | ✅                                                |
-| echo "\$HOME"               | /home/user                | ✅                                                |
-| echo '\$HOME'               | \$HOME                    | ✅                                                |
-| echo \$HOME\$               | /home/user\$              | ✅                                                |
-| echo -n -nnnn -nnnp         | -nnp                      | **NAE❌: no se si esta prueba es valida. **       |
-| ECHO -n -n                  | -n -n                     | ✅                                                |
-| echo -n                     | (sin salto de línea)      | ✅                                                |
-| echo 'hola '\$USER''        | hola usuario              | ✅                                                |
+| Comando                     | Resultado Esperado        | Comentarios                                 |
+| --------------------------- | ------------------------- | ------------------------------------------- |
+| echo $$$$                   | $$$$                      | ✅ No hace falta implementar PID            |
+| echo -nnnnnn hola           | hola (sin salto de línea) | ✅                                          |
+| echo -nnnnp hola            | -nnp hola                 | ✅                                          |
+| echo "Hello \\"World\\""    | Hello "World"             | ✅ No hace falta interpretar \              |
+| echo "\$USER '\$USER'"      | usuario 'usuario'         | ✅                                          |
+| echo "'\$USER'"             | 'usuario'                 | ✅                                          |
+| echo "ls \| wc -l"          | ls \| wc -l               | ✅                                          |
+| echo " hola"                | hola                      | ✅                                          |
+| echo                        | (salto de línea)          | ✅                                          |
+| echo hola -n hola           | hola -n hola              | ✅                                          |
+| echo '\$'\$'\$'\$'\$'\$'\$' | \$\$\$\$\$\$\$            | ✅                                          |
+| echo \$HOME                 | /home/user                | ✅                                          |
+| echo "\$HOME"               | /home/user                | ✅                                          |
+| echo '\$HOME'               | \$HOME                    | ✅                                          |
+| echo \$HOME\$               | /home/user\$              | ✅                                          |
+| echo -n -nnnn -nnnp         | -nnp                      | **NAE❌: no se si esta prueba es valida. ** |
+| ECHO -n -n                  | -n -n                     | ✅                                          |
+| echo -n                     | (sin salto de línea)      | ✅                                          |
+| echo 'hola '\$USER''        | hola usuario              | ✅                                          |
 
 ---
 
 ## 📦 Categoría: Comando `export`
 
-| Comando                                 | Resultado Esperado     | Comentarios                                    |
-| --------------------------------------- | ---------------------- | ---------------------------------------------- |
-| export \$var                            | Error si var no existe | ✅                                             |
-| export a                                | declare -x a           | ✅                                             |
-| export a="b b" + echo \$a               | b b                    | NAE❌: no esta asignando valor                 |
-| export ""                               | Error                  | NAE❌: deberia devolver mensaje de error y \\n |
-| export b=ls + \$b                       | ejecuta ls             | NAE❌: falla en guardar la ruta del comando    |
-| export a="ls -l \| grep .c \| -a" + \$a | ejecuta pipeline       | NAE❌: Comprobar me falla en WSL               |
-| export a="ls -l -a" + \$a               | ejecuta comando        | NAE❌: falla en guardar la ruta del comando    |
-| export a=ls + \$a                       | ejecuta ls             | NAE❌: falla en guardar la ruta del comando    |
+| Comando                                 | Resultado Esperado     | Comentarios |
+| --------------------------------------- | ---------------------- | ----------- |
+| export \$var                            | Error si var no existe | ✅          |
+| export a                                | declare -x a           | ✅          |
+| export a="b b" + echo \$a               | b b                    | ✅          |
+| export ""                               | Error                  | ✅          |
+| export b=ls + \$b                       | ejecuta ls             | ✅          |
+| export a="ls -l \| grep .c \| -a" + \$a | no ejecuta pipeline    | ✅          |
+| export a="ls -l" + \$a                  | ejecuta comando        | ✅          |
+| export a=ls + \$a                       | ejecuta ls             | ✅          |
 
 ---
 
@@ -94,13 +94,13 @@
 
 ## 🔁 Categoría: Redirecciones y pipes
 
-| Comando               | Resultado Esperado                | Comentarios                                    |
-| --------------------- | --------------------------------- | ---------------------------------------------- |
-| ls > a > b > c        | a y b vacíos, salida en c         | ✅                                             |
-| < c                   | Error si no existe                | ✅                                             |
-| > c                   | Crea archivo vacío                | ✅                                             |
-| ls \| wc -l > outfile | outfile contiene número de líneas | NAE❌: revisar porque resultado no es identico |
-| cat a \| < b grep e   | entrada de b usada en grep        | NAE❌: no se como confirmar que funciona       |
+| Comando               | Resultado Esperado                | Comentarios                                   |
+| --------------------- | --------------------------------- | --------------------------------------------- |
+| ls > a > b > c        | a y b vacíos, salida en c         | ✅                                            |
+| < c                   | Error si no existe                | NAE❌ Funciona como esperado pero TIENE LEAKS |
+| > c                   | Crea archivo vacío                | NAE❌ Funciona como esperado pero TIENE LEAKS |
+| ls \| wc -l > outfile | outfile contiene número de líneas | ✅                                            |
+| cat a \| < b grep e   | entrada de b usada en grep        | NAE❌: no se como confirmar que funciona      |
 
 ---
 
@@ -108,11 +108,11 @@
 
 | Comando            | Resultado Esperado                  | Comentarios                              |
 | ------------------ | ----------------------------------- | ---------------------------------------- |
-| ec'h''o'           | ejecuta echo                        | NAE❌                                    |
-| 'l''s'             | ejecuta ls                          | NAE❌                                    |
+| ec'h''o'           | ejecuta echo                        | ✅                                       |
+| 'l''s'             | ejecuta ls                          | ✅                                       |
 | ls '-la'           | ejecuta ls -la                      | ✅                                       |
 | << a << b << c cat | heredoc con múltiples delimitadores | NAE❌: no se como confirmar que funciona |
-| expr \$? + \$?     | suma códigos de salida              | NAE❌                                    |
+| expr \$? + \$?     | suma códigos de salida              | ✅                                       |
 | ls y /bin/ls       | ambos deben funcionar               | ✅                                       |
 | env -i ./minishell | ejecuta sin env                     | NAE❌: no se como confirmar que funciona |
 | << \$HOME grep e   | termina con línea '\$HOME'          | NAE❌: no se como confirmar que funciona |
@@ -123,20 +123,20 @@
 
 | Comando                        | Resultado Esperado                           | Comentarios                                         |
 | ------------------------------ | -------------------------------------------- | --------------------------------------------------- |
-| echo hola >                    | Error de sintaxis                            | NAE❌: funciona pero no debe hacer exit             |
-| >                              | Error de sintaxis                            | NAE❌: funciona pero no debe hacer exit             |
-| >>                             | Error de sintaxis                            | NAE❌: funciona pero no debe hacer exit             |
+| echo hola >                    | Error de sintaxis                            | ✅                                                  |
+| >                              | Error de sintaxis                            | ✅                                                  |
+| >>                             | Error de sintaxis                            | ✅                                                  |
 | echo hola > /dev/full          | No space left on device                      | NAE❌                                               |
 | echo \$NOEXISTE                | línea vacía                                  | ✅                                                  |
 | echo "\$NOEXISTE"              | línea vacía                                  | ✅                                                  |
 | export VAR=hello \| cat        | no rompe pipeline                            | ✅                                                  |
 | cd .. \| ls                    | cd sin efecto, ls se ejecuta                 | ✅                                                  |
 | exit \| echo hola              | echo no se ejecuta                           | ✅                                                  |
-| cat <<                         | Error de sintaxis                            | NAE❌: funciona pero no debe hacer exit             |
+| cat <<                         | Error de sintaxis                            | ✅                                                  |
 | cat << EOF (Ctrl+D sin cerrar) | Debe interrumpirse                           | NAE❌: no se como comprobar                         |
 | echo \\                        | Error o literal "\\"                         | ✅                                                  |
-| echo "                         | Error por comillas no cerradas               | NAE❌                                               |
-| echo '                         | Error por comillas no cerradas               | NAE❌                                               |
+| echo "                         | Error por comillas no cerradas               | ✅                                                  |
+| echo '                         | Error por comillas no cerradas               | ✅                                                  |
 | sleep 3 & echo done            | done se imprime, sleep sigue (si & hay)      | NAE❌: no gestionamos & porque no hemos hecho bonus |
 | (echo hola)                    | ejecuta echo hola (si subshell implementado) | ✅                                                  |
 | echo "'hola'"                  | 'hola'                                       | ✅                                                  |

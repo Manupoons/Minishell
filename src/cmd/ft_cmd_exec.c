@@ -69,6 +69,11 @@ void	execute(t_shell *mini)
 {
 	while (mini->arg)
 	{
+		if (!mini->arg->argv || !mini->arg->argv[0])
+		{
+			ft_next_cmd(mini);
+			continue ;
+		}
 		if (mini->arg->redirs)
 		{
 			if (!mini->arg->redirs->cmd || !mini->arg->redirs->cmd[0]
@@ -94,4 +99,6 @@ void	ft_cmd_exec(t_shell *mini)
 		execute_pipeline(mini);
 	else if (mini->arg && !mini->arg->next)
 		execute(mini);
+	free_args(mini->arg);
+	mini->arg = NULL;
 }

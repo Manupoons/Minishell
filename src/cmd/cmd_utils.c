@@ -37,7 +37,7 @@ void	execute_redir(t_shell *msh)
 
 void	handle_status(t_shell *mini)
 {
-	if (WIFEXITED(mini->status))
+	if (WIFEXITED(mini->status) && mini->arg && mini->arg->argv && mini->arg->argv[0])
 		mini->status = WEXITSTATUS(mini->status);
 	if (mini && mini->status == 127)
 		printf("%s: %s\n", mini->arg->argv[0], "command not found");

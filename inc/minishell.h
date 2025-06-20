@@ -150,23 +150,35 @@ void	child_process(t_shell *msh);
 
 //###--- PARSER ---###
 t_arg	*parse_tokens(t_token *tokens, t_env *env, int status);
-void	handle_redir_token(t_arg *curr_arg, t_token *token);
 //###--------------###
 
 //###--- PARSER_UTILS---###
-int		word_counter(t_token *tokens);
-t_arg	*init_arg(int count);
+t_arg	*init_arg(void);
 int		is_redir(int type);
+void	append_to_parser(t_redir **head, t_redir *redir);
+char	**ft_add_to_argv(char **arr, char *new_str);
+void	split_tokens(char **expanded, t_arg **curr);
 //###-------------------###
+
+//###--- EXPAND_VAR ---###
+char	*expand(t_token *token, t_env *env, int status, int *flag);
+char	*get_env_value_by_name(t_env *env, const char *name);
+//###-----------------------###
+
+//###--- EXPAND VAR UTILS---###
+char	*ft_join_free(char *dst, char *src);
+char	*strjoin_char(char *s, char c);
+//###--- PARSER_UTILS---###
+
 
 //###--- SIGNAL ---###
 void	init_signal(void);
 //###--------------###
 
 //###--- TOKENIZER ---###
-int		handle_quoted_token(char *input, t_token **token_list, int i, char quote);
+char	*handle_quoted_token(char *input, int *i, char quote);
 int		handle_operator(char *input, t_token **token_list, int i);
-int		handle_word(char *input, t_token **token_list, int i);
+char *handle_word(char *input, int *i);
 t_token	*tokenizer(char *input);
 //###-----------------###
 
@@ -176,12 +188,6 @@ int		is_operator(char c);
 int		is_space(char c);
 int		handle_space(char *input, int i);
 void	add_token(char *input, t_token **token_list, t_token_type type, char quote);
-//###-----------------------###
-
-//###--- EXPAND_VAR ---###
-char	*expand(t_token *token, t_env *env, int status);
-//char	*check_var(char *token);
-char	*get_env_value_by_name(t_env *env, const char *name);
 //###-----------------------###
 
 //###--- MINISHELL_UTILS ---###
@@ -199,6 +205,7 @@ void	free_tokens(t_token *tokens);
 void	free_redirs(t_redir *redirs);
 void	free_args(t_arg *args);
 void	free_args_and_exit(t_arg *args, const char *msg);
+void	free_array(char **arr);
 //###-----------------------###
 char	*ft_get_path(char *cmd, t_env *env);
 char	**ft_env_to_array(t_shell *mini);
@@ -207,5 +214,6 @@ char	**ft_env_to_array(t_shell *mini);
 //###--- DEBUGGIN ---###
 void	print_parser(t_arg *head);
 void	print_tokens(t_token *tokens);
+void	free_array_split(char **arr);
 
 #endif

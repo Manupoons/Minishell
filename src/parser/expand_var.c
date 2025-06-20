@@ -12,29 +12,6 @@
 
 #include "./minishell.h"
 
-char	*get_env_value_by_name(t_env *env, const char *name)
-{
-	while (env)
-	{
-		if (!ft_strcmp(env->env_name, name))
-			return (env->env_value);
-		env = env->next;
-	}
-	return ("");
-}
-
-static char	*strjoin_char(char *s, char c)
-{
-	char	str[2];
-	char	*joined;
-
-	str[0] = c;
-	str[1] = '\0';
-	joined = ft_strjoin(s, str);
-	free(s);
-	return (joined);
-}
-
 static char	*replace_especial(char *expanded, int status, int *i)
 {
 	char	*joined;
@@ -42,7 +19,7 @@ static char	*replace_especial(char *expanded, int status, int *i)
 
 	status_str = ft_itoa(status);
 	if (!status_str)
-		return (expanded);
+		return (NULL);
 	joined = ft_strjoin(expanded, status_str);
 	free(status_str);
 	free(expanded);
@@ -50,67 +27,88 @@ static char	*replace_especial(char *expanded, int status, int *i)
 	return (joined);
 }
 
-static char	*replace_env_var(char *token, t_env *env, char *expanded, int *i)
+static char *replace_env_var(char *token_str, t_env *env, char *expanded_val, int *i)
 {
 	int		j;
-	char	*joined;
 	char	*var_name;
-	char	*var_value;
+	char	*joined;
+	char	*var_value_from_env;
+	char	*value_to_join;
 
-	j = (*i);
-	while (ft_isalnum(token[j]) || token[j] == '_')
+	j = *i;
+	while (ft_isalnum(token_str[j]) || token_str[j] == '_')
 		j++;
-	var_name = ft_substr(token, (*i), j - (*i));
-	if (!var_name)
-		return (expanded);
-	var_value = get_env_value_by_name(env, var_name);
+	var_name = ft_substr(token_str, *i, j - *i);
+	var_value_from_env = get_env_value_by_name(env, var_name);
+	if (!var_value_from_env || *var_value_from_env == '\0')
+	{
+		*i = j;
+		return (free(var_name), NULL);
+	}
+	value_to_join = ft_strdup(var_value_from_env);
+	if (!value_to_join)
+		return (free(var_name), NULL);
 	free(var_name);
-	if (!var_value)
-		return (expanded);
-	joined = ft_strjoin(expanded, var_value);
-	free(expanded);
-	(*i) = j;
+	joined = ft_join_free(expanded_val, value_to_join);
+	if (!joined)
+		return (NULL);
+	*i = j;
 	return (joined);
 }
 
-static void	expand_var_token(char **expanded, char *token, t_env *env,
-							int status)
+static char *handle_dollar_expansion(char *token_str, t_env *env, int status, int *i, char *current_expanded)
 {
-	int		i;
-
-	i = 0;
-	*expanded = ft_strdup("");
-	while (token[i])
-	{
-		if (token[i] == '$')
-		{
-			i++;
-			if (!token[i])
-				(*expanded) = strjoin_char((*expanded), '$');
-			else if (token[i] == '?')
-				(*expanded) = replace_especial((*expanded), status, &i);
-			else if (ft_isalpha(token[i]) || token[i] == '_')
-				(*expanded) = replace_env_var(token, env, (*expanded), &i);
-			else
-				(*expanded) = strjoin_char((*expanded), '$');
-		}
-		else
-		{
-			(*expanded) = strjoin_char((*expanded), token[i]);
-			i++;
-		}
-	}
+	(*i)++;
+	if (!token_str[*i])
+		return (strjoin_char(current_expanded, '$'));
+	else if (token_str[*i] == '?')
+		return(replace_especial(current_expanded, status, i));
+	else if (ft_isalpha(token_str[*i]) || token_str[*i] == '_')
+		return(replace_env_var(token_str, env, current_expanded, i));
+	else
+		return(strjoin_char(current_expanded, '$'));
 }
 
-char	*expand(t_token *token, t_env *env, int status)
+static char *expand_var_token(char *token_str, t_env *env, int status)
 {
-	char	*expanded;
+	int		i;
+	char	*current_expanded;
+	char	*temp_str;
 
+	i = 0;
+	current_expanded = ft_strdup("");
+	if (!current_expanded)
+		return (NULL);
+	while (token_str[i])
+	{
+		if (token_str[i] == '$')
+			temp_str = handle_dollar_expansion(token_str, env, status, &i, current_expanded);
+	   else
+		   temp_str = strjoin_char(current_expanded, token_str[i]++);
+		if (!temp_str)
+			return (free(current_expanded), NULL);
+		current_expanded = temp_str;
+	}
+	return (current_expanded);
+}
+
+char *expand(t_token *token, t_env *env, int status, int *flag)
+{
+	char	*expanded_result;
+
+	*flag = 0;
 	if (ft_strchr(token->token, '$') && token->quote_type != '\'')
-		expand_var_token(&expanded, token->token, env, status);
+	{
+		expanded_result = expand_var_token(token->token, env, status);
+		if (!expanded_result)
+			return (NULL);
+		*flag = 1;
+	}
 	else
-		expanded = ft_strdup(token->token);
-	if (!expanded)
-		error_message("token expansion failed");
-	return (expanded);
+	{
+		expanded_result = ft_strdup(token->token);
+		if (!expanded_result)
+			return (NULL);
+	}
+	return (expanded_result);
 }

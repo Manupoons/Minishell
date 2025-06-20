@@ -12,25 +12,26 @@
 
 #include "./minishell.h"
 
-int	handle_quoted_token(char *input, t_token **token_list, int i, char quote)
+char	*handle_quoted_token(char *input, int *i, char quote)
 {
 	char	*str;
-	int		j;
+	int		end;
+	int		start;
 	int		len;
 
-	j = 1 + i;
-	while (input[j] != quote && input[j])
-		j++;
-	if (input[j] == '\0')
-		error_message("missing closing quotes.");
-	len = j - i - 1;
+	start = (*i);
+	end = 1 + start;
+	while (input[end] != quote && input[end])
+		end++;
+	if (!input[end])
+		return (printf("missing closing quotes.\n"), NULL);
+	len = end - start - 1;
 	str = malloc(len + 1);
 	if (!str)
-		error_message("failed to alloc mem.");
-	ft_strlcpy(str, input + i + 1, len + 1);
-	add_token(str, token_list, TOKEN_WORD, quote);
-	free(str);
-	return (j - i + 1);
+		return (NULL);
+	ft_strlcpy(str, input + start + 1, len + 1);
+	(*i) = end + 1;
+	return (str);
 }
 
 int	handle_operator(char *input, t_token **token_list, int i)
@@ -52,24 +53,57 @@ int	handle_operator(char *input, t_token **token_list, int i)
 	return (0);
 }
 
-int	handle_word(char *input, t_token **token_list, int i)
+char *handle_word(char *input, int *i)
 {
 	int		start;
 	int		len;
 	char	*str;
 
-	start = i;
-	while (input[i] && !(is_quotes(input[i])) && !(is_operator((input[i])))
-		&& (!is_space(input[i])))
-		i++;
-	len = i - start;
+	start = (*i);
+	while (input[(*i)] && !(is_quotes(input[(*i)])) && !(is_operator((input[(*i)])))
+		&& (!is_space(input[(*i)])))
+		(*i)++;
+	len = (*i) - start;
 	str = malloc(len + 1);
 	if (!str)
 		error_message("failed to alloc mem.");
 	ft_strlcpy(str, input + start, len + 1);
-	add_token(str, token_list, TOKEN_WORD, 0);
-	free(str);
-	return (len);
+	return (str);
+}
+
+char	*ft_strjoin_free(char *dst, char *src)
+{
+	char	*joined;
+
+	joined = ft_strjoin(dst, src);
+	free(src);
+	free(dst);
+	return (joined);
+}
+
+int	handle_compound_words(char *input, t_token **token_list, int i)
+{
+	char	quote;
+	char	*cw;
+	int		start;
+
+	start = i;
+	cw = ft_strdup("");
+	while (input[i]  && !is_space(input[i]) && !is_operator(input[i]))
+	{
+		quote = is_quotes(input[i]);
+		if (quote != 0)
+		{
+			cw = ft_strjoin_free(cw, handle_quoted_token(input, &i, quote));
+			if (!cw)
+				return(free(cw), -1);
+		}
+		else
+			cw = ft_strjoin_free(cw, handle_word(input, &i));
+	}
+	add_token(cw, token_list, TOKEN_WORD, quote);
+	free(cw);
+	return (i - start);
 }
 
 t_token	*tokenizer(char *input)
@@ -77,7 +111,6 @@ t_token	*tokenizer(char *input)
 	t_token	*token_list;
 	int		i;
 	int		count;
-	char	quote;
 
 	i = 0;
 	token_list = NULL;
@@ -85,14 +118,17 @@ t_token	*tokenizer(char *input)
 	{
 		i = handle_space(input, i);
 		if (!input[i])
-			break ;
-		quote = is_quotes(input[i]);
-		if (quote != 0)
-			count = handle_quoted_token(input, &token_list, i, quote);
-		else if (is_operator(input[i]))
+		break ;
+		if (is_operator(input[i]))
 			count = handle_operator(input, &token_list, i);
 		else
-			count = handle_word(input, &token_list, i);
+			count = handle_compound_words(input, &token_list, i);
+		if (count == -1)
+		{
+			if (token_list)
+				free_tokens(token_list);
+			return (NULL);
+		}
 		i += count;
 	}
 	return (token_list);
