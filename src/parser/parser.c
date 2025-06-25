@@ -6,7 +6,7 @@
 /*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 15:59:31 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/06/20 10:17:50 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/06/20 11:37:35 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ static int	handle_redir_token(t_arg *curr_arg, t_token *token)
 	file_token = token->next;
 	if (!file_token || file_token->type != TOKEN_WORD)
 	{
-		printf("- bash: syntax error near unexpected token `newline'");
+		printf("- bash: syntax error near unexpected token `newline'\n");
 		return (1);
 	}
 	redir = malloc(sizeof(t_redir));
@@ -120,7 +120,13 @@ t_arg	*parse_tokens(t_token *tokens, t_env *env, int status)
 			head_arg = curr_arg;
 		}
 		if (process_tokens(&curr_arg, curr_token, env, status))
-			return (free_args(head_arg), NULL);
+		{
+			if (head_arg)
+				free_args(head_arg);
+			else if (curr_arg)
+				free_args(curr_arg);
+			return (NULL);
+		}
 		if (is_redir(curr_token->type) && curr_token->next)
 			curr_token = curr_token->next;
 		curr_token = curr_token->next;

@@ -6,7 +6,7 @@
 /*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 19:14:03 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/06/07 10:21:10 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/06/20 12:36:32 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ static void	ft_next_cmd(t_shell *mini)
 	t_redir	*next;
 	t_arg	*tmp;
 
+	if (!mini->arg)
+		return ;
 	ft_memfree_all(mini->arg->argv);
 	if (mini->arg->redirs)
 	{
@@ -40,7 +42,11 @@ void	execute_pipeline(t_shell *mini)
 
 	last_pid = -1;
 	if (!init_pipes(mini))
+	{
 		error_message("failed init pipe");
+		free_args(mini->arg);
+		return ;
+	}
 	execute_pipeline_commands(mini, &last_pid);
 	if (last_pid != -1)
 		waitpid(last_pid, &mini->status, 0);
@@ -57,12 +63,20 @@ static void	execute_pid(t_shell *mini)
 	execute_redir_token(mini->arg);
 	pid = fork();
 	if (pid < 0)
+	{
 		error_message("failed to fork\n");
+		free_args(mini->arg);
+		return ;
+	}
 	if (pid == 0)
 		child_process(mini);
 	else
+	{
 		waitpid(pid, &mini->status, 0);
-	handle_status(mini);
+		handle_status(mini);
+	}
+	free_args(mini->arg);
+	mini->arg = NULL;
 }
 
 void	execute(t_shell *mini)

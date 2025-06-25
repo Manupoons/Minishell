@@ -6,7 +6,7 @@
 /*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 13:16:16 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/06/10 19:07:24 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/06/20 12:26:40 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,12 @@ void	free_redirs(t_redir *redirs)
 	while (redirs)
 	{
 		tmp = redirs->next;
-		free(redirs->cmd);
+		if (redirs->cmd)
+			free(redirs->cmd);
+		if (redirs->fd_in >= 0)
+			close(redirs->fd_in);
+		if (redirs->fd_out >= 0)
+			close(redirs->fd_out);
 		free(redirs);
 		redirs = tmp;
 	}
@@ -85,9 +90,9 @@ void	free_args(t_arg *args)
 				i++;
 			}
 			free(args->argv);
-			if (args->redirs)
-				free_redirs(args->redirs);
 		}
+		if (args->redirs)
+			free_redirs(args->redirs);
 		free(args);
 		args = tmp;
 	}
