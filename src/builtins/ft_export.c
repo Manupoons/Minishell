@@ -6,7 +6,7 @@
 /*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 12:09:09 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/06/10 11:39:00 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/06/10 19:06:41 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ static t_env	*copy_list(t_env *list)
 	return (env);
 }
 
-static	t_env	*sort_list(t_env *list)
+static t_env	*sort_list(t_env *list)
 {
 	t_env	*temp;
 	t_env	aux;

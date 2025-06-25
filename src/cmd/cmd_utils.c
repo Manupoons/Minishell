@@ -6,7 +6,7 @@
 /*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/07 09:21:59 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/06/07 09:54:30 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/06/20 12:35:11 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,12 +24,14 @@ void	execute_redir(t_shell *msh)
 			if (dup2(redir->fd_in, STDIN_FILENO) == -1)
 				perror("dup2 redir out");
 			close(redir->fd_in);
+			redir->fd_in = -1;
 		}
 		if (redir->type == TOKEN_REDIR_OUT || redir->type == TOKEN_APPEND)
 		{
 			if (dup2(redir->fd_out, STDOUT_FILENO) == -1)
 				perror("dup2 redir out");
 			close(redir->fd_out);
+			redir->fd_out = -1;
 		}
 		redir = redir->next;
 	}
