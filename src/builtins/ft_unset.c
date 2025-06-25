@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_unset.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: jdorazio <jdorazio@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 12:09:06 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/06/07 10:20:27 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/06/25 19:59:35 by jdorazio         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void	ft_unset(t_shell *mini)
 	t_env	*curr;
 	t_env	*prev;
 
-	i = 0;
+	i = -1;
 	while (mini->arg->argv[++i])
 	{
 		if (!check_export(mini->arg->argv[++i]))

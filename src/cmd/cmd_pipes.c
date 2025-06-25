@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cmd_pipes.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: jdorazio <jdorazio@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/07 09:48:41 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/06/07 10:03:53 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/06/25 19:20:46 by jdorazio         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ void	execute_pipeline_commands(t_shell *mini, pid_t *last_pid)
 		execute_redir_token(current);
 		pid = fork();
 		if (pid < 0)
-			error_message("error creating fork");
+			printf("error creating fork");
 		if (pid == 0)
 		{
 			mini->arg = current;

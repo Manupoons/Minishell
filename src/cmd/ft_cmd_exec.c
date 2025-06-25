@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_cmd_exec.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: jdorazio <jdorazio@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 19:14:03 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/06/20 12:36:32 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/06/25 19:20:46 by jdorazio         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ void	execute_pipeline(t_shell *mini)
 	last_pid = -1;
 	if (!init_pipes(mini))
 	{
-		error_message("failed init pipe");
+		printf("failed init pipe");
 		free_args(mini->arg);
 		return ;
 	}
@@ -64,7 +64,7 @@ static void	execute_pid(t_shell *mini)
 	pid = fork();
 	if (pid < 0)
 	{
-		error_message("failed to fork\n");
+		printf("failed 	to fork\n");
 		free_args(mini->arg);
 		return ;
 	}

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: jdorazio <jdorazio@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 17:00:16 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/06/10 19:06:23 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/06/25 19:28:46 by jdorazio         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,7 @@ int	check_export(char *argv)
 
 	i = 0;
 	name = get_env_name(argv);
+	printf("NAME [%s]\n", name);
 	if (ft_isdigit(name[i]) || !*name)
 	{
 		if (!*name)

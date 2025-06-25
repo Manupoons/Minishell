@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenizer_utils.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: jdorazio <jdorazio@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 17:43:10 by jdorazio          #+#    #+#             */
-/*   Updated: 2025/06/10 19:06:59 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/06/25 19:20:46 by jdorazio         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ void	add_token(char *input, t_token **token_list, t_token_type type,
 
 	new = (t_token *) malloc(sizeof(t_token));
 	if (!new)
-		error_message("Failed to alloc mem for token.");
+		printf("Failed to alloc mem for token.");
 	new->token = ft_strdup(input);
 	new->type = type;
 	if (quote)

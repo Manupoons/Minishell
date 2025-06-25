@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: jdorazio <jdorazio@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/31 12:15:39 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/06/10 19:06:02 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/06/25 19:20:59 by jdorazio         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -197,7 +197,7 @@ void	ft_lst_env_init(t_shell *mini, char **envp);
 char	*get_env_name(char *name);
 char	*get_env_value(char *value);
 //###-----------------------###
-void	error_message(char *str);
+
 //###-----------------------###
 void	ft_free_env(t_env **env);
 void	ft_free_list(t_env **env);

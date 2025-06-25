@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenizer.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: jdorazio <jdorazio@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 17:41:35 by jdorazio          #+#    #+#             */
-/*   Updated: 2025/06/10 19:07:05 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/06/25 19:20:46 by jdorazio         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ char *handle_word(char *input, int *i)
 	len = (*i) - start;
 	str = malloc(len + 1);
 	if (!str)
-		error_message("failed to alloc mem.");
+		printf("failed to alloc mem.");
 	ft_strlcpy(str, input + start, len + 1);
 	return (str);
 }

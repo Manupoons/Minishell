@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cmd_utils.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: jdorazio <jdorazio@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/07 09:21:59 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/06/20 12:35:11 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/06/25 19:19:00 by jdorazio         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,8 @@ void	handle_status(t_shell *mini)
 void	execute_redir_token(t_arg *args)
 {
 	t_redir	*redir;
+	int     last_stdout_fd = -1; // Keep track of the last output FD
+
 
 	redir = args->redirs;
 	if (!redir)
@@ -58,10 +60,15 @@ void	execute_redir_token(t_arg *args)
 			redir->fd_in = open(redir->cmd, O_RDONLY);
 		if (redir->type == TOKEN_REDIR_OUT)
 		{
+			if (last_stdout_fd != -1)
+				close(last_stdout_fd);
 			redir->fd_out = open(redir->cmd, O_WRONLY | O_CREAT
 					| O_TRUNC, 0777);
-			if (redir->fd_out == -1)
-				perror("open redir out failed");
+			
+					// if (redir->fd_out == -1)
+			// 	perror("open redir out failed");
+			printf("Redir [%s] | fd_in [%d] | fd_out [%d]\n", redir->cmd, redir->fd_in, redir->fd_out);
+
 		}
 		if (redir->type == TOKEN_APPEND)
 			redir->fd_out = open(redir->cmd, O_WRONLY | O_CREAT

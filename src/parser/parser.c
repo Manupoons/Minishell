@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: jdorazio <jdorazio@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 15:59:31 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/06/20 11:37:35 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/06/25 19:20:46 by jdorazio         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,11 +38,11 @@ static int	handle_redir_token(t_arg *curr_arg, t_token *token)
 	}
 	redir = malloc(sizeof(t_redir));
 	if (!redir)
-		error_message("failed to alloc.");
+		perror("failed to alloc.");
 	redir->type = token->type;
 	redir->cmd = ft_strdup(file_token->token);
 	if (!redir->cmd)
-		error_message("Memory allocation failed for redir->cmd.");
+		perror("Memory allocation failed for redir->cmd.");
 	redir->fd_in = -1;
 	redir->fd_out = -1;
 	if (redir->type == TOKEN_REDIR_IN || redir->type == TOKEN_HEREDOC)
@@ -86,7 +86,7 @@ static int	process_tokens(t_arg **curr_arg, t_token *token, t_env *env, int stat
 	{
 		*curr_arg = handle_pipe_token(*curr_arg, token->next);
 		if (!(*curr_arg))
-			error_message("pipe init failed");
+			printf("pipe init failed");
 	}
 	else if (is_redir(token->type))
 	{
@@ -116,7 +116,7 @@ t_arg	*parse_tokens(t_token *tokens, t_env *env, int status)
 		{
 			curr_arg = init_arg();
 			if (!curr_arg)
-				error_message("init_arg failed");
+				printf("init_arg failed");
 			head_arg = curr_arg;
 		}
 		if (process_tokens(&curr_arg, curr_token, env, status))

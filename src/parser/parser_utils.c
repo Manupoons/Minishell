@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: jdorazio <jdorazio@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 17:24:18 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/06/10 19:06:47 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/06/25 18:21:15 by jdorazio         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,34 +28,19 @@ t_arg	*init_arg(void)
 	return (arg_list);
 }
 
-// int	count_pipes(t_shell *mini)
-// {
-// 	int		i;
-// 	t_arg	*current;
-
-// 	i = 0;
-// 	current = mini->arg;
-// 	while (current)
-// 	{
-// 		i++;
-// 		current = current->next;
-// 	}
-// 	return (i - 1);
-// }
-
 int	is_redir(int type)
 {
 	return (type == TOKEN_REDIR_IN || type == TOKEN_REDIR_OUT
 		|| type == TOKEN_APPEND || type == TOKEN_HEREDOC);
 }
 
-static void	update_existing_redir(t_redir *last, t_redir *redir)
-{
-		ft_memfree(last->cmd);
-		last->cmd = redir->cmd;
-		last->type = redir->type;
-		ft_memfree(redir);
-}
+// static void	update_existing_redir(t_redir *last, t_redir *redir)
+// {
+// 		ft_memfree(last->cmd);
+// 		last->cmd = redir->cmd;
+// 		last->type = redir->type;
+// 		ft_memfree(redir);
+// }
 
 static void	append_to_end(t_redir **head, t_redir *redir)
 {
@@ -76,24 +61,24 @@ static void	append_to_end(t_redir **head, t_redir *redir)
 
 void	append_to_parser(t_redir **head, t_redir *redir)
 {
-	t_redir	*current;
-	t_redir	*last;
+	// t_redir	*current;
+	// t_redir	*last;
 
-	last = NULL;
+	// last = NULL;t
 	if (!redir)
 		return ;
-	current = *head;
-	while (current)
-	{
-		if (redir->type == current->type)
-			last = current;
-		current = current->next;
-	}
-	if (last)
-	{
-		update_existing_redir(last, redir);
-		return ;
-	}
+	// current = *head;
+	// while (current)
+	// {
+	// 	if (redir->type == current->type)
+	// 		last = current;
+	// 	current = current->next;
+	// }
+	// if (last)
+	// {
+	// 	update_existing_redir(last, redir);
+	// 	return ;
+	// }
 	append_to_end(head, redir);
 }
 

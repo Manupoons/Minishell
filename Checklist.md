@@ -25,7 +25,7 @@
 | echo -nnnnnn hola           | hola (sin salto de línea) | ✅                                          |
 | echo -nnnnp hola            | -nnp hola                 | ✅                                          |
 | echo "Hello \\"World\\""    | Hello "World"             | ✅ No hace falta interpretar \              |
-| echo "\$USER '\$USER'"      | usuario 'usuario'         | ✅                                          |
+| echo "\$USER '\$USER'"      | usuario 'usuario'         | NAE❌:                                        |
 | echo "'\$USER'"             | 'usuario'                 | ✅                                          |
 | echo "ls \| wc -l"          | ls \| wc -l               | ✅                                          |
 | echo " hola"                | hola                      | ✅                                          |
@@ -62,12 +62,12 @@
 
 | Comando         | Resultado Esperado           | Comentarios                                    |
 | --------------- | ---------------------------- | ---------------------------------------------- |
-| exit 12 a       | Error: argumentos no válidos | ✅❌ Parecido pero no identico                 |
+| exit 12 a       | Error: argumentos no válidos | ✅                  |
 | exit 12a        | Error: numérico necesario    | ✅                                             |
 | ls \| exit      | No hace nada                 | NAE❌: Funciona pero imprime EXIT erroneamente |
-| exit -32        | 224 (por overflow)           | NAE❌: mem leak                                |
-| exit 42         | 42                           | NAE❌: mem leak                                |
-| exit haja skajs | Error: numérico necesario    | NAE❌: mem leak                                |
+| exit -32        | 224 (por overflow)           | ✅                              |
+| exit 42         | 42                           | ✅                               |
+| exit haja skajs | Error: numérico necesario    | ✅                               |
 
 ---
 
