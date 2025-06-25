@@ -49,22 +49,54 @@ int	is_redir(int type)
 		|| type == TOKEN_APPEND || type == TOKEN_HEREDOC);
 }
 
+static void	update_existing_redir(t_redir *last, t_redir *redir)
+{
+		ft_memfree(last->cmd);
+		last->cmd = redir->cmd;
+		last->type = redir->type;
+		ft_memfree(redir);
+}
+
+static void	append_to_end(t_redir **head, t_redir *redir)
+{
+	t_redir *current;
+
+	if (!*head)
+	{
+		redir->next = NULL;
+		*head = redir;
+		return ;
+	}
+	current = *head;
+	while (current->next)
+		current = current->next;
+	current->next = redir;
+	redir->next = NULL;	
+}
+
 void	append_to_parser(t_redir **head, t_redir *redir)
 {
-	t_redir	*tmp;
+	t_redir	*current;
+	t_redir	*last;
 
+	last = NULL;
 	if (!redir)
 		return ;
-	if (!*head)
-		*head = redir;
-	else
+	current = *head;
+	while (current)
 	{
-		tmp = *head;
-		while (tmp->next)
-			tmp = tmp->next;
-		tmp->next = redir;
+		if (redir->type == current->type)
+			last = current;
+		current = current->next;
 	}
+	if (last)
+	{
+		update_existing_redir(last, redir);
+		return ;
+	}
+	append_to_end(head, redir);
 }
+
 
 char **ft_add_to_argv(char **arr, char *new_str)
 {
