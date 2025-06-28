@@ -48,8 +48,6 @@ void	handle_status(t_shell *mini)
 void	execute_redir_token(t_arg *args)
 {
 	t_redir	*redir;
-	int     last_stdout_fd = -1; // Keep track of the last output FD
-
 
 	redir = args->redirs;
 	if (!redir)
@@ -60,19 +58,10 @@ void	execute_redir_token(t_arg *args)
 			redir->fd_in = open(redir->cmd, O_RDONLY);
 		if (redir->type == TOKEN_REDIR_OUT)
 		{
-			if (last_stdout_fd != -1)
-				close(last_stdout_fd);
-			redir->fd_out = open(redir->cmd, O_WRONLY | O_CREAT
-					| O_TRUNC, 0777);
-			
-					// if (redir->fd_out == -1)
-			// 	perror("open redir out failed");
-			printf("Redir [%s] | fd_in [%d] | fd_out [%d]\n", redir->cmd, redir->fd_in, redir->fd_out);
-
+			redir->fd_out = open(redir->cmd, O_WRONLY | O_CREAT | O_TRUNC, 0777);
 		}
 		if (redir->type == TOKEN_APPEND)
-			redir->fd_out = open(redir->cmd, O_WRONLY | O_CREAT
-					| O_APPEND, 0777);
+			redir->fd_out = open(redir->cmd, O_WRONLY | O_CREAT | O_APPEND, 0777);
 		if (redir->type == TOKEN_HEREDOC)
 			redir->fd_in = open(redir->cmd, O_RDONLY);
 		redir = redir->next;

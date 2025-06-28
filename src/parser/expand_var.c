@@ -83,8 +83,8 @@ static char *expand_var_token(char *token_str, t_env *env, int status)
 	{
 		if (token_str[i] == '$')
 			temp_str = handle_dollar_expansion(token_str, env, status, &i, current_expanded);
-	   else
-		   temp_str = strjoin_char(current_expanded, token_str[i]++);
+		else
+			temp_str = strjoin_char(current_expanded, token_str[i++]);
 		if (!temp_str)
 			return (free(current_expanded), NULL);
 		current_expanded = temp_str;
