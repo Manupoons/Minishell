@@ -6,7 +6,7 @@
 /*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 19:14:03 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/06/20 12:36:32 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/06/28 08:55:40 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,11 @@ static void	execute_pid(t_shell *mini)
 		return ;
 	}
 	if (pid == 0)
+	{
+		signal(SIGINT, SIG_DFL);
+		signal(SIGQUIT, SIG_DFL);
 		child_process(mini);
+	}
 	else
 	{
 		waitpid(pid, &mini->status, 0);
