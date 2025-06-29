@@ -25,7 +25,7 @@
 | echo -nnnnnn hola           | hola (sin salto de línea) | ✅                                          |
 | echo -nnnnp hola            | -nnp hola                 | ✅                                          |
 | echo "Hello \\"World\\""    | Hello "World"             | ✅ No hace falta interpretar \              |
-| echo "\$USER '\$USER'"      | usuario 'usuario'         | NAE❌:                                        |
+| echo "\$USER '\$USER'"      | usuario 'usuario'         | ✅                                          |
 | echo "'\$USER'"             | 'usuario'                 | ✅                                          |
 | echo "ls \| wc -l"          | ls \| wc -l               | ✅                                          |
 | echo " hola"                | hola                      | ✅                                          |
@@ -62,12 +62,12 @@
 
 | Comando         | Resultado Esperado           | Comentarios                                    |
 | --------------- | ---------------------------- | ---------------------------------------------- |
-| exit 12 a       | Error: argumentos no válidos | ✅                  |
+| exit 12 a       | Error: argumentos no válidos | ✅                                             |
 | exit 12a        | Error: numérico necesario    | ✅                                             |
 | ls \| exit      | No hace nada                 | NAE❌: Funciona pero imprime EXIT erroneamente |
-| exit -32        | 224 (por overflow)           | ✅                              |
-| exit 42         | 42                           | ✅                               |
-| exit haja skajs | Error: numérico necesario    | ✅                               |
+| exit -32        | 224 (por overflow)           | ✅                                             |
+| exit 42         | 42                           | ✅                                             |
+| exit haja skajs | Error: numérico necesario    | ✅                                             |
 
 ---
 
@@ -123,24 +123,25 @@
 
 | Comando                        | Resultado Esperado                           | Comentarios                                         |
 | ------------------------------ | -------------------------------------------- | --------------------------------------------------- |
+| Ctrl + C                       | Nueva linea de prompt limpia                 | ❌: No aparece nueva linea hasta que se escribe algo|
 | echo hola >                    | Error de sintaxis                            | ✅                                                  |
 | >                              | Error de sintaxis                            | ✅                                                  |
 | >>                             | Error de sintaxis                            | ✅                                                  |
 | echo hola > /dev/full          | No space left on device                      | NAE❌                                               |
 | echo \$NOEXISTE                | línea vacía                                  | ✅                                                  |
 | echo "\$NOEXISTE"              | línea vacía                                  | ✅                                                  |
-| export VAR=hello \| cat        | no rompe pipeline                            | ✅                                                  |
+| export VAR=hello \| cat        | no rompe pipeline                            | ✅❌: no se si tiene que crear la variable en env   |
 | cd .. \| ls                    | cd sin efecto, ls se ejecuta                 | ✅                                                  |
-| exit \| echo hola              | echo no se ejecuta                           | ✅                                                  |
+| exit \| echo hola              | echo no se ejecuta                           | ✅❌: hay que comprobar que el func. sea bueno      |
 | cat <<                         | Error de sintaxis                            | ✅                                                  |
 | cat << EOF (Ctrl+D sin cerrar) | Debe interrumpirse                           | NAE❌: no se como comprobar                         |
-| echo \\                        | Error o literal "\\"                         | ✅                                                  |
+| echo \\                        | Error o literal "\\"                         | ✅❌: No funciona igual que bash                    |
 | echo "                         | Error por comillas no cerradas               | ✅                                                  |
 | echo '                         | Error por comillas no cerradas               | ✅                                                  |
 | sleep 3 & echo done            | done se imprime, sleep sigue (si & hay)      | NAE❌: no gestionamos & porque no hemos hecho bonus |
-| (echo hola)                    | ejecuta echo hola (si subshell implementado) | ✅                                                  |
+| (echo hola)                    | ejecuta echo hola (si subshell implementado) | ✅❌: no funciona correctamente                     |
 | echo "'hola'"                  | 'hola'                                       | ✅                                                  |
 | echo ""hola""                  | "hola"                                       | NAE❌: se salta las dos comillas                    |
-| ./archivo_sin_permiso          | Permission denied                            | NAE❌: no se como comprobar                         |
-| unset PATH; ls                 | comando no encontrado                        | NAE❌: no se si esto deberia funcionar              |
+| ./archivo_sin_permiso          | Permission denied                            | ✅                                                  |
+| unset PATH; ls                 | comando no encontrado                        | NAE❌: no se si esto deberia funcionar (SEGFault)   |
 | echo > fichero; ./fichero      | no ejecutable                                |
