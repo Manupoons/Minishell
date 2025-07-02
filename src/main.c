@@ -48,8 +48,6 @@ static void	ft_minishell(t_shell *mini, char **envp)
 	ft_lst_env_init(mini, envp);
 	while (1)
 	{
-		// if (g_signal == S_SIGINT)
-		// 	mini->status = 1;
 		line = readline(READLINE_MSG);
 		if (!line)
 			break ;

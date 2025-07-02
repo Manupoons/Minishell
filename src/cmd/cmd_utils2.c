@@ -64,7 +64,10 @@ void	child_process(t_shell *msh)
 	}
 	execute_redir(msh);
 	if (is_comms(msh))
+	{
 		ft_comms(msh);
+		exit(0);
+	}
 	else
 		run_cmd(msh);
 	exit(127);

@@ -27,21 +27,6 @@ void	ft_free_env(t_env **env)
 	*env = NULL;
 }
 
-void	ft_free_list(t_env **env)
-{
-	t_env	*temp;
-
-	while (*env)
-	{
-		temp = (*env)->next;
-		ft_memfree((*env)->env_name);
-		ft_memfree((*env)->env_value);
-		ft_memfree((*env));
-		*env = temp;
-	}
-	*env = NULL;
-}
-
 void	free_tokens(t_token *tokens)
 {
 	t_token	*tmp;
@@ -76,20 +61,13 @@ void	free_redirs(t_redir *redirs)
 void	free_args(t_arg *args)
 {
 	t_arg	*tmp;
-	int		i;
 
 	while (args)
 	{
 		tmp = args->next;
 		if (args->argv)
 		{
-			i = 0;
-			while (args->argv[i])
-			{
-				free(args->argv[i]);
-				i++;
-			}
-			free(args->argv);
+			free_array_split(args->argv);
 		}
 		if (args->redirs)
 			free_redirs(args->redirs);
@@ -104,14 +82,4 @@ void	free_args_and_exit(t_arg *args, const char *msg)
 		fprintf(stderr, "minishell: %s\n", msg);
 	free_args(args);
 	exit(EXIT_FAILURE);
-}
-
-void	free_array_split(char **arr)
-{
-	int	i;
-
-	i = 0;
-	while(arr[i])
-		free(arr[i++]);
-	free(arr);
 }

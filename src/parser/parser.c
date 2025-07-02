@@ -50,10 +50,11 @@ static int	handle_redir_token(t_arg *curr_arg, t_token *token)
 	else if (redir->type == TOKEN_REDIR_OUT || redir->type == TOKEN_APPEND)
 		redir->fd_out = 1;
 	redir->next = NULL;
-	return(append_to_parser(&(curr_arg->redirs), redir), 0);
+	return (append_to_parser(&(curr_arg->redirs), redir), 0);
 }
 
-static void	process_word_token(t_arg **curr, t_token *token, t_env *env, int status)
+static void	process_word_token(t_arg **curr, t_token *token, t_env *env,
+	int status)
 {
 	char	*expanded;
 	int		flag;
@@ -73,12 +74,12 @@ static void	process_word_token(t_arg **curr, t_token *token, t_env *env, int sta
 			return ;
 		}
 		(*curr)->args_count++;
+		free(expanded);
 	}
-	free(expanded); // This MUST be here to free the string returned by expand
-
 }
 
-static int	process_tokens(t_arg **curr_arg, t_token *token, t_env *env, int status)
+static int	process_tokens(t_arg **curr_arg, t_token *token, t_env *env,
+	int status)
 {
 	if (token->type == TOKEN_WORD)
 		process_word_token(curr_arg, token, env, status);
@@ -116,10 +117,24 @@ t_arg	*parse_tokens(t_token *tokens, t_env *env, int status)
 		{
 			curr_arg = init_arg();
 			if (!curr_arg)
-				printf("init_arg failed");
+				return (printf("init_arg failed"), NULL);
 			head_arg = curr_arg;
 		}
 		if (process_tokens(&curr_arg, curr_token, env, status))
+			return (NULL);
+		if (is_redir(curr_token->type) && curr_token->next)
+			curr_token = curr_token->next;
+		curr_token = curr_token->next;
+	}
+	return (head_arg);
+}
+
+/*
+### He eliminado esta sección del código para ajustarlo a norminette. 
+### Estás listas se liberan más adelante en el código y por eso 
+ya no parecen ser necesarias.
+### Si da problema de leaks tener este codigo en cuenta
+	if (process_tokens(&curr_arg, curr_token, env, status))
 		{
 			if (head_arg)
 				free_args(head_arg);
@@ -127,9 +142,4 @@ t_arg	*parse_tokens(t_token *tokens, t_env *env, int status)
 				free_args(curr_arg);
 			return (NULL);
 		}
-		if (is_redir(curr_token->type) && curr_token->next)
-			curr_token = curr_token->next;
-		curr_token = curr_token->next;
-	}
-	return (head_arg);
-}
+*/

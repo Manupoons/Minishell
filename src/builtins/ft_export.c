@@ -73,7 +73,7 @@ static void	ft_exp_no_arg(t_shell *mini)
 			printf("declare -x %s\n", env->env_name);
 		env = env->next;
 	}
-	ft_free_list(&list);
+	ft_free_env(&list);
 }
 
 void	ft_export(t_shell *mini)

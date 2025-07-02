@@ -39,10 +39,52 @@ void	execute_redir(t_shell *msh)
 
 void	handle_status(t_shell *mini)
 {
-	if (WIFEXITED(mini->status) && mini->arg && mini->arg->argv && mini->arg->argv[0])
+	if (WIFEXITED(mini->status) && mini->arg && mini->arg->argv
+		&& mini->arg->argv[0])
 		mini->status = WEXITSTATUS(mini->status);
 	if (mini && mini->status == 127)
 		printf("%s: %s\n", mini->arg->argv[0], "command not found");
+}
+
+char	*generate_tmp_filename(void)
+{
+	int		counter;
+	char	*filename;
+	char	*suffix;
+	char	*base;
+
+	counter = 0;
+	base = "/tmp/minishell_heredoc_";
+	suffix = ft_itoa(counter++);
+	filename = ft_strjoin(base, suffix);
+	free(suffix);
+	return (filename);
+}
+
+void	handle_heredoc(t_redir *redir)
+{
+	char	*line;
+	int		fd;
+	char	*filename;
+
+	filename = generate_tmp_filename();
+	fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0600);
+	if (fd < 0)
+		return ;
+	while (1)
+	{
+		line = readline("> ");
+		if (!line || ft_strcmp(line, redir->cmd) == 0)
+			break ;
+		write(fd, line, ft_strlen(line));
+		write(fd, "\n", 1);
+		free(line);
+	}
+	free(line);
+	close(fd);
+	redir->fd_in = open(filename, O_RDONLY);
+	unlink(filename);
+	free(filename);
 }
 
 void	execute_redir_token(t_arg *args)
@@ -57,13 +99,13 @@ void	execute_redir_token(t_arg *args)
 		if (redir->type == TOKEN_REDIR_IN)
 			redir->fd_in = open(redir->cmd, O_RDONLY);
 		if (redir->type == TOKEN_REDIR_OUT)
-		{
-			redir->fd_out = open(redir->cmd, O_WRONLY | O_CREAT | O_TRUNC, 0777);
-		}
+			redir->fd_out = open(redir->cmd, O_WRONLY | O_CREAT
+					| O_TRUNC, 0777);
 		if (redir->type == TOKEN_APPEND)
-			redir->fd_out = open(redir->cmd, O_WRONLY | O_CREAT | O_APPEND, 0777);
+			redir->fd_out = open(redir->cmd, O_WRONLY | O_CREAT
+					| O_APPEND, 0644);
 		if (redir->type == TOKEN_HEREDOC)
-			redir->fd_in = open(redir->cmd, O_RDONLY);
+			handle_heredoc(redir);
 		redir = redir->next;
 	}
 }

@@ -178,7 +178,7 @@ void	init_signal(void);
 //###--- TOKENIZER ---###
 char	*handle_quoted_token(char *input, int *i, char quote);
 int		handle_operator(char *input, t_token **token_list, int i);
-char *handle_word(char *input, int *i);
+char	*handle_word(char *input, int *i);
 t_token	*tokenizer(char *input);
 //###-----------------###
 

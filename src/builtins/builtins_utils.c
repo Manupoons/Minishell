@@ -82,7 +82,6 @@ int	check_export(char *argv)
 
 	i = 0;
 	name = get_env_name(argv);
-	printf("NAME [%s]\n", name);
 	if (ft_isdigit(name[i]) || !*name)
 	{
 		if (!*name)

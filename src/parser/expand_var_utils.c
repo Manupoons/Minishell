@@ -21,7 +21,7 @@ char	*ft_join_free(char *dst, char *src)
 	temp = ft_strjoin((char const *)dst, (char const *)src);
 	free(dst);
 	free(src);
-	return(temp);
+	return (temp);
 }
 
 char	*strjoin_char(char *s, char c)
@@ -34,4 +34,14 @@ char	*strjoin_char(char *s, char c)
 	joined = ft_strjoin(s, str);
 	free(s);
 	return (joined);
+}
+
+void	free_array_split(char **arr)
+{
+	int	i;
+
+	i = 0;
+	while (arr[i])
+		free(arr[i++]);
+	free(arr);
 }

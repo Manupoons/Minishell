@@ -53,10 +53,8 @@ void	execute_pipeline(t_shell *mini)
 	while (wait(NULL) > 0)
 		;
 	handle_status(mini);
-	//ft_next_cmd(mini);
 	free_args(mini->arg);
 	mini->arg = NULL;
-
 }
 
 static void	execute_pid(t_shell *mini)

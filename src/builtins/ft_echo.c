@@ -12,22 +12,21 @@
 
 #include "./minishell.h"
 
-int	n_flag(char *str, int *flag)
+static int	n_flag(char *str)
 {
 	int	i;
 
 	if (!str || str[0] != '-')
-		return (*flag);
+		return (0);
 	i = 1;
 	if (str[i] == '\0')
-		return (*flag);
+		return (0);
 	while (str[i])
 	{
 		if (str[i] != 'n')
-			return (*flag);
+			return (0);
 		i++;
 	}
-	*flag = 1;
 	return (1);
 }
 
@@ -40,8 +39,11 @@ void	ft_echo(t_shell *mini)
 	mini->status = 0;
 	i = 1;
 	flag = 0;
-	if (mini->arg->argv[i] && n_flag(mini->arg->argv[i], &flag))
+	while (mini->arg->argv[i] && n_flag(mini->arg->argv[i]))
+	{
+		flag = 1;
 		i++;
+	}
 	while (mini->arg->argv[i])
 	{
 		arg = mini->arg->argv[i];

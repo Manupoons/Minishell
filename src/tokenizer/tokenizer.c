@@ -53,15 +53,15 @@ int	handle_operator(char *input, t_token **token_list, int i)
 	return (0);
 }
 
-char *handle_word(char *input, int *i)
+char	*handle_word(char *input, int *i)
 {
 	int		start;
 	int		len;
 	char	*str;
 
 	start = (*i);
-	while (input[(*i)] && !(is_quotes(input[(*i)])) && !(is_operator((input[(*i)])))
-		&& (!is_space(input[(*i)])))
+	while (input[(*i)] && !(is_quotes(input[(*i)]))
+		&& !(is_operator((input[(*i)]))) && (!is_space(input[(*i)])))
 		(*i)++;
 	len = (*i) - start;
 	str = malloc(len + 1);
@@ -69,16 +69,6 @@ char *handle_word(char *input, int *i)
 		printf("failed to alloc mem.");
 	ft_strlcpy(str, input + start, len + 1);
 	return (str);
-}
-
-char	*ft_strjoin_free(char *dst, char *src)
-{
-	char	*joined;
-
-	joined = ft_strjoin(dst, src);
-	free(src);
-	free(dst);
-	return (joined);
 }
 
 int	handle_compound_words(char *input, t_token **token_list, int i)
@@ -89,17 +79,17 @@ int	handle_compound_words(char *input, t_token **token_list, int i)
 
 	start = i;
 	cw = ft_strdup("");
-	while (input[i]  && !is_space(input[i]) && !is_operator(input[i]))
+	while (input[i] && !is_space(input[i]) && !is_operator(input[i]))
 	{
 		quote = is_quotes(input[i]);
 		if (quote != 0)
 		{
-			cw = ft_strjoin_free(cw, handle_quoted_token(input, &i, quote));
+			cw = ft_join_free(cw, handle_quoted_token(input, &i, quote));
 			if (!cw)
-				return(free(cw), -1);
+				return (free(cw), -1);
 		}
 		else
-			cw = ft_strjoin_free(cw, handle_word(input, &i));
+			cw = ft_join_free(cw, handle_word(input, &i));
 	}
 	add_token(cw, token_list, TOKEN_WORD, quote);
 	free(cw);
@@ -118,7 +108,7 @@ t_token	*tokenizer(char *input)
 	{
 		i = handle_space(input, i);
 		if (!input[i])
-		break ;
+			break ;
 		if (is_operator(input[i]))
 			count = handle_operator(input, &token_list, i);
 		else
