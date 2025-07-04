@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cmd_utils.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jdorazio <jdorazio@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/07 09:21:59 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/06/25 19:19:00 by jdorazio         ###   ########.fr       */
+/*   Updated: 2025/07/04 13:01:38 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,11 +39,30 @@ void	execute_redir(t_shell *msh)
 
 void	handle_status(t_shell *mini)
 {
-	if (WIFEXITED(mini->status) && mini->arg && mini->arg->argv
-		&& mini->arg->argv[0])
+	int	status;
+
+	if (WIFSIGNALED(mini->status))
+	{
+		status = WTERMSIG(mini->status);
+		if (status == SIGINT)
+		{
+			g_signal = S_SIGINT_CMD;
+			mini->status = 128 + SIGINT;
+		}
+		else if (status == SIGQUIT)
+		{
+			ft_putstr_fd("Quit (core dumped)\n", 2);
+			mini->status = 128 + SIGQUIT;
+		}
+	}
+	else if (WIFEXITED(mini->status))
+	{
 		mini->status = WEXITSTATUS(mini->status);
-	if (mini && mini->status == 127)
-		printf("%s: %s\n", mini->arg->argv[0], "command not found");
+		g_signal = S_BASE;
+	}
+	if (mini->status == 127 && g_signal == S_BASE
+		&& mini->arg && mini->arg->argv && mini->arg->argv[0])
+		printf("%s: command not found\n", mini->arg->argv[0]);
 }
 
 char	*generate_tmp_filename(void)

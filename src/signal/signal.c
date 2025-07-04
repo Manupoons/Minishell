@@ -6,7 +6,7 @@
 /*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 18:58:56 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/06/29 09:04:40 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/07/04 13:00:22 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,24 +17,23 @@ int	g_signal;
 static void	sigint_handler(int sig)
 {
 	(void)sig;
-	if (g_signal == S_HEREDOC)
+	if (g_signal == S_CMD)
+	{
+		ft_putstr_fd("\n", 1);
+		g_signal = S_SIGINT_CMD;
+	}
+	else if (g_signal == S_HEREDOC)
 	{
 		ft_putstr_fd("\n", 1);
 		g_signal = S_HEREDOC_CANCEL;
 	}
-	else if (g_signal == S_CMD)
-	{
-		g_signal = S_SIGINT_CMD;
-		ft_putstr_fd("\n", 1);
-		rl_on_new_line();
-		rl_redisplay();
-	}
-	else if (g_signal == S_BASE || g_signal == S_SIGINT)
+	else
 	{
 		ft_putstr_fd("\n", 1);
 		rl_replace_line("", 0);
 		rl_on_new_line();
-		//g_signal = S_SIGINT;
+		rl_redisplay();
+		g_signal = S_SIGINT;
 	}
 }
 

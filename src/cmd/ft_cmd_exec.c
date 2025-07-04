@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_cmd_exec.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jdorazio <jdorazio@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 19:14:03 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/06/25 19:20:46 by jdorazio         ###   ########.fr       */
+/*   Updated: 2025/07/04 12:26:25 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,7 @@ static void	execute_pid(t_shell *mini)
 	pid_t	pid;
 
 	execute_redir_token(mini->arg);
+	g_signal = S_CMD;
 	pid = fork();
 	if (pid < 0)
 	{
@@ -70,7 +71,12 @@ static void	execute_pid(t_shell *mini)
 		return ;
 	}
 	if (pid == 0)
+	{
+		signal(SIGINT, SIG_DFL);
+		signal(SIGQUIT, SIG_DFL);
 		child_process(mini);
+		exit(1);
+	}
 	else
 	{
 		waitpid(pid, &mini->status, 0);
@@ -114,6 +120,4 @@ void	ft_cmd_exec(t_shell *mini)
 		execute_pipeline(mini);
 	else if (mini->arg && !mini->arg->next)
 		execute(mini);
-	free_args(mini->arg);
-	mini->arg = NULL;
 }
