@@ -60,8 +60,11 @@ static void	process_word_token(t_arg **curr, t_token *token, t_env *env,
 	int		flag;
 
 	expanded = expand(token, env, status, &flag);
-	if (!expanded)
+	if (!expanded || (expanded[0] == '\0' && token->quote_type == '\''))
+	{
+		free(expanded);
 		return ;
+	}
 	if (ft_strchr(expanded, ' ') && flag == 1)
 		split_tokens(&expanded, curr);
 	else

@@ -12,28 +12,6 @@
 
 #include "./minishell.h"
 
-char	*handle_quoted_token(char *input, int *i, char quote)
-{
-	char	*str;
-	int		end;
-	int		start;
-	int		len;
-
-	start = (*i);
-	end = 1 + start;
-	while (input[end] != quote && input[end])
-		end++;
-	if (!input[end])
-		return (printf("missing closing quotes.\n"), NULL);
-	len = end - start - 1;
-	str = malloc(len + 1);
-	if (!str)
-		return (NULL);
-	ft_strlcpy(str, input + start + 1, len + 1);
-	(*i) = end + 1;
-	return (str);
-}
-
 int	handle_operator(char *input, t_token **token_list, int i)
 {
 	if (input[i] == '|')
@@ -71,28 +49,60 @@ char	*handle_word(char *input, int *i)
 	return (str);
 }
 
+static char	*extract_quoted_fragment(char *input, int *i)
+{
+	char	quote;
+	int		start;
+	int		end;
+	int		len;
+
+	quote = input[*i];
+	start = *i + 1;
+	end = start;
+	while (input[end] && input[end] != quote)
+		end++;
+	if (!input[end])
+		return (printf("missing closing quotes.\n"), NULL);
+	len = end - start;
+	*i = end + 1;
+	return (ft_substr(input, start, len));
+}
+
+static char	*extract_unquoted_fragment(char *input, int *i)
+{
+	int		start;
+	int		end;
+	int		len;
+
+	start = *i;
+	end = start;
+	while(input[end] && !is_space(input[end]) && !is_operator(input[end])
+		&& !is_quotes(input[end]))
+		end++;
+	len = end - start;
+	*i = end;
+	return (ft_substr(input, start, len));
+}
+
 int	handle_compound_words(char *input, t_token **token_list, int i)
 {
 	char	quote;
-	char	*cw;
+	char	*frag;
 	int		start;
 
 	start = i;
-	cw = ft_strdup("");
 	while (input[i] && !is_space(input[i]) && !is_operator(input[i]))
 	{
 		quote = is_quotes(input[i]);
 		if (quote != 0)
-		{
-			cw = ft_join_free(cw, handle_quoted_token(input, &i, quote));
-			if (!cw)
-				return (free(cw), -1);
-		}
+			frag = extract_quoted_fragment(input, &i);
 		else
-			cw = ft_join_free(cw, handle_word(input, &i));
+			frag = extract_unquoted_fragment(input, &i);
+		if (!frag)
+			return (-1);
+		add_token(frag, token_list, TOKEN_WORD, quote);
+		free(frag);
 	}
-	add_token(cw, token_list, TOKEN_WORD, quote);
-	free(cw);
 	return (i - start);
 }
 
