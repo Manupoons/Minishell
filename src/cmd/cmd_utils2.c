@@ -6,11 +6,29 @@
 /*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/07 09:33:04 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/06/07 10:15:55 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/07/06 11:09:22 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./minishell.h"
+
+static void	run_cmd_error(t_shell *mini, char *path, char **envp)
+{
+	if (access(path, X_OK) == -1)
+	{
+		perror(mini->arg->argv[0]);
+		if (errno == EACCES)
+			exit(126);
+		else
+			exit(127);
+	}
+	execve(path, mini->arg->argv, envp);
+	perror(mini->arg->argv[0]);
+	if (errno == EACCES)
+		exit(126);
+	else
+		exit(127);
+}
 
 static void	run_cmd(t_shell *mini)
 {
@@ -27,15 +45,13 @@ static void	run_cmd(t_shell *mini)
 		if (mini->arg->redirs->fd_out != 1)
 			dup2(mini->arg->redirs->fd_out, STDOUT_FILENO);
 	}
-	path = ft_get_path(mini->arg->argv[0], mini->env);
-	if (!mini->arg->argv || !mini->arg->argv[0]
-		|| !ft_isalnum(mini->arg->argv[0][0]))
-	{
-		ft_memfree(path);
-		path = mini->arg->argv[0];
-	}
-	execve(path, mini->arg->argv, envp);
-	exit(127);
+	if (ft_strchr(mini->arg->argv[0], '/'))
+		path = ft_strdup(mini->arg->argv[0]);
+	else
+		path = ft_get_path(mini->arg->argv[0], mini->env);
+	if (!path)
+		exit(127);
+	run_cmd_error(mini, path, envp);
 }
 
 bool	has_stdout_redirection(t_redir *redir)
