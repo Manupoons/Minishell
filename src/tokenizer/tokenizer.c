@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenizer.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jdorazio <jdorazio@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 17:41:35 by jdorazio          #+#    #+#             */
-/*   Updated: 2025/06/25 19:20:46 by jdorazio         ###   ########.fr       */
+/*   Updated: 2025/07/07 17:37:33 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,23 +31,23 @@ int	handle_operator(char *input, t_token **token_list, int i)
 	return (0);
 }
 
-char	*handle_word(char *input, int *i)
-{
-	int		start;
-	int		len;
-	char	*str;
+// char	*handle_word(char *input, int *i)
+// {
+// 	int		start;
+// 	int		len;
+// 	char	*str;
 
-	start = (*i);
-	while (input[(*i)] && !(is_quotes(input[(*i)]))
-		&& !(is_operator((input[(*i)]))) && (!is_space(input[(*i)])))
-		(*i)++;
-	len = (*i) - start;
-	str = malloc(len + 1);
-	if (!str)
-		printf("failed to alloc mem.");
-	ft_strlcpy(str, input + start, len + 1);
-	return (str);
-}
+// 	start = (*i);
+// 	while (input[(*i)] && !(is_quotes(input[(*i)]))
+// 		&& !(is_operator((input[(*i)]))) && (!is_space(input[(*i)])))
+// 		(*i)++;
+// 	len = (*i) - start;
+// 	str = malloc(len + 1);
+// 	if (!str)
+// 		printf("failed to alloc mem.");
+// 	ft_strlcpy(str, input + start, len + 1);
+// 	return (str);
+// }
 
 static char	*extract_quoted_fragment(char *input, int *i)
 {
@@ -76,7 +76,7 @@ static char	*extract_unquoted_fragment(char *input, int *i)
 
 	start = *i;
 	end = start;
-	while(input[end] && !is_space(input[end]) && !is_operator(input[end])
+	while (input[end] && !is_space(input[end]) && !is_operator(input[end])
 		&& !is_quotes(input[end]))
 		end++;
 	len = end - start;
