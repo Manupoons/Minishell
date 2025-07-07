@@ -105,6 +105,15 @@ static int	process_tokens(t_arg **curr_arg, t_token *token, t_env *env,
 	return (0);
 }
 
+t_arg	*handle_parse_errors(t_arg *head, t_arg *curr)
+{
+	if (head_arg)
+		free_args(head_arg);
+	else if (curr_arg)
+		free_args(curr_arg);
+	return (NULL);
+}
+
 t_arg	*parse_tokens(t_token *tokens, t_env *env, int status)
 {
 	t_arg	*head_arg;
@@ -124,34 +133,10 @@ t_arg	*parse_tokens(t_token *tokens, t_env *env, int status)
 			head_arg = curr_arg;
 		}
 		if (process_tokens(&curr_arg, curr_token, env, status))
-		{
-			// Corrige Leaks de comandos extras: 2, 3, etc
-			if(head_arg)
-				free_args(head_arg);
-			else if (curr_arg)
-				free_args(curr_arg);
-			return (NULL);
-		}
-
+			return (handle_parse_errors(head_arg, curr_arg));
 		if (is_redir(curr_token->type) && curr_token->next)
 			curr_token = curr_token->next;
 		curr_token = curr_token->next;
 	}
 	return (head_arg);
 }
-
-/*
-### He eliminado esta sección del código para ajustarlo a norminette. 
-### Estás listas se liberan más adelante en el código y por eso 
-ya no parecen ser necesarias.
-### Si da problema de leaks tener este codigo en cuenta
-	if (process_tokens(&curr_arg, curr_token, env, status))
-		{
-			if (head_arg)
-				free_args(head_arg);
-			else if (curr_arg)
-				free_args(curr_arg);
-			return (NULL);
-		}
-*/
-
