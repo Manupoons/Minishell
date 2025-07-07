@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jdorazio <jdorazio@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 15:59:31 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/06/25 19:20:46 by jdorazio         ###   ########.fr       */
+/*   Updated: 2025/07/07 17:35:54 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ static int	handle_redir_token(t_arg *curr_arg, t_token *token)
 	file_token = token->next;
 	if (!file_token || file_token->type != TOKEN_WORD)
 	{
-		printf("- bash: syntax error near unexpected token `newline'\n");
+		printf("bash: syntax error near unexpected token `newline'\n");
 		return (1);
 	}
 	redir = malloc(sizeof(t_redir));
@@ -126,13 +126,12 @@ t_arg	*parse_tokens(t_token *tokens, t_env *env, int status)
 		if (process_tokens(&curr_arg, curr_token, env, status))
 		{
 			// Corrige Leaks de comandos extras: 2, 3, etc
-			if(head_arg)
+			if (head_arg)
 				free_args(head_arg);
 			else if (curr_arg)
 				free_args(curr_arg);
 			return (NULL);
 		}
-
 		if (is_redir(curr_token->type) && curr_token->next)
 			curr_token = curr_token->next;
 		curr_token = curr_token->next;
@@ -154,4 +153,3 @@ ya no parecen ser necesarias.
 			return (NULL);
 		}
 */
-

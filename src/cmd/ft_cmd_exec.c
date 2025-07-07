@@ -6,7 +6,7 @@
 /*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 19:14:03 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/07/04 12:26:25 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/07/07 17:11:41 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,7 +117,14 @@ void	ft_cmd_exec(t_shell *mini)
 	if (!mini->arg)
 		return ;
 	if (mini->arg && (mini->arg->next || mini->arg->redirs))
+	{
+		mini->in_pipe = true;
 		execute_pipeline(mini);
+		mini->in_pipe = false;
+	}
 	else if (mini->arg && !mini->arg->next)
+	{
+		mini->in_pipe = false;
 		execute(mini);
+	}
 }

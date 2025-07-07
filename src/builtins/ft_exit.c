@@ -6,7 +6,7 @@
 /*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 18:24:06 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/07/06 10:06:57 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/07/07 17:12:39 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,8 @@ void	ft_exit(t_shell *mini)
 {
 	long	code;
 
-	ft_putendl_fd("exit", 2);
+	if (!mini->in_pipe)
+		ft_putendl_fd("exit", 2);
 	if (mini->arg->argv[1])
 	{
 		if (!is_numeric(mini->arg->argv[1]))
