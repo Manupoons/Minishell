@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env_utils2.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jdorazio <jdorazio@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 16:56:25 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/06/25 20:00:06 by jdorazio         ###   ########.fr       */
+/*   Updated: 2025/07/07 18:41:32 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,4 +58,32 @@ char	*get_env_value_by_name(t_env *env, const char *name)
 		env = env->next;
 	}
 	return (NULL);
+}
+
+void	update_shlvl(t_shell *mini)
+{
+	t_env	*curr;
+	int		shlvl;
+	char	*shlvl_str;
+
+	if (!mini->in_child_shell)
+		return ;
+	curr = mini->env;
+	while (curr)
+	{
+		if (ft_strcmp(curr->env_name, "SHLVL") == 0)
+		{
+			shlvl = ft_atoi(curr->env_value);
+			shlvl++;
+			shlvl_str = ft_itoa(shlvl);
+			if (shlvl_str)
+			{
+				ft_memfree(curr->env_value);
+				curr->env_value = shlvl_str;
+			}
+			return ;
+		}
+		curr = curr->next;
+	}
+	ft_add_back_env(&mini->env, ft_lst_new_env("SHLVL", "1"));
 }

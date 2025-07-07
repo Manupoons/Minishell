@@ -6,7 +6,7 @@
 /*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 19:04:03 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/06/10 19:07:18 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/07/07 18:14:04 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,5 +96,6 @@ void	ft_lst_env_init(t_shell *mini, char **envp)
 		free_name_value(name, value);
 		i++;
 	}
+	update_shlvl(mini);
 	init_pwd(mini);
 }

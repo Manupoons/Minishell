@@ -6,7 +6,7 @@
 /*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/31 12:15:39 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/07/07 17:08:50 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/07/07 18:41:40 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,6 +109,7 @@ typedef struct s_env
 typedef struct s_shell
 {
 	bool		in_pipe;
+	bool		in_child_shell;
 	char		*actual_line;
 	t_token		*tokens;
 	t_arg		*arg;
@@ -197,6 +198,7 @@ t_env	*ft_lst_new_env(char *name, char *value);
 void	ft_lst_env_init(t_shell *mini, char **envp);
 char	*get_env_name(char *name);
 char	*get_env_value(char *value);
+void	update_shlvl(t_shell *mini);
 //###-----------------------###
 
 //###-----------------------###
