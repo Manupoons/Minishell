@@ -124,7 +124,15 @@ t_arg	*parse_tokens(t_token *tokens, t_env *env, int status)
 			head_arg = curr_arg;
 		}
 		if (process_tokens(&curr_arg, curr_token, env, status))
+		{
+			// Corrige Leaks de comandos extras: 2, 3, etc
+			if(head_arg)
+				free_args(head_arg);
+			else if (curr_arg)
+				free_args(curr_arg);
 			return (NULL);
+		}
+
 		if (is_redir(curr_token->type) && curr_token->next)
 			curr_token = curr_token->next;
 		curr_token = curr_token->next;
@@ -146,3 +154,4 @@ ya no parecen ser necesarias.
 			return (NULL);
 		}
 */
+
