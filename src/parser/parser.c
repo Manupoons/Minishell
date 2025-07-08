@@ -105,7 +105,7 @@ static int	process_tokens(t_arg **curr_arg, t_token *token, t_env *env,
 	return (0);
 }
 
-t_arg	*handle_parse_errors(t_arg *head, t_arg *curr)
+t_arg	*handle_parse_errors(t_arg *head_arg, t_arg *curr_arg)
 {
 	if (head_arg)
 		free_args(head_arg);
