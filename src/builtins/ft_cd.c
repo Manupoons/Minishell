@@ -6,7 +6,7 @@
 /*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 18:20:52 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/06/10 19:06:30 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/07/09 19:53:40 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,10 @@ void	ft_cd(t_shell *mini)
 	else if (!path)
 		path = ft_strdup(getenv("HOME"));
 	if (chdir(path))
-		perror("cd");
+	{
+		printf("bash: cd: %s: %s\n", path, strerror(errno));
+		mini->status = 1;
+	}
 	else
 		ft_change_pwd(mini);
 	ft_memfree(path);
