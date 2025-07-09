@@ -20,6 +20,8 @@ int	handle_operator(char *input, t_token **token_list, int i)
 	{
 		if (input[i + 1] == '<')
 			return (add_token("<<", token_list, TOKEN_HEREDOC, 0), 2);
+		// else if (input[i + 1] == '>')
+		// 	return (add_token("<>", token_list, TOKEN_REDIR_INOUT, 0), 1);
 		return (add_token("<", token_list, TOKEN_REDIR_IN, 0), 1);
 	}
 	else if (input[i] == '>')
@@ -52,36 +54,54 @@ int	handle_operator(char *input, t_token **token_list, int i)
 static char	*extract_quoted_fragment(char *input, int *i)
 {
 	char	quote;
-	int		start;
-	int		end;
-	int		len;
+	int		j;
+	char	*buffer;
 
 	quote = input[*i];
-	start = *i + 1;
-	end = start;
-	while (input[end] && input[end] != quote)
-		end++;
-	if (!input[end])
-		return (printf("missing closing quotes.\n"), NULL);
-	len = end - start;
-	*i = end + 1;
-	return (ft_substr(input, start, len));
+	buffer = malloc(ft_strlen(input) + 1);
+	if (!buffer)
+		return (NULL);
+	j = 0;
+	(*i)++; 
+	while (input[*i] && input[*i] != quote)
+	{
+		if (input[*i] == '\\' && input[*i + 1])
+		{
+			(*i)++;
+			buffer[j++] = input[*i]; 
+		}
+		else
+			buffer[j++] = input[*i];
+		(*i)++;
+	}
+	if (input[*i] != quote)
+		return (printf("missing closing quotes.\n"), free(buffer), NULL);
+	(*i)++;
+	return (buffer[j] = '\0', buffer);
 }
 
 static char	*extract_unquoted_fragment(char *input, int *i)
 {
-	int		start;
-	int		end;
-	int		len;
+	char	*buffer;
+	int		j;
 
-	start = *i;
-	end = start;
-	while (input[end] && !is_space(input[end]) && !is_operator(input[end])
-		&& !is_quotes(input[end]))
-		end++;
-	len = end - start;
-	*i = end;
-	return (ft_substr(input, start, len));
+	buffer = malloc(ft_strlen(input) + 1);
+	if (!buffer)
+		return (NULL);
+	j = 0;
+	while (input[*i] && !is_space(input[*i]) && !is_operator(input[*i]))
+	{
+		if (input[*i] == '\\' && input[*i + 1])
+		{
+			(*i)++;
+			buffer[j++] = input[*i];
+		}
+		else
+			buffer[j++] = input[*i];
+		(*i)++;
+	}
+	buffer[j] = '\0';
+	return (buffer);
 }
 
 int	handle_compound_words(char *input, t_token **token_list, int i)
@@ -113,7 +133,7 @@ int	handle_compound_words(char *input, t_token **token_list, int i)
 	return (i - start);
 }
 
-t_token	*tokenizer(char *input)
+t_token	*tokenizer(char *input, int *status)
 {
 	t_token	*token_list;
 	int		i;
@@ -134,7 +154,7 @@ t_token	*tokenizer(char *input)
 		{
 			if (token_list)
 				free_tokens(token_list);
-			return (NULL);
+			return (*status = 2, NULL);
 		}
 		i += count;
 	}
