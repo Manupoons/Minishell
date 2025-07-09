@@ -6,7 +6,7 @@
 /*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/31 12:15:39 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/07/07 18:41:40 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/07/09 15:40:47 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,7 +109,6 @@ typedef struct s_env
 typedef struct s_shell
 {
 	bool		in_pipe;
-	bool		in_child_shell;
 	char		*actual_line;
 	t_token		*tokens;
 	t_arg		*arg;

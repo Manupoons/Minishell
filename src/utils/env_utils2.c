@@ -6,7 +6,7 @@
 /*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 16:56:25 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/07/07 18:41:32 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/07/09 15:40:54 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,8 +66,6 @@ void	update_shlvl(t_shell *mini)
 	int		shlvl;
 	char	*shlvl_str;
 
-	if (!mini->in_child_shell)
-		return ;
 	curr = mini->env;
 	while (curr)
 	{

@@ -11,7 +11,6 @@
 | Comando             | Resultado Esperado | Comentarios              |
 | ------------------- | ------------------ | ------------------------ |
 | comando_inexistente | 127                | ✅                       |
-| .                   | 2                  | NAE❌: usage: . filename |
 | comando -z          | 126                | ✅                       |
 | cd hola             | 1                  | ✅                       |
 
@@ -77,7 +76,6 @@
 | --------------- | ------------------------------------ | -------------------------------------------- |
 | cd              | Va al \$HOME, actualiza PWD y OLDPWD | ✅                                           |
 | cd .            | No cambia                            | ✅                                           |
-| cd ..           | Sube un nivel                        | ✅❌ Comprobar porque no se agrega a la ruta |
 
 ---
 

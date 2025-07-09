@@ -6,7 +6,7 @@
 /*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 16:05:08 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/07/07 18:48:22 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/07/09 15:41:01 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,19 +26,6 @@ static void	ft_prev_exec(t_shell *mini, char *temp)
 	}
 	mini->tokens = tokenizer(temp);
 	mini->arg = parse_tokens(mini->tokens, mini->env, mini->status);
-	if (mini->arg && mini->arg->argv && mini->arg->argv[0])
-	{
-		if (ft_strcmp(mini->arg->argv[0], "./minishell") == 0
-			|| ft_strcmp(mini->arg->argv[0], "minishell") == 0)
-		{
-			mini->in_child_shell = true;
-			update_shlvl(mini);
-		}
-			else
-			mini->in_child_shell = false;
-	}
-	else
-		mini->in_child_shell = false;
 }
 
 static void	free_minishell(t_shell *mini)
