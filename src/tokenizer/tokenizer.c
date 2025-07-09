@@ -88,9 +88,13 @@ int	handle_compound_words(char *input, t_token **token_list, int i)
 {
 	char	quote;
 	char	*frag;
+	char	*word;
 	int		start;
 
 	start = i;
+	word = ft_strdup("");
+	if (!word)
+		return (-1);
 	while (input[i] && !is_space(input[i]) && !is_operator(input[i]))
 	{
 		quote = is_quotes(input[i]);
@@ -99,10 +103,13 @@ int	handle_compound_words(char *input, t_token **token_list, int i)
 		else
 			frag = extract_unquoted_fragment(input, &i);
 		if (!frag)
+			return (free(word), -1);
+		word = ft_join_free(word, frag);
+		if (!word)
 			return (-1);
-		add_token(frag, token_list, TOKEN_WORD, quote);
-		free(frag);
 	}
+	add_token(word, token_list, TOKEN_WORD, 0);
+	free(word);
 	return (i - start);
 }
 

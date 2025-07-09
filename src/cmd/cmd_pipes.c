@@ -53,7 +53,14 @@ void	execute_pipeline_commands(t_shell *mini, pid_t *last_pid)
 	current = mini->arg;
 	while (current)
 	{
-		execute_redir_token(current);
+		if (!execute_redir_token(current))
+	{
+		mini->status = 1;
+		printf("execute_pipe\n");
+		free_args(mini->arg);
+		mini->arg = NULL;
+		return;
+	}
 		pid = fork();
 		if (pid < 0)
 			printf("error creating fork");

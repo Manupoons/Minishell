@@ -61,12 +61,17 @@ static void	execute_pid(t_shell *mini)
 {
 	pid_t	pid;
 
-	execute_redir_token(mini->arg);
+	if (!execute_redir_token(mini->arg))
+	{
+		mini->status = 1;
+		free_args(mini->arg);
+		mini->arg = NULL;
+		return;
+	}
 	g_signal = S_CMD;
 	pid = fork();
 	if (pid < 0)
 	{
-		printf("failed to fork\n");
 		free_args(mini->arg);
 		return ;
 	}
@@ -116,7 +121,7 @@ void	ft_cmd_exec(t_shell *mini)
 {
 	if (!mini->arg)
 		return ;
-	if (mini->arg && (mini->arg->next || mini->arg->redirs))
+	if (mini->arg && mini->arg->next)
 	{
 		mini->in_pipe = true;
 		execute_pipeline(mini);

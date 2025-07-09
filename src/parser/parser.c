@@ -32,9 +32,9 @@ static int	handle_redir_token(t_arg *curr_arg, t_token *token)
 
 	file_token = token->next;
 	if (!file_token)
-			return (printf("bash: syntax error near unexpected token `newline'\n"), 1);
+			return (printf("bash: syntax error near unexpected token `newline'\n"), 2);
 	if (file_token->type != TOKEN_WORD)
-		return (printf("bash: syntax error near unexpected token `|'\n"), 1);
+		return (printf("bash: syntax error near unexpected token `%s'\n", token->token), 2);
 	redir = malloc(sizeof(t_redir));
 	if (!redir)
 		perror("failed to alloc.");
@@ -53,7 +53,7 @@ static int	handle_redir_token(t_arg *curr_arg, t_token *token)
 }
 
 static void	process_word_token(t_arg **curr, t_token *token, t_env *env,
-	int status)
+	int *status)
 {
 	char	*expanded;
 	int		flag;
@@ -81,7 +81,7 @@ static void	process_word_token(t_arg **curr, t_token *token, t_env *env,
 }
 
 static int	process_tokens(t_arg **curr_arg, t_token *token, t_env *env,
-	int status)
+	int *status)
 {
 	if (token->type == TOKEN_WORD)
 		process_word_token(curr_arg, token, env, status);
@@ -98,7 +98,8 @@ static int	process_tokens(t_arg **curr_arg, t_token *token, t_env *env,
 			printf("redir with no arg");
 			return (1);
 		}
-		if (handle_redir_token(*curr_arg, token))
+		*status = handle_redir_token(*curr_arg, token);
+		if (*status == 2)
 			return (1);
 	}
 	return (0);
@@ -113,7 +114,7 @@ t_arg	*handle_parse_errors(t_arg *head_arg, t_arg *curr_arg)
 	return (NULL);
 }
 
-t_arg	*parse_tokens(t_token *tokens, t_env *env, int status)
+t_arg	*parse_tokens(t_token *tokens, t_env *env, int *status)
 {
 	t_arg	*head_arg;
 	t_arg	*curr_arg;

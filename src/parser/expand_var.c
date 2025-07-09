@@ -12,11 +12,11 @@
 
 #include "./minishell.h"
 
-static char	*replace_especial(int status, int *i)
+static char	*replace_especial(int *status, int *i)
 {
 	char	*status_str;
 
-	status_str = ft_itoa(status);
+	status_str = ft_itoa(*status);
 	if (!status_str)
 		return (NULL);
 	(*i)++;
@@ -41,7 +41,7 @@ static char	*replace_env_var(char *token_str, t_env *env, int *i)
 	return (ft_strdup(var_value_from_env));
 }
 
-static char	*handle_dollar_expansion(char *str, t_env *env, int status, int *i)
+static char	*handle_dollar_expansion(char *str, t_env *env, int *status, int *i)
 {
 	(*i)++;
 	if (!str[*i])
@@ -54,7 +54,7 @@ static char	*handle_dollar_expansion(char *str, t_env *env, int status, int *i)
 		return (ft_strdup("$"));
 }
 
-static char	*expand_var_token(char *token_str, t_env *env, int status)
+static char	*expand_var_token(char *token_str, t_env *env, int *status)
 {
 	int		i;
 	char	*current_expanded;
@@ -81,7 +81,7 @@ static char	*expand_var_token(char *token_str, t_env *env, int status)
 	return (current_expanded);
 }
 
-char	*expand(t_token *token, t_env *env, int status, int *flag)
+char	*expand(t_token *token, t_env *env, int *status, int *flag)
 {
 	char	*expanded_result;
 

@@ -144,13 +144,13 @@ int		close_pipes(t_arg *current, int prev_fd_in);
 void	execute_redir(t_shell *msh);
 void	handle_status(t_shell *mini);
 void	execute_pipeline_commands(t_shell *mini, pid_t *last_pid);
-void	execute_redir_token(t_arg *args);
+int	execute_redir_token(t_arg *args);
 void	child_process(t_shell *msh);
 //###-----------------###
 
 
 //###--- PARSER ---###
-t_arg	*parse_tokens(t_token *tokens, t_env *env, int status);
+t_arg	*parse_tokens(t_token *tokens, t_env *env, int *status);
 //###--------------###
 
 //###--- PARSER_UTILS---###
@@ -162,7 +162,7 @@ void	split_tokens(char **expanded, t_arg **curr);
 //###-------------------###
 
 //###--- EXPAND_VAR ---###
-char	*expand(t_token *token, t_env *env, int status, int *flag);
+char	*expand(t_token *token, t_env *env, int *status, int *flag);
 char	*get_env_value_by_name(t_env *env, const char *name);
 //###-----------------------###
 

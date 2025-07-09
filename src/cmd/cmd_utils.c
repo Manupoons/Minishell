@@ -21,15 +21,15 @@ void	execute_redir(t_shell *msh)
 	{
 		if (redir->type == TOKEN_REDIR_IN || redir->type == TOKEN_HEREDOC)
 		{
-			if (dup2(redir->fd_in, STDIN_FILENO) == -1)
-				perror("dup2 redir out");
+			if (redir->fd_in != -1 && dup2(redir->fd_in, STDIN_FILENO) == -1)
+				return ;
 			close(redir->fd_in);
 			redir->fd_in = -1;
 		}
 		if (redir->type == TOKEN_REDIR_OUT || redir->type == TOKEN_APPEND)
 		{
-			if (dup2(redir->fd_out, STDOUT_FILENO) == -1)
-				perror("dup2 redir out");
+			if (redir->fd_out != -1 && dup2(redir->fd_out, STDOUT_FILENO) == -1)
+				return ;
 			close(redir->fd_out);
 			redir->fd_out = -1;
 		}
@@ -106,25 +106,39 @@ void	handle_heredoc(t_redir *redir)
 	free(filename);
 }
 
-void	execute_redir_token(t_arg *args)
+int	execute_redir_token(t_arg *args)
 {
 	t_redir	*redir;
 
 	redir = args->redirs;
 	if (!redir)
-		return ;
+		return (1);
 	while (redir)
 	{
 		if (redir->type == TOKEN_REDIR_IN)
+		{
 			redir->fd_in = open(redir->cmd, O_RDONLY);
+			if (redir->fd_in == -1)
+				return (perror(redir->cmd), 0);
+		}
 		if (redir->type == TOKEN_REDIR_OUT)
+		{
 			redir->fd_out = open(redir->cmd, O_WRONLY | O_CREAT
-					| O_TRUNC, 0777);
+				| O_TRUNC, 0777);
+			if (redir->fd_out == -1)
+				return (perror(redir->cmd), 0);
+
+		}
 		if (redir->type == TOKEN_APPEND)
+		{
 			redir->fd_out = open(redir->cmd, O_WRONLY | O_CREAT
 					| O_APPEND, 0644);
+			if (redir->fd_out == -1)
+				return (perror(redir->cmd), 0);
+		}
 		if (redir->type == TOKEN_HEREDOC)
 			handle_heredoc(redir);
 		redir = redir->next;
 	}
+	return (1);
 }
