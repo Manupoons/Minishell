@@ -31,11 +31,10 @@ static int	handle_redir_token(t_arg *curr_arg, t_token *token)
 	t_redir	*redir;
 
 	file_token = token->next;
-	if (!file_token || file_token->type != TOKEN_WORD)
-	{
-		printf("bash: syntax error near unexpected token `newline'\n");
-		return (1);
-	}
+	if (!file_token)
+			return (printf("bash: syntax error near unexpected token `newline'\n"), 1);
+	if (file_token->type != TOKEN_WORD)
+		return (printf("bash: syntax error near unexpected token `|'\n"), 1);
 	redir = malloc(sizeof(t_redir));
 	if (!redir)
 		perror("failed to alloc.");
