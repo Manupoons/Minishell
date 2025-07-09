@@ -6,7 +6,7 @@
 /*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 19:14:03 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/07/07 17:11:41 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/07/09 16:10:50 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ static void	execute_pid(t_shell *mini)
 	pid = fork();
 	if (pid < 0)
 	{
-		printf("failed 	to fork\n");
+		printf("failed to fork\n");
 		free_args(mini->arg);
 		return ;
 	}
