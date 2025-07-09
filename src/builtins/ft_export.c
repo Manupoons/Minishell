@@ -6,7 +6,7 @@
 /*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 12:09:09 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/06/10 19:06:41 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/07/09 19:09:52 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,8 +66,11 @@ static void	ft_exp_no_arg(t_shell *mini)
 	while (env)
 	{
 		if (ft_strcmp(env->env_name, "_") == 0)
-			printf(" \r");
-		else if (env->env_value[0])
+		{
+			env = env->next;
+			continue ;
+		}
+		if (env->env_value)
 			printf("declare -x %s=\"%s\"\n", env->env_name, env->env_value);
 		else
 			printf("declare -x %s\n", env->env_name);

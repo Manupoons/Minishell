@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_env.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mamaratr <mamaratr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 18:37:46 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/05/29 18:02:53 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/07/09 19:15:16 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ void	ft_env(t_shell *mini)
 	{
 		if (!ft_strncmp(env->env_name, "_\0", 2))
 			printf("_=/usr/bin/env\n");
-		else
+		else if (env->env_value && !env->env_value[0] == '\0')
 			printf("%s=%s\n", env->env_name, env->env_value);
 		env = env->next;
 	}
