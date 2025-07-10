@@ -6,7 +6,7 @@
 /*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 15:59:31 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/07/07 17:35:54 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/07/10 11:57:32 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,13 +18,13 @@ static t_arg	*handle_pipe_token(t_arg *curr_arg, t_token *next_tokens)
 
 	if (!next_tokens || next_tokens->type == TOKEN_PIPE)
 	{
-		ft_putstr_fd("minishell: syntax erro near unexpected token `|'\n", 2);
+		ft_putstr_fd("bash: syntax error near unexpected token `|'\n", 2);
 		return (NULL);
 	}	
 	new = init_arg();
 	if (!new)
 	{
-		ft_putstr_fd("minishell: failed to allocate pipe arg\n", 2);
+		ft_putstr_fd("bash: failed to allocate pipe arg\n", 2);
 		return (NULL);
 	}
 	curr_arg->next = new;
