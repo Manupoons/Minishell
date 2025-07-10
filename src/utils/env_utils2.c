@@ -6,7 +6,7 @@
 /*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 16:56:25 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/07/09 15:40:54 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/07/10 11:33:20 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,12 +32,12 @@ char	*get_env_value(char *value)
 	char	*tmp;
 
 	if (!value || *value == '\0')
-		return (ft_strdup(""));
+		return (NULL);
 	i = 0;
 	while (value[i] && value[i] != '=' && value[i] != ' ')
 		i++;
 	if (value[i] != '=')
-		return (ft_strdup(""));
+		return (NULL);
 	len = ft_strlen(value) - (i + 1);
 	val = ft_substr(value, i + 1, len);
 	if (val && len >= 2 && val[0] == '"' && val[len - 1] == '"')

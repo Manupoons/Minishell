@@ -6,7 +6,7 @@
 /*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 12:09:09 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/07/09 19:09:52 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/07/10 11:43:20 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ static void	ft_exp_no_arg(t_shell *mini)
 			env = env->next;
 			continue ;
 		}
-		if (env->env_value)
+		if (env->env_value != NULL)
 			printf("declare -x %s=\"%s\"\n", env->env_name, env->env_value);
 		else
 			printf("declare -x %s\n", env->env_name);
@@ -84,7 +84,7 @@ void	ft_export(t_shell *mini)
 	int	i;
 
 	mini->status = 0;
-	if (mini->arg->args_count == 1 || mini->arg->argv[1] == NULL)
+	if (mini->arg->args_count == 1)
 		ft_exp_no_arg(mini);
 	else
 	{

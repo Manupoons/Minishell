@@ -6,7 +6,7 @@
 /*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 19:04:03 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/07/07 18:14:04 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/07/10 11:44:41 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,11 +37,13 @@ t_env	*ft_lst_new_env(char *name, char *value)
 	if (!new_node)
 		return (NULL);
 	new_node->env_name = ft_strdup(name);
-	new_node->env_value = ft_strdup(value);
-	if (!new_node->env_name || !new_node->env_value)
+	if (value)
+		new_node->env_value = ft_strdup(value);
+	else
+		new_node->env_value = NULL;
+	if (!new_node->env_name)
 	{
 		ft_memfree(new_node->env_name);
-		ft_memfree(new_node->env_value);
 		ft_memfree(new_node);
 		return (NULL);
 	}

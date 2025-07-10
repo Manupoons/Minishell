@@ -3,34 +3,34 @@
 /*                                                        :::      ::::::::   */
 /*   builtins_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jdorazio <jdorazio@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 17:00:16 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/06/25 19:28:46 by jdorazio         ###   ########.fr       */
+/*   Updated: 2025/07/10 11:31:39 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./minishell.h"
 
-static int	check_variable(char *name, char *value, t_shell *mini)
-{
-	t_env	*env;
-
-	env = mini->env;
-	if (!env)
-		return (0);
-	while (env)
-	{
-		if (!ft_strcmp(env->env_name, name))
-		{
-			env->env_name = ft_strdup(name);
-			env->env_value = ft_strdup(value);
-			return (1);
-		}
-		env = env->next;
-	}
-	return (0);
-}
+// static int	check_variable(char *name, char *value, t_shell *mini)
+// {
+// 	t_env	*env;
+// 
+// 	env = mini->env;
+// 	if (!env)
+// 		return (0);
+// 	while (env)
+// 	{
+// 		if (!ft_strcmp(env->env_name, name))
+// 		{
+// 			env->env_name = ft_strdup(name);
+// 			env->env_value = ft_strdup(value);
+// 			return (1);
+// 		}
+// 		env = env->next;
+// 	}
+// 	return (0);
+// }
 
 static int	update_env_value_if_exists(t_env *env_list, const char *name,
 							const char *new_value)
@@ -56,20 +56,16 @@ void	add_arg_to_env(char *var, t_shell *mini)
 
 	name = get_env_name(var);
 	value = get_env_value(var);
-	if (!name || !value)
+	if (!name)
 	{
 		ft_memfree(name);
-		ft_memfree(value);
 		return ;
 	}
 	if (!update_env_value_if_exists(mini->env, name, value))
 	{
-		if (!check_variable(name, value, mini))
-		{
-			new_env = ft_lst_new_env(name, value);
-			if (new_env)
-				ft_add_back_env(&mini->env, new_env);
-		}
+		new_env = ft_lst_new_env(name, value);
+		if (new_env)
+			ft_add_back_env(&mini->env, new_env);
 	}
 	ft_memfree(name);
 	ft_memfree(value);

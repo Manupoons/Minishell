@@ -6,7 +6,7 @@
 /*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 13:16:16 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/06/20 12:26:40 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/07/10 12:15:13 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,11 @@ void	free_args(t_arg *args)
 void	free_args_and_exit(t_arg *args, const char *msg)
 {
 	if (msg)
-		fprintf(stderr, "minishell: %s\n", msg);
+	{
+		write(2, "minishell: ", 11);
+		write(2, msg, ft_strlen(msg));
+		write(2, "\n", 1);
+	}
 	free_args(args);
 	exit(EXIT_FAILURE);
 }
