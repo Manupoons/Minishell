@@ -76,9 +76,6 @@ void child_process(t_shell *mini)
 {
 	t_arg *arg = mini->arg;
 
-	// printf("[child_process] PID %d, cmd %p\n", getpid(), (void *)arg);
-	// printf("  pipe_in=%d, pipe_out=%d\n", arg->pipe_in, arg->pipe_out);
-
 	if (arg->pipe_in != STDIN_FILENO)
 	{
 		if (dup2(arg->pipe_in, STDIN_FILENO) == -1)
@@ -86,31 +83,22 @@ void child_process(t_shell *mini)
 			perror("dup2 pipe_in failed");
 			exit(1);
 		}
-		// printf("  dup2 pipe_in %d -> STDIN_FILENO\n", arg->pipe_in);
 	}
-
 	if (!has_stdout_redirection(arg->redirs) && arg->pipe_out != STDOUT_FILENO)
 	{
 		if (dup2(arg->pipe_out, STDOUT_FILENO) == -1)
 		{
 			perror("dup2 pipe_out failed");
-			exit(1);
 		}
-		// printf("  dup2 pipe_out %d -> STDOUT_FILENO\n", arg->pipe_out);
 	}
-
-	// printf("  Ejecutando execute_redir\n");
 	execute_redir(mini);
-
 	if (is_comms(mini))
 	{
-		// printf("  Ejecutando ft_comms\n");
 		ft_comms(mini);
 		exit(0);
 	}
 	else
 	{
-		// printf("  Ejecutando run_cmd\n");
 		run_cmd(mini);
 		exit(127);
 	}
