@@ -15,18 +15,16 @@
 static void	ft_prev_exec(t_shell *mini, char *temp)
 {
 	if (mini->tokens)
-	{
 		free_tokens(mini->tokens);
-		mini->tokens = NULL;
-	}
 	if (mini->arg)
-	{
 		free_args(mini->arg);
-		mini->arg = NULL;
-	}
-	mini->tokens = tokenizer(temp);
+	mini->tokens = NULL;
+	mini->arg = NULL;
+	mini->tokens = tokenizer(temp, &mini->status);
+	// print_tokens(mini->tokens);
 	mini->arg = parse_tokens(mini->tokens, mini->env, &mini->status);
-}
+	// print_parser(mini->arg);
+}	
 
 static void	free_minishell(t_shell *mini)
 {

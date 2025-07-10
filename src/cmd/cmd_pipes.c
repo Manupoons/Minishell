@@ -53,14 +53,13 @@ void	execute_pipeline_commands(t_shell *mini, pid_t *last_pid)
 	current = mini->arg;
 	while (current)
 	{
+				printf("Ejecutando pipeline stage: %p\n", (void *)current);
 		if (!execute_redir_token(current))
-	{
-		mini->status = 1;
-		printf("execute_pipe\n");
-		free_args(mini->arg);
-		mini->arg = NULL;
-		return;
-	}
+		{
+			printf("Redir failed en pipeline\n");
+			mini->status = 1;
+			return;
+		}
 		pid = fork();
 		if (pid < 0)
 			printf("error creating fork");
@@ -68,7 +67,7 @@ void	execute_pipeline_commands(t_shell *mini, pid_t *last_pid)
 		{
 			mini->arg = current;
 			child_process(mini);
-			exit(EXIT_FAILURE);
+		//	exit(EXIT_FAILURE);
 		}
 		else
 		{

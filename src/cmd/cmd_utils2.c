@@ -41,9 +41,15 @@ static void	run_cmd(t_shell *mini)
 	if (mini->arg->redirs)
 	{
 		if (mini->arg->redirs->fd_in != 0)
+		{
 			dup2(mini->arg->redirs->fd_in, STDIN_FILENO);
+			close(mini->arg->redirs->fd_in);
+		}
 		if (mini->arg->redirs->fd_out != 1)
+		{
 			dup2(mini->arg->redirs->fd_out, STDOUT_FILENO);
+			close(mini->arg->redirs->fd_out);
+		}
 	}
 	if (ft_strchr(mini->arg->argv[0], '/'))
 		path = ft_strdup(mini->arg->argv[0]);
@@ -67,6 +73,7 @@ bool	has_stdout_redirection(t_redir *redir)
 
 void	child_process(t_shell *msh)
 {
+	execute_redir(msh);
 	if (msh->arg->pipe_in != STDIN_FILENO)
 	{
 		dup2(msh->arg->pipe_in, STDIN_FILENO);
@@ -78,7 +85,6 @@ void	child_process(t_shell *msh)
 		dup2(msh->arg->pipe_out, STDOUT_FILENO);
 		close(msh->arg->pipe_out);
 	}
-	execute_redir(msh);
 	if (is_comms(msh))
 	{
 		ft_comms(msh);

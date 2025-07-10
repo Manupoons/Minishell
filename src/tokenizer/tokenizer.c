@@ -51,34 +51,33 @@ int	handle_operator(char *input, t_token **token_list, int i)
 // 	return (str);
 // }
 
-static char	*extract_quoted_fragment(char *input, int *i)
+static char	*extract_quoted_fragment(char *input, int *i, int *quote_type)
 {
 	char	quote;
 	int		j;
 	char	*buffer;
 
 	quote = input[*i];
+	*quote_type = quote; // Guardamos tipo de quote
 	buffer = malloc(ft_strlen(input) + 1);
 	if (!buffer)
 		return (NULL);
 	j = 0;
-	(*i)++; 
+	(*i)++;
 	while (input[*i] && input[*i] != quote)
 	{
 		if (input[*i] == '\\' && input[*i + 1])
-		{
 			(*i)++;
-			buffer[j++] = input[*i]; 
-		}
-		else
-			buffer[j++] = input[*i];
+		buffer[j++] = input[*i];
 		(*i)++;
 	}
 	if (input[*i] != quote)
 		return (printf("missing closing quotes.\n"), free(buffer), NULL);
 	(*i)++;
-	return (buffer[j] = '\0', buffer);
+	buffer[j] = '\0';
+	return (buffer);
 }
+
 
 static char	*extract_unquoted_fragment(char *input, int *i)
 {
@@ -103,13 +102,12 @@ static char	*extract_unquoted_fragment(char *input, int *i)
 	buffer[j] = '\0';
 	return (buffer);
 }
-
 int	handle_compound_words(char *input, t_token **token_list, int i)
 {
-	char	quote;
 	char	*frag;
 	char	*word;
 	int		start;
+	int		quote_type = 0;
 
 	start = i;
 	word = ft_strdup("");
@@ -117,18 +115,18 @@ int	handle_compound_words(char *input, t_token **token_list, int i)
 		return (-1);
 	while (input[i] && !is_space(input[i]) && !is_operator(input[i]))
 	{
-		quote = is_quotes(input[i]);
-		if (quote != 0)
-			frag = extract_quoted_fragment(input, &i);
+		int local_quote = 0;
+		if (is_quotes(input[i]))
+			frag = extract_quoted_fragment(input, &i, &local_quote);
 		else
 			frag = extract_unquoted_fragment(input, &i);
 		if (!frag)
 			return (free(word), -1);
 		word = ft_join_free(word, frag);
-		if (!word)
-			return (-1);
+		if (quote_type == 0) // usamos el primer quote si existe
+			quote_type = local_quote;
 	}
-	add_token(word, token_list, TOKEN_WORD, 0);
+	add_token(word, token_list, TOKEN_WORD, quote_type); // Guardamos el tipo de quote
 	free(word);
 	return (i - start);
 }

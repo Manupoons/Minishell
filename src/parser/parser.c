@@ -16,11 +16,17 @@ static t_arg	*handle_pipe_token(t_arg *curr_arg, t_token *next_tokens)
 {
 	t_arg	*new;
 
-	if (!curr_arg)
-		free_args_and_exit(curr_arg, "pipe without command before it.\n");
-	if (!next_tokens)
-		free_args_and_exit(curr_arg, "pipe without command after it.\n");
+	if (!next_tokens || next_tokens->type == TOKEN_PIPE)
+	{
+		ft_putstr_fd("minishell: syntax erro near unexpected token `|'\n", 2);
+		return (NULL);
+	}	
 	new = init_arg();
+	if (!new)
+	{
+		ft_putstr_fd("minishell: failed to allocate pipe arg\n", 2);
+		return (NULL);
+	}
 	curr_arg->next = new;
 	return (new);
 }
@@ -89,7 +95,10 @@ static int	process_tokens(t_arg **curr_arg, t_token *token, t_env *env,
 	{
 		*curr_arg = handle_pipe_token(*curr_arg, token->next);
 		if (!(*curr_arg))
-			printf("pipe init failed");
+		{
+			*status = 2;
+			return (1);
+		}
 	}
 	else if (is_redir(token->type))
 	{
