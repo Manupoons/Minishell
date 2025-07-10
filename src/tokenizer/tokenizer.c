@@ -3,14 +3,36 @@
 /*                                                        :::      ::::::::   */
 /*   tokenizer.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: jdorazio <jdorazio@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 17:41:35 by jdorazio          #+#    #+#             */
-/*   Updated: 2025/07/07 17:37:33 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/06/25 19:20:46 by jdorazio         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./minishell.h"
+
+char	*handle_quoted_token(char *input, int *i, char quote)
+{
+	char	*str;
+	int		end;
+	int		start;
+	int		len;
+
+	start = (*i);
+	end = 1 + start;
+	while (input[end] != quote && input[end])
+		end++;
+	if (!input[end])
+		return (printf("missing closing quotes.\n"), NULL);
+	len = end - start - 1;
+	str = malloc(len + 1);
+	if (!str)
+		return (NULL);
+	ft_strlcpy(str, input + start + 1, len + 1);
+	(*i) = end + 1;
+	return (str);
+}
 
 int	handle_operator(char *input, t_token **token_list, int i)
 {
@@ -20,8 +42,6 @@ int	handle_operator(char *input, t_token **token_list, int i)
 	{
 		if (input[i + 1] == '<')
 			return (add_token("<<", token_list, TOKEN_HEREDOC, 0), 2);
-		// else if (input[i + 1] == '>')
-		// 	return (add_token("<>", token_list, TOKEN_REDIR_INOUT, 0), 1);
 		return (add_token("<", token_list, TOKEN_REDIR_IN, 0), 1);
 	}
 	else if (input[i] == '>')
@@ -33,101 +53,46 @@ int	handle_operator(char *input, t_token **token_list, int i)
 	return (0);
 }
 
-// char	*handle_word(char *input, int *i)
-// {
-// 	int		start;
-// 	int		len;
-// 	char	*str;
-
-// 	start = (*i);
-// 	while (input[(*i)] && !(is_quotes(input[(*i)]))
-// 		&& !(is_operator((input[(*i)]))) && (!is_space(input[(*i)])))
-// 		(*i)++;
-// 	len = (*i) - start;
-// 	str = malloc(len + 1);
-// 	if (!str)
-// 		printf("failed to alloc mem.");
-// 	ft_strlcpy(str, input + start, len + 1);
-// 	return (str);
-// }
-
-static char	*extract_quoted_fragment(char *input, int *i, int *quote_type)
+char	*handle_word(char *input, int *i)
 {
-	char	quote;
-	int		j;
-	char	*buffer;
+	int		start;
+	int		len;
+	char	*str;
 
-	quote = input[*i];
-	*quote_type = quote; // Guardamos tipo de quote
-	buffer = malloc(ft_strlen(input) + 1);
-	if (!buffer)
-		return (NULL);
-	j = 0;
-	(*i)++;
-	while (input[*i] && input[*i] != quote)
-	{
-		if (input[*i] == '\\' && input[*i + 1])
-			(*i)++;
-		buffer[j++] = input[*i];
+	start = (*i);
+	while (input[(*i)] && !(is_quotes(input[(*i)]))
+		&& !(is_operator((input[(*i)]))) && (!is_space(input[(*i)])))
 		(*i)++;
-	}
-	if (input[*i] != quote)
-		return (printf("missing closing quotes.\n"), free(buffer), NULL);
-	(*i)++;
-	buffer[j] = '\0';
-	return (buffer);
+	len = (*i) - start;
+	str = malloc(len + 1);
+	if (!str)
+		printf("failed to alloc mem.");
+	ft_strlcpy(str, input + start, len + 1);
+	return (str);
 }
 
-
-static char	*extract_unquoted_fragment(char *input, int *i)
-{
-	char	*buffer;
-	int		j;
-
-	buffer = malloc(ft_strlen(input) + 1);
-	if (!buffer)
-		return (NULL);
-	j = 0;
-	while (input[*i] && !is_space(input[*i]) && !is_operator(input[*i]))
-	{
-		if (input[*i] == '\\' && input[*i + 1])
-		{
-			(*i)++;
-			buffer[j++] = input[*i];
-		}
-		else
-			buffer[j++] = input[*i];
-		(*i)++;
-	}
-	buffer[j] = '\0';
-	return (buffer);
-}
 int	handle_compound_words(char *input, t_token **token_list, int i)
 {
-	char	*frag;
-	char	*word;
+	char	quote;
+	char	*cw;
 	int		start;
-	int		quote_type = 0;
 
 	start = i;
-	word = ft_strdup("");
-	if (!word)
-		return (-1);
+	cw = ft_strdup("");
 	while (input[i] && !is_space(input[i]) && !is_operator(input[i]))
 	{
-		int local_quote = 0;
-		if (is_quotes(input[i]))
-			frag = extract_quoted_fragment(input, &i, &local_quote);
+		quote = is_quotes(input[i]);
+		if (quote != 0)
+		{
+			cw = ft_join_free(cw, handle_quoted_token(input, &i, quote));
+			if (!cw)
+				return (free(cw), -1);
+		}
 		else
-			frag = extract_unquoted_fragment(input, &i);
-		if (!frag)
-			return (free(word), -1);
-		word = ft_join_free(word, frag);
-		if (quote_type == 0) // usamos el primer quote si existe
-			quote_type = local_quote;
+			cw = ft_join_free(cw, handle_word(input, &i));
 	}
-	add_token(word, token_list, TOKEN_WORD, quote_type); // Guardamos el tipo de quote
-	free(word);
+	add_token(cw, token_list, TOKEN_WORD, quote);
+	free(cw);
 	return (i - start);
 }
 
@@ -152,7 +117,8 @@ t_token	*tokenizer(char *input, int *status)
 		{
 			if (token_list)
 				free_tokens(token_list);
-			return (*status = 2, NULL);
+			*status = 2;
+			return (NULL);
 		}
 		i += count;
 	}

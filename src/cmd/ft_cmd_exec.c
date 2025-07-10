@@ -14,44 +14,36 @@
 
 static void	ft_next_cmd(t_shell *mini)
 {
-	t_redir	*next;
-	t_arg	*tmp;
+	t_redir	*redir;
+	t_redir	*tmp_redir;
+	t_arg	*tmp_arg;
 
 	if (!mini->arg)
 		return ;
+	if (mini->arg->fd_in != -1 && mini->arg->fd_in != STDIN_FILENO)
+		close(mini->arg->fd_in);
+	if (mini->arg->fd_out != -1 && mini->arg->fd_out != STDOUT_FILENO)
+		close(mini->arg->fd_out);
 	ft_memfree_all(mini->arg->argv);
-	if (mini->arg->redirs)
+	redir = mini->arg->redirs;
+	while (redir)
 	{
-		ft_memfree(mini->arg->redirs->cmd);
-		if (mini->arg->redirs->fd_in != 0)
-			close(mini->arg->redirs->fd_in);
-		if (mini->arg->redirs->fd_out != 1)
-			close(mini->arg->redirs->fd_out);
-		next = mini->arg->redirs;
-		mini->arg->redirs = mini->arg->redirs->next;
-		ft_memfree(next);
+		if (redir->cmd)
+			free(redir->cmd);
+		tmp_redir = redir;
+		redir = redir->next;
+		free(tmp_redir);
 	}
-	tmp = mini->arg;
+	mini->arg->redirs = NULL;
+	tmp_arg = mini->arg;
 	mini->arg = mini->arg->next;
-	ft_memfree(tmp);
+	free(tmp_arg);
 }
 
 void	execute_pipeline(t_shell *mini)
 {
 	pid_t	last_pid;
-	t_arg	*curr;
 
-	curr = mini->arg;
-	while (curr)
-	{
-		if (!execute_redir_token(curr))
-			{
-				printf("Redir failed en pipeline\n");
-				mini->status = 1;
-				exit(1);
-			}
-		curr = curr->next;
-	}
 	last_pid = -1;
 	if (!init_pipes(mini))
 	{
@@ -61,30 +53,24 @@ void	execute_pipeline(t_shell *mini)
 	}
 	execute_pipeline_commands(mini, &last_pid);
 	if (last_pid != -1)
+	{
 		waitpid(last_pid, &mini->status, 0);
+	}
 	while (wait(NULL) > 0)
 		;
 	handle_status(mini);
-	free_args(mini->arg);
-	mini->arg = NULL;
 }
 
 static void	execute_pid(t_shell *mini)
 {
 	pid_t	pid;
-
-	if (!execute_redir_token(mini->arg))
-	{
-		mini->status = 1;
-		free_args(mini->arg);
-		mini->arg = NULL;
-		return;
-	}
+	
 	g_signal = S_CMD;
 	pid = fork();
 	if (pid < 0)
 	{
-		free_args(mini->arg);
+		perror("fork");
+		mini->status = 1;
 		return ;
 	}
 	if (pid == 0)
@@ -92,15 +78,12 @@ static void	execute_pid(t_shell *mini)
 		signal(SIGINT, SIG_DFL);
 		signal(SIGQUIT, SIG_DFL);
 		child_process(mini);
-		exit(1);
 	}
 	else
 	{
 		waitpid(pid, &mini->status, 0);
 		handle_status(mini);
 	}
-	free_args(mini->arg);
-	mini->arg = NULL;
 }
 
 void	execute(t_shell *mini)

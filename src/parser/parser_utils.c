@@ -20,8 +20,10 @@ t_arg	*init_arg(void)
 	if (!arg_list)
 		return (NULL);
 	arg_list->args_count = 0;
-	arg_list->pipe_in = 0;
-	arg_list->pipe_out = 1;
+	arg_list->pipe_in =STDIN_FILENO;
+	arg_list->pipe_out = STDOUT_FILENO;
+	arg_list->fd_in = -1;
+	arg_list->fd_out = -1;
 	arg_list->argv = NULL;
 	arg_list->redirs = NULL;
 	arg_list->next = NULL;

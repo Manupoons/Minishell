@@ -14,41 +14,34 @@
 
 void execute_redir(t_shell *msh)
 {
-	t_redir	*redir;
-	t_arg	*arg = msh->arg;
-
-	redir = arg->redirs;
-	while (redir)
+	t_arg	*arg;
+	
+	arg = msh->arg;
+	if (!arg)
+		return ;
+	if (arg->fd_out != -1)
 	{
-		// printf("[execute_redir] type=%d, fd_out=%d, fd_in=%d\n", redir->type, redir->fd_out, redir->fd_in);
-
-		if ((redir->type == TOKEN_REDIR_OUT || redir->type == TOKEN_APPEND) && redir->fd_out != -1)
+		if (dup2(arg->fd_out, STDOUT_FILENO) == -1)
 		{
-			// printf("  Redirecting stdout to fd %d\n", redir->fd_out);
-			if (dup2(redir->fd_out, STDOUT_FILENO) == -1)
-			{
-				perror("dup2 failed output redirection");
-				close(redir->fd_out);
-				exit(2);
-			}
-			close(redir->fd_out);
+			perror("dup2 failed output redirection");
+			close(arg->fd_out);
+			exit(2);
 		}
-		if ((redir->type == TOKEN_REDIR_IN || redir->type == TOKEN_HEREDOC) && redir->fd_in != -1)
+		close(arg->fd_out);
+		arg->fd_out = -1;
+	}
+	if (arg->fd_in != -1)
+	{
+		if (dup2(arg->fd_in, STDIN_FILENO) == -1)
 		{
-			// printf("  Redirecting stdin to fd %d\n", redir->fd_in);
-			if (dup2(redir->fd_in, STDIN_FILENO) == -1)
-			{
-				perror("dup2 failed input redirection");
-				close(redir->fd_in);
-				exit(2);
-			}
-			close(redir->fd_in);
+			perror("dup2 failed input redirection");
+			close(arg->fd_in);
+			exit(2);
 		}
-		redir = redir->next;
+		close(arg->fd_in);
+		arg->fd_in = -1;
 	}
 }
-
-
 
 void	handle_status(t_shell *mini)
 {
@@ -93,7 +86,7 @@ char	*generate_tmp_filename(void)
 	return (filename);
 }
 
-void	handle_heredoc(t_redir *redir)
+int	handle_heredoc(t_arg *arg, t_redir *redir)
 {
 	char	*line;
 	int		fd;
@@ -102,7 +95,7 @@ void	handle_heredoc(t_redir *redir)
 	filename = generate_tmp_filename();
 	fd = open(filename, O_WRONLY | O_CREAT | O_TRUNC, 0600);
 	if (fd < 0)
-		return ;
+		return (free(filename), 0);
 	while (1)
 	{
 		line = readline("> ");
@@ -112,44 +105,83 @@ void	handle_heredoc(t_redir *redir)
 		write(fd, "\n", 1);
 		free(line);
 	}
-	free(line);
 	close(fd);
-	redir->fd_in = open(filename, O_RDONLY);
+	if (arg->fd_in != -1)
+		close(arg->fd_in);
+	arg->fd_in = open(filename, O_RDONLY);
+	if (arg->fd_in == -1)
+		return (0);
 	unlink(filename);
-	free(filename);
+	return(free(filename), 1);
 }
 
+int	open_infile(t_arg *arg, t_redir *redir)
+{
+	int	fd;
+
+	if (arg->fd_in != -1)
+		close(arg->fd_in);
+	fd = open(redir->cmd, O_RDONLY);
+	if (fd == -1)
+		return (printf("-bash: %s: No such file or directory\n", redir->cmd), 0);
+	arg->fd_in = fd;
+	return(1);	
+}
+
+int	open_outfile(t_arg *arg, t_redir *redir)
+{
+	int	fd;
+
+	if (arg->fd_out != -1)
+		close(arg->fd_out);
+	fd = open(redir->cmd, O_WRONLY | O_CREAT
+		| O_TRUNC, 0644);
+	if (fd == -1)
+		return (0);	
+	arg->fd_out = fd;
+	return(1);	
+}
+
+int	open_append(t_arg *arg, t_redir *redir)
+{
+	int	fd;
+
+	if (arg->fd_out != -1)
+		close(arg->fd_out);
+	fd = open(redir->cmd, O_WRONLY | O_CREAT
+		| O_APPEND, 0644);
+	if (fd == -1)
+		return (0);
+	arg->fd_out = fd;
+	return(1);	
+}
 int	execute_redir_token(t_arg *args)
 {
 	t_redir	*redir;
 
 	redir = args->redirs;
-	if (!redir)
-		return (1);
 	while (redir)
 	{
 		if (redir->type == TOKEN_REDIR_IN)
 		{
-			redir->fd_in = open(redir->cmd, O_RDONLY);
-			if (redir->fd_in == -1)
-				return (perror(redir->cmd), 0);
+			if (!open_infile(args, redir))
+				return (0);
 		}
-		if (redir->type == TOKEN_REDIR_OUT)
+		else if (redir->type == TOKEN_REDIR_OUT)
 		{
-			redir->fd_out = open(redir->cmd, O_WRONLY | O_CREAT
-				| O_TRUNC, 0644);
-			if (redir->fd_out == -1)	
-				return (perror(redir->cmd), 0);
+			if (!open_outfile(args, redir))
+				return (0);
 		}
-		if (redir->type == TOKEN_APPEND)
+		else if (redir->type == TOKEN_APPEND)
 		{
-			redir->fd_out = open(redir->cmd, O_WRONLY | O_CREAT
-					| O_APPEND, 0644);
-			if (redir->fd_out == -1)
-				return (perror(redir->cmd), 0);
+			if (!open_append(args, redir))
+				return (0);
 		}
-		if (redir->type == TOKEN_HEREDOC)
-			handle_heredoc(redir);
+		else if (redir->type == TOKEN_HEREDOC)
+		{
+			if (!handle_heredoc(args, redir))
+				return (0);
+		}
 		redir = redir->next;
 	}
 	return (1);

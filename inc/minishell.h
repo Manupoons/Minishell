@@ -82,8 +82,6 @@ typedef struct s_token
 typedef struct s_redir
 {
 	char			*cmd;		// línea de entrada del usuario
-	int				fd_in;
-	int				fd_out;
 	int				type;		// redirection type
 	struct s_redir	*next;		// estado de salida del comando
 }	t_redir;
@@ -93,8 +91,10 @@ typedef struct s_arg
 	char			**argv;		// list de comandos
 	int				args_count;	// cantidad de argumentos
 	t_redir			*redirs;	// lista de redirecciones
-	int				pipe_in;	//fd de pipes
-	int				pipe_out;	//fd de pipes
+	int				fd_in; 
+	int				fd_out;
+	int				pipe_in;
+	int				pipe_out; 
 	struct s_arg	*next;		// para manejar pipelines (|) entre comandos
 	struct s_arg	*prev;		// para controlar previo a pipes
 }	t_arg;
@@ -138,7 +138,6 @@ void	ft_cmd_exec(t_shell *mini);
 //###-----------###
 
 //###--- CMD_UTILS ---###
-bool	has_stdout_redirection(t_redir *redir);
 bool	init_pipes(t_shell *mini);
 int		close_pipes(t_arg *current, int prev_fd_in);
 void	execute_redir(t_shell *msh);
@@ -214,8 +213,10 @@ char	**ft_env_to_array(t_shell *mini);
 //###-----------------------###
 
 //###--- DEBUGGIN ---###
-void	print_parser(t_arg *head);
+// void	print_parser(t_arg *head);
 void	print_tokens(t_token *tokens);
 void	free_array_split(char **arr);
+
+void close_fds(t_arg *arg);
 
 #endif

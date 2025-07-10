@@ -25,29 +25,29 @@ void	print_tokens(t_token *tokens)
 	}
 }
 
-void	print_parser(t_arg *head)
-{
-	int		i;
-	int		cmd_num;
-	t_redir	*redir;
+// void	print_parser(t_arg *head)
+// {
+// 	int		i;
+// 	int		cmd_num;
+// 	t_redir	*redir;
 
-	i = 0;
-	cmd_num = 0;
-	while (head)
-	{
-		printf("\n=== Command %d ===\n", cmd_num++);
-		printf("Arguments count: %d\n", head->args_count);
-		while (i++ < head->args_count)
-			printf("argv[%d]: %s\n", i, head->argv[i]);
-		redir = head->redirs;
-		if (redir)
-			printf("Redirections:\n");
-		while (redir)
-		{
-			printf("  → File: %s | fd_in: %d | fd_out: %d | type: %d\n",
-				redir->cmd, redir->fd_in, redir->fd_out, redir->type);
-			redir = redir->next;
-		}
-		head = head->next;
-	}
-}
+// 	i = 0;
+// 	cmd_num = 0;
+// 	while (head)
+// 	{
+// 		printf("\n=== Command %d ===\n", cmd_num++);
+// 		printf("Arguments count: %d\n", head->args_count);
+// 		while (i++ < head->args_count)
+// 			printf("argv[%d]: %s\n", i, head->argv[i]);
+// 		redir = head->redirs;
+// 		if (redir)
+// 			printf("Redirections:\n");
+// 		while (redir)
+// 		{
+// 			printf("  → File: %s | fd_in: %d | fd_out: %d | type: %d\n",
+// 				redir->cmd, redir->fd_in, redir->fd_out, redir->type);
+// 			redir = redir->next;
+// 		}
+// 		head = head->next;
+// 	}
+// }

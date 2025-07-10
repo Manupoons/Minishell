@@ -49,10 +49,6 @@ void	free_redirs(t_redir *redirs)
 		tmp = redirs->next;
 		if (redirs->cmd)
 			free(redirs->cmd);
-		if (redirs->fd_in >= 0)
-			close(redirs->fd_in);
-		if (redirs->fd_out >= 0)
-			close(redirs->fd_out);
 		free(redirs);
 		redirs = tmp;
 	}
@@ -76,14 +72,14 @@ void	free_args(t_arg *args)
 	}
 }
 
-void	free_args_and_exit(t_arg *args, const char *msg)
-{
-	if (msg)
-	{
-		write(2, "minishell: ", 11);
-		write(2, msg, ft_strlen(msg));
-		write(2, "\n", 1);
-	}
-	free_args(args);
-	exit(EXIT_FAILURE);
-}
+// void	free_args_and_exit(t_arg *args, const char *msg)
+// {
+// 	if (msg)
+// 	{
+// 		write(2, "minishell: ", 11);
+// 		write(2, msg, ft_strlen(msg));
+// 		write(2, "\n", 1);
+// 	}
+// 	free_args(args);
+// 	exit(EXIT_FAILURE);
+// }

@@ -26,41 +26,24 @@ bool	init_pipes(t_shell *mini)
 			return (false);
 		current->pipe_out = pipefd[1];
 		current->next->pipe_in = pipefd[0];
-			// 	printf("[init_pipes] cmd %p pipe_out=%d -> next cmd pipe_in=%d\n",
-			// (void *)current, current->pipe_out, current->next->pipe_in);
 		current = current->next;
 	}
 	return (true);
 }
-
-int	close_pipes(t_arg *current, int prev_fd_in)
-{
-	if (current->pipe_out != STDOUT_FILENO)
-		close(current->pipe_out);
-	if (current->pipe_in != STDIN_FILENO)
-		close(current->pipe_in);
-	if (prev_fd_in != -1 && prev_fd_in != STDIN_FILENO)
-		close(prev_fd_in);
-	prev_fd_in = current->pipe_in;
-	return (prev_fd_in);
-}
-
 void	execute_pipeline_commands(t_shell *mini, pid_t *last_pid)
 {
 	pid_t	pid;
-	int		prev_fd_in;
 	t_arg	*current;
 
-	prev_fd_in = -1;
 	current = mini->arg;
 	while (current)
 	{
-		// printf("Ejecutando pipeline stage: %p\n", (void *)current);
 		pid = fork();
 		if (pid < 0)
 		{
-		free_args(mini->arg);
-		return ;
+			perror("fork");
+			mini->status = 1;
+			return ;
 		}		
 		if (pid == 0)
 		{
@@ -68,11 +51,21 @@ void	execute_pipeline_commands(t_shell *mini, pid_t *last_pid)
 			child_process(mini);
 			exit(1);
 		}
-		else
-		{
-			*last_pid = pid;
-			prev_fd_in = close_pipes(current, prev_fd_in);
-		}
-		current = current->next;
+	else
+	{
+    *last_pid = pid;
+    if (current->pipe_out != STDOUT_FILENO && current->pipe_out != -1)
+    {
+        close(current->pipe_out);
+        current->pipe_out = -1;
+    }
+    if (current->pipe_in != STDIN_FILENO && current->pipe_in != -1)
+    {
+        close(current->pipe_in);
+        current->pipe_in = -1;
+    }
+    current = current->next;
+	}
+
 	}
 }

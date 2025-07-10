@@ -21,6 +21,7 @@ static void	ft_prev_exec(t_shell *mini, char *temp)
 	mini->tokens = NULL;
 	mini->arg = NULL;
 	mini->tokens = tokenizer(temp, &mini->status);
+	print_tokens(mini->tokens);
 	mini->arg = parse_tokens(mini->tokens, mini->env, &mini->status);
 }
 

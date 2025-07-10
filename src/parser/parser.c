@@ -43,17 +43,11 @@ static int	handle_redir_token(t_arg *curr_arg, t_token *token)
 		return (printf("bash: syntax error near unexpected token `%s'\n", token->token), 2);
 	redir = malloc(sizeof(t_redir));
 	if (!redir)
-		perror("failed to alloc.");
+		return (perror("failed to alloc"), 2);
 	redir->type = token->type;
 	redir->cmd = ft_strdup(file_token->token);
 	if (!redir->cmd)
-		perror("Memory allocation failed for redir->cmd.");
-	redir->fd_in = -1;
-	redir->fd_out = -1;
-	if (redir->type == TOKEN_REDIR_IN || redir->type == TOKEN_HEREDOC)
-		redir->fd_in = 0;
-	else if (redir->type == TOKEN_REDIR_OUT || redir->type == TOKEN_APPEND)
-		redir->fd_out = 1;
+		return (free(redir), perror("Memory allocation failed for redir->cmd."), 2);
 	redir->next = NULL;
 	return (append_to_parser(&(curr_arg->redirs), redir), 0);
 }
