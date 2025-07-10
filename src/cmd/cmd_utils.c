@@ -12,30 +12,43 @@
 
 #include "./minishell.h"
 
-void	execute_redir(t_shell *msh)
+void execute_redir(t_shell *msh)
 {
 	t_redir	*redir;
+	t_arg	*arg = msh->arg;
 
-	redir = msh->arg->redirs;
+	redir = arg->redirs;
 	while (redir)
 	{
-		if (redir->type == TOKEN_REDIR_IN || redir->type == TOKEN_HEREDOC)
+		// printf("[execute_redir] type=%d, fd_out=%d, fd_in=%d\n", redir->type, redir->fd_out, redir->fd_in);
+
+		if ((redir->type == TOKEN_REDIR_OUT || redir->type == TOKEN_APPEND) && redir->fd_out != -1)
 		{
-			if (redir->fd_in != -1 && dup2(redir->fd_in, STDIN_FILENO) == -1)
-				return ;
-			close(redir->fd_in);
-			redir->fd_in = -1;
-		}
-		if (redir->type == TOKEN_REDIR_OUT || redir->type == TOKEN_APPEND)
-		{
-			if (redir->fd_out != -1 && dup2(redir->fd_out, STDOUT_FILENO) == -1)
-				return ;
+			// printf("  Redirecting stdout to fd %d\n", redir->fd_out);
+			if (dup2(redir->fd_out, STDOUT_FILENO) == -1)
+			{
+				perror("dup2 failed output redirection");
+				close(redir->fd_out);
+				exit(2);
+			}
 			close(redir->fd_out);
-			redir->fd_out = -1;
+		}
+		if ((redir->type == TOKEN_REDIR_IN || redir->type == TOKEN_HEREDOC) && redir->fd_in != -1)
+		{
+			// printf("  Redirecting stdin to fd %d\n", redir->fd_in);
+			if (dup2(redir->fd_in, STDIN_FILENO) == -1)
+			{
+				perror("dup2 failed input redirection");
+				close(redir->fd_in);
+				exit(2);
+			}
+			close(redir->fd_in);
 		}
 		redir = redir->next;
 	}
 }
+
+
 
 void	handle_status(t_shell *mini)
 {
@@ -124,10 +137,9 @@ int	execute_redir_token(t_arg *args)
 		if (redir->type == TOKEN_REDIR_OUT)
 		{
 			redir->fd_out = open(redir->cmd, O_WRONLY | O_CREAT
-				| O_TRUNC, 0777);
-			if (redir->fd_out == -1)
+				| O_TRUNC, 0644);
+			if (redir->fd_out == -1)	
 				return (perror(redir->cmd), 0);
-
 		}
 		if (redir->type == TOKEN_APPEND)
 		{

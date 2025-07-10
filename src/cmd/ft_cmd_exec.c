@@ -39,13 +39,25 @@ static void	ft_next_cmd(t_shell *mini)
 void	execute_pipeline(t_shell *mini)
 {
 	pid_t	last_pid;
+	t_arg	*curr;
 
+	curr = mini->arg;
+	while (curr)
+	{
+		if (!execute_redir_token(curr))
+			{
+				printf("Redir failed en pipeline\n");
+				mini->status = 1;
+				exit(1);
+			}
+		curr = curr->next;
+	}
 	last_pid = -1;
 	if (!init_pipes(mini))
 	{
 		printf("failed init pipe");
 		free_args(mini->arg);
-		return ;
+		return ;	
 	}
 	execute_pipeline_commands(mini, &last_pid);
 	if (last_pid != -1)
@@ -95,7 +107,7 @@ void	execute(t_shell *mini)
 {
 	while (mini->arg)
 	{
-		if (!mini->arg->argv || !mini->arg->argv[0])
+		if ((!mini->arg->argv || !mini->arg->argv[0])  && !mini->arg->redirs)
 		{
 			ft_next_cmd(mini);
 			continue ;

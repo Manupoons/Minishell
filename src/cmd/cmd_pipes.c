@@ -26,6 +26,8 @@ bool	init_pipes(t_shell *mini)
 			return (false);
 		current->pipe_out = pipefd[1];
 		current->next->pipe_in = pipefd[0];
+			// 	printf("[init_pipes] cmd %p pipe_out=%d -> next cmd pipe_in=%d\n",
+			// (void *)current, current->pipe_out, current->next->pipe_in);
 		current = current->next;
 	}
 	return (true);
@@ -53,21 +55,18 @@ void	execute_pipeline_commands(t_shell *mini, pid_t *last_pid)
 	current = mini->arg;
 	while (current)
 	{
-				printf("Ejecutando pipeline stage: %p\n", (void *)current);
-		if (!execute_redir_token(current))
-		{
-			printf("Redir failed en pipeline\n");
-			mini->status = 1;
-			return;
-		}
+		// printf("Ejecutando pipeline stage: %p\n", (void *)current);
 		pid = fork();
 		if (pid < 0)
-			printf("error creating fork");
+		{
+		free_args(mini->arg);
+		return ;
+		}		
 		if (pid == 0)
 		{
 			mini->arg = current;
 			child_process(mini);
-		//	exit(EXIT_FAILURE);
+			exit(1);
 		}
 		else
 		{
