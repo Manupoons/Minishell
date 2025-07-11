@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   cmd_utils2.c                                       :+:      :+:    :+:   */
+/*   cmd_utils.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: jdorazio <jdorazio@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/07 09:33:04 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/07/06 11:09:22 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/07/11 08:25:01 by jdorazio         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,12 +91,12 @@ void close_fds(t_arg *arg)
     if (arg->pipe_out != STDOUT_FILENO && arg->pipe_out != -1)
     {
         close(arg->pipe_out);
-        arg->pipe_out = -1; // para evitar doble cierre
+        arg->pipe_out = -1;
     }
     if (arg->pipe_in != STDIN_FILENO && arg->pipe_in != -1)
     {
         close(arg->pipe_in);
-        arg->pipe_in = -1; // para evitar doble cierre
+        arg->pipe_in = -1;
     }
 }
 

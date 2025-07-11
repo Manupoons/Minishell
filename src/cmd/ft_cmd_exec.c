@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_cmd_exec.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: jdorazio <jdorazio@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 19:14:03 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/07/09 16:10:50 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/07/11 08:25:58 by jdorazio         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ void	execute_pipeline(t_shell *mini)
 static void	execute_pid(t_shell *mini)
 {
 	pid_t	pid;
-	
+
 	g_signal = S_CMD;
 	pid = fork();
 	if (pid < 0)

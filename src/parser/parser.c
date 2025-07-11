@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: jdorazio <jdorazio@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 15:59:31 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/07/10 11:57:32 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/07/11 08:30:34 by jdorazio         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ static t_arg	*handle_pipe_token(t_arg *curr_arg, t_token *next_tokens)
 	{
 		ft_putstr_fd("bash: syntax error near unexpected token `|'\n", 2);
 		return (NULL);
-	}	
+	}
 	new = init_arg();
 	if (!new)
 	{
@@ -38,16 +38,22 @@ static int	handle_redir_token(t_arg *curr_arg, t_token *token)
 
 	file_token = token->next;
 	if (!file_token)
-			return (printf("bash: syntax error near unexpected token `newline'\n"), 2);
+	{
+		printf("bash: syntax error near unexpected token `newline'\n");
+		return (2);
+	}
 	if (file_token->type != TOKEN_WORD)
-		return (printf("bash: syntax error near unexpected token `%s'\n", token->token), 2);
+	{
+		printf("bash: syntax error near unexpected token `%s'\n", token->token);
+		return (2);
+	}
 	redir = malloc(sizeof(t_redir));
 	if (!redir)
 		return (perror("failed to alloc"), 2);
 	redir->type = token->type;
 	redir->cmd = ft_strdup(file_token->token);
 	if (!redir->cmd)
-		return (free(redir), perror("Memory allocation failed for redir->cmd."), 2);
+		return (free(redir), 2);
 	redir->next = NULL;
 	return (append_to_parser(&(curr_arg->redirs), redir), 0);
 }
@@ -106,15 +112,6 @@ static int	process_tokens(t_arg **curr_arg, t_token *token, t_env *env,
 			return (1);
 	}
 	return (0);
-}
-
-t_arg	*handle_parse_errors(t_arg *head_arg, t_arg *curr_arg)
-{
-	if (head_arg)
-		free_args(head_arg);
-	else if (curr_arg)
-		free_args(curr_arg);
-	return (NULL);
 }
 
 t_arg	*parse_tokens(t_token *tokens, t_env *env, int *status)

@@ -6,7 +6,7 @@
 /*   By: jdorazio <jdorazio@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 17:24:18 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/06/25 18:21:15 by jdorazio         ###   ########.fr       */
+/*   Updated: 2025/07/11 08:26:30 by jdorazio         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ t_arg	*init_arg(void)
 	if (!arg_list)
 		return (NULL);
 	arg_list->args_count = 0;
-	arg_list->pipe_in =STDIN_FILENO;
+	arg_list->pipe_in = STDIN_FILENO;
 	arg_list->pipe_out = STDOUT_FILENO;
 	arg_list->fd_in = -1;
 	arg_list->fd_out = -1;

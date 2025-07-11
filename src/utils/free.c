@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   free.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: jdorazio <jdorazio@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 13:16:16 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/07/10 12:15:13 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/07/11 08:30:57 by jdorazio         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,14 +72,11 @@ void	free_args(t_arg *args)
 	}
 }
 
-// void	free_args_and_exit(t_arg *args, const char *msg)
-// {
-// 	if (msg)
-// 	{
-// 		write(2, "minishell: ", 11);
-// 		write(2, msg, ft_strlen(msg));
-// 		write(2, "\n", 1);
-// 	}
-// 	free_args(args);
-// 	exit(EXIT_FAILURE);
-// }
+t_arg	*handle_parse_errors(t_arg *head_arg, t_arg *curr_arg)
+{
+	if (head_arg)
+		free_args(head_arg);
+	else if (curr_arg)
+		free_args(curr_arg);
+	return (NULL);
+}

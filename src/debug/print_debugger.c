@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   print_debugger.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: jdorazio <jdorazio@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/07 10:14:22 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/06/07 10:20:49 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/07/11 00:04:03 by jdorazio         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,8 @@ void	print_tokens(t_token *tokens)
 	i = 0;
 	while (tokens)
 	{
-		printf("Token %d: [%s] (Type: %d)\n", i++, tokens->token,
-			tokens->type);
+		printf("Token %d: [%s] (Type: %d) - Quote [%d]\n", i++, tokens->token,
+			tokens->type, tokens->quote_type);
 		tokens = tokens->next;
 	}
 }

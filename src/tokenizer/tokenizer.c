@@ -6,33 +6,11 @@
 /*   By: jdorazio <jdorazio@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 17:41:35 by jdorazio          #+#    #+#             */
-/*   Updated: 2025/06/25 19:20:46 by jdorazio         ###   ########.fr       */
+/*   Updated: 2025/07/11 08:04:11 by jdorazio         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./minishell.h"
-
-char	*handle_quoted_token(char *input, int *i, char quote)
-{
-	char	*str;
-	int		end;
-	int		start;
-	int		len;
-
-	start = (*i);
-	end = 1 + start;
-	while (input[end] != quote && input[end])
-		end++;
-	if (!input[end])
-		return (printf("missing closing quotes.\n"), NULL);
-	len = end - start - 1;
-	str = malloc(len + 1);
-	if (!str)
-		return (NULL);
-	ft_strlcpy(str, input + start + 1, len + 1);
-	(*i) = end + 1;
-	return (str);
-}
 
 int	handle_operator(char *input, t_token **token_list, int i)
 {
@@ -53,46 +31,25 @@ int	handle_operator(char *input, t_token **token_list, int i)
 	return (0);
 }
 
-char	*handle_word(char *input, int *i)
-{
-	int		start;
-	int		len;
-	char	*str;
-
-	start = (*i);
-	while (input[(*i)] && !(is_quotes(input[(*i)]))
-		&& !(is_operator((input[(*i)]))) && (!is_space(input[(*i)])))
-		(*i)++;
-	len = (*i) - start;
-	str = malloc(len + 1);
-	if (!str)
-		printf("failed to alloc mem.");
-	ft_strlcpy(str, input + start, len + 1);
-	return (str);
-}
-
 int	handle_compound_words(char *input, t_token **token_list, int i)
 {
-	char	quote;
-	char	*cw;
+	char	*fragment;
 	int		start;
+	char	quote;
 
 	start = i;
-	cw = ft_strdup("");
 	while (input[i] && !is_space(input[i]) && !is_operator(input[i]))
 	{
 		quote = is_quotes(input[i]);
-		if (quote != 0)
-		{
-			cw = ft_join_free(cw, handle_quoted_token(input, &i, quote));
-			if (!cw)
-				return (free(cw), -1);
-		}
+		if (quote)
+			fragment = handle_quoted_token(input, &i, quote);
 		else
-			cw = ft_join_free(cw, handle_word(input, &i));
+			fragment = handle_word(input, &i);
+		if (!fragment)
+			return (-1);
+		add_token(fragment, token_list, TOKEN_WORD, quote);
+		free(fragment);
 	}
-	add_token(cw, token_list, TOKEN_WORD, quote);
-	free(cw);
 	return (i - start);
 }
 

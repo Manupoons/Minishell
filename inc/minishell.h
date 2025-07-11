@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: jdorazio <jdorazio@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/31 12:15:39 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/07/09 15:40:47 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/07/11 08:31:29 by jdorazio         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -190,14 +190,31 @@ int		handle_space(char *input, int i);
 void	add_token(char *input, t_token **token_list, t_token_type type, char quote);
 //###-----------------------###
 
-//###--- MINISHELL_UTILS ---###
-void	ft_add_back_env(t_env **lst, t_env *new);
-t_env	*ft_lst_new_env(char *name, char *value);
-void	ft_lst_env_init(t_shell *mini, char **envp);
-char	*get_env_name(char *name);
-char	*get_env_value(char *value);
-void	update_shlvl(t_shell *mini);
+//###--- TOKENIZER_UTILS 2 ---###
+int		is_quotes(char c);
+int		is_operator(char c);
+int		is_space(char c);
+int		handle_space(char *input, int i);
+void	add_token(char *input, t_token **token_list, t_token_type type, char quote);
 //###-----------------------###
+
+//###--- MINISHELL_UTILS ---###
+char	*extract_single_quotes(char *input, int *i);
+char	*extract_double_quotes(char *input, int *i);
+char	*handle_quoted_token(char *input, int *i, char quote);
+char	*handle_word(char *input, int *i);
+//###-----------------------###
+
+//###--- MINISHELL_UTILS ---###
+char	*generate_tmp_filename(void);
+int	handle_heredoc(t_arg *arg, t_redir *redir);
+int	open_infile(t_arg *arg, t_redir *redir);
+int	open_outfile(t_arg *arg, t_redir *redir);
+int	open_append(t_arg *arg, t_redir *redir);
+
+//###-----------------------###
+
+
 
 //###-----------------------###
 void	ft_free_env(t_env **env);
@@ -205,8 +222,8 @@ void	ft_free_list(t_env **env);
 void	free_tokens(t_token *tokens);
 void	free_redirs(t_redir *redirs);
 void	free_args(t_arg *args);
-void	free_args_and_exit(t_arg *args, const char *msg);
 void	free_array(char **arr);
+t_arg	*handle_parse_errors(t_arg *head_arg, t_arg *curr_arg);
 //###-----------------------###
 char	*ft_get_path(char *cmd, t_env *env);
 char	**ft_env_to_array(t_shell *mini);

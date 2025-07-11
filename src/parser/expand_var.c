@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand_var.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: jdorazio <jdorazio@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/09 00:44:40 by jdorazio          #+#    #+#             */
-/*   Updated: 2025/06/10 13:03:10 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/07/11 00:27:24 by jdorazio         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ static char	*replace_env_var(char *token_str, t_env *env, int *i)
 static char	*handle_dollar_expansion(char *str, t_env *env, int *status, int *i)
 {
 	(*i)++;
-	if (!str[*i])
+	if (!str[*i] || !(ft_isalnum(str[*i]) || str[*i] == '_' || str[*i] == '?'))
 		return (ft_strdup("$"));
 	else if (str[*i] == '?')
 		return (replace_especial(status, i));
