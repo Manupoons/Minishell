@@ -6,7 +6,7 @@
 /*   By: jdorazio <jdorazio@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 19:14:03 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/07/11 08:25:58 by jdorazio         ###   ########.fr       */
+/*   Updated: 2025/07/11 08:34:14 by jdorazio         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ void	execute_pipeline(t_shell *mini)
 	{
 		printf("failed init pipe");
 		free_args(mini->arg);
-		return ;	
+		return ;
 	}
 	execute_pipeline_commands(mini, &last_pid);
 	if (last_pid != -1)
@@ -90,7 +90,7 @@ void	execute(t_shell *mini)
 {
 	while (mini->arg)
 	{
-		if ((!mini->arg->argv || !mini->arg->argv[0])  && !mini->arg->redirs)
+		if ((!mini->arg->argv || !mini->arg->argv[0]) && !mini->arg->redirs)
 		{
 			ft_next_cmd(mini);
 			continue ;

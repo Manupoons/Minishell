@@ -6,7 +6,7 @@
 /*   By: jdorazio <jdorazio@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/11 08:20:19 by jdorazio          #+#    #+#             */
-/*   Updated: 2025/07/11 08:20:47 by jdorazio         ###   ########.fr       */
+/*   Updated: 2025/07/11 08:36:48 by jdorazio         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ int	handle_heredoc(t_arg *arg, t_redir *redir)
 	if (arg->fd_in == -1)
 		return (0);
 	unlink(filename);
-	return(free(filename), 1);
+	return (free(filename), 1);
 }
 
 int	open_infile(t_arg *arg, t_redir *redir)
@@ -64,9 +64,12 @@ int	open_infile(t_arg *arg, t_redir *redir)
 		close(arg->fd_in);
 	fd = open(redir->cmd, O_RDONLY);
 	if (fd == -1)
-		return (printf("-bash: %s: No such file or directory\n", redir->cmd), 0);
+	{
+		printf("-bash: %s: No such file or directory\n", redir->cmd);
+		return (0);
+	}
 	arg->fd_in = fd;
-	return(1);	
+	return (1);
 }
 
 int	open_outfile(t_arg *arg, t_redir *redir)
@@ -76,11 +79,11 @@ int	open_outfile(t_arg *arg, t_redir *redir)
 	if (arg->fd_out != -1)
 		close(arg->fd_out);
 	fd = open(redir->cmd, O_WRONLY | O_CREAT
-		| O_TRUNC, 0644);
+			| O_TRUNC, 0644);
 	if (fd == -1)
-		return (0);	
+		return (0);
 	arg->fd_out = fd;
-	return(1);	
+	return (1);
 }
 
 int	open_append(t_arg *arg, t_redir *redir)
@@ -90,9 +93,9 @@ int	open_append(t_arg *arg, t_redir *redir)
 	if (arg->fd_out != -1)
 		close(arg->fd_out);
 	fd = open(redir->cmd, O_WRONLY | O_CREAT
-		| O_APPEND, 0644);
+			|O_APPEND, 0644);
 	if (fd == -1)
 		return (0);
 	arg->fd_out = fd;
-	return(1);	
+	return (1);
 }
