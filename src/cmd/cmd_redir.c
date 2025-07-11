@@ -71,24 +71,26 @@ void	handle_status(t_shell *mini)
 
 int	execute_redir_token(t_arg *args)
 {
-	if (redir->type == TOKEN_REDIR_IN)
+	if (!args || !args->redirs)
+		return (1);
+	if (args->redirs->type == TOKEN_REDIR_IN)
 	{
-		if (!open_infile(args, redir))
+		if (!open_infile(args, args->redirs))
 			return (0);
 	}
-	else if (redir->type == TOKEN_REDIR_OUT)
+	else if (args->redirs->type == TOKEN_REDIR_OUT)
 	{
-		if (!open_outfile(args, redir))
+		if (!open_outfile(args, args->redirs))
 			return (0);
 	}
-	else if (redir->type == TOKEN_APPEND)
+	else if (args->redirs->type == TOKEN_APPEND)
 	{
-		if (!open_append(args, redir))
+		if (!open_append(args, args->redirs))
 			return (0);
 	}
-	else if (redir->type == TOKEN_HEREDOC)
+	else if (args->redirs->type == TOKEN_HEREDOC)
 	{
-		if (!handle_heredoc(args, redir))
+		if (!handle_heredoc(args, args->redirs))
 			return (0);
 	}
 	if (args->redirs->next)

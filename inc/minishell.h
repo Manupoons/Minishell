@@ -139,7 +139,7 @@ void	ft_cmd_exec(t_shell *mini);
 
 //###--- CMD_UTILS ---###
 bool	init_pipes(t_shell *mini);
-int		close_pipes(t_arg *current, int prev_fd_in);
+void	close_pipes(t_arg *current);
 void	execute_redir(t_shell *msh);
 void	handle_status(t_shell *mini);
 void	execute_pipeline_commands(t_shell *mini, pid_t *last_pid);
@@ -162,7 +162,6 @@ void	split_tokens(char **expanded, t_arg **curr);
 
 //###--- EXPAND_VAR ---###
 char	*expand(t_token *token, t_env *env, int *status, int *flag);
-char	*get_env_value_by_name(t_env *env, const char *name);
 //###-----------------------###
 
 //###--- EXPAND VAR UTILS---###
@@ -196,6 +195,18 @@ int		is_operator(char c);
 int		is_space(char c);
 int		handle_space(char *input, int i);
 void	add_token(char *input, t_token **token_list, t_token_type type, char quote);
+//###-----------------------###
+
+//###--- ENV UTILS ---###
+void	ft_add_back_env(t_env **lst, t_env *new);
+t_env	*ft_lst_new_env(char *name, char *value);
+void	ft_lst_env_init(t_shell *mini, char **envp);
+char	*get_env_name(char *name);
+char	*get_env_value(char *value);
+char	*get_env_value_by_name(t_env *env, const char *name);
+void	update_shlvl(t_shell *mini);
+
+
 //###-----------------------###
 
 //###--- MINISHELL_UTILS ---###
@@ -234,6 +245,5 @@ char	**ft_env_to_array(t_shell *mini);
 void	print_tokens(t_token *tokens);
 void	free_array_split(char **arr);
 
-void close_fds(t_arg *arg);
 
 #endif
