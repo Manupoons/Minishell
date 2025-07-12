@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: jdorazio <jdorazio@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 16:05:08 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/07/10 12:09:00 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/07/12 15:40:50 by jdorazio         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@ static void	ft_prev_exec(t_shell *mini, char *temp)
 	mini->tokens = NULL;
 	mini->arg = NULL;
 	mini->tokens = tokenizer(temp, &mini->status);
-	print_tokens(mini->tokens);
 	mini->arg = parse_tokens(mini->tokens, mini->env, &mini->status);
 }
 
@@ -36,7 +35,7 @@ static void	free_minishell(t_shell *mini)
 
 static int	ft_read_and_trim(char **line, char **temp)
 {
-	*line = readline(READLINE_MSG);
+	*line = readline(get_prompt());
 	if (!*line)
 		return (0);
 	*temp = ft_strtrim(*line, " \t\n\v\f\r");
@@ -77,7 +76,7 @@ int	main(int argc, char **argv, char **envp)
 
 	if (argc != 1 || argv[1])
 		return (EXIT_FAILURE);
-	printf("%s", HEADER);
+	print_header();
 	init_signal();
 	ft_minishell(&mini, envp);
 	return (EXIT_SUCCESS);

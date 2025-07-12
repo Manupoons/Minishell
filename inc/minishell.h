@@ -6,7 +6,7 @@
 /*   By: jdorazio <jdorazio@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/31 12:15:39 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/07/12 11:58:34 by jdorazio         ###   ########.fr       */
+/*   Updated: 2025/07/12 15:01:47 by jdorazio         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,21 +32,6 @@
 # include <termios.h>
 # include <unistd.h>
 
-# define HEADER ("\n\033[1;92m\
-	███╗   ███╗██╗███╗   ██╗██╗███████╗██╗  ██╗███████╗██╗     ██╗     \n\
-	████╗ ████║██║████╗  ██║██║██╔════╝██║  ██║██╔════╝██║     ██║     \n\
-	██╔████╔██║██║██╔██╗ ██║██║███████╗███████║█████╗  ██║     ██║     \n\
-	██║╚██╔╝██║██║██║╚██╗██║██║╚════██║██╔══██║██╔══╝  ██║     ██║     \n\
-	██║ ╚═╝ ██║██║██║ ╚████║██║███████║██║  ██║███████╗███████╗███████╗\n\
-	╚═╝     ╚═╝╚═╝╚═╝  ╚═══╝╚═╝╚══════╝╚═╝  ╚═╝╚══════╝╚══════╝╚══════╝\n\
-	\n\033[0m\
-			A simple shell implemented in C                            \n\
-	\n\033[0m\
-	\t\t --- \033[1;92mmamaratr\033[0m && \033[1;92mjdorazio\033[0m ---\n\
-	\n")
-
-#define READLINE_MSG "\001\033[1;36m\002minishell\001\033[34m\002$> \001\033[0m\002"
-
 extern int	g_signal;
 typedef enum e_signal
 {
@@ -68,7 +53,7 @@ typedef enum e_token_type
 	TOKEN_REDIR_OUT,			// '>'
 	TOKEN_APPEND,				// '>>'
 	TOKEN_HEREDOC,				// '<<'
-	TOKEN_EOF					// Fin de línea o archivo (opcional)
+	TOKEN_EOF
 }	t_token_type;
 
 typedef struct s_token
@@ -91,10 +76,10 @@ typedef struct s_arg
 	char			**argv;		// list de comandos
 	int				args_count;	// cantidad de argumentos
 	t_redir			*redirs;	// lista de redirecciones
-	int				fd_in; 
+	int				fd_in;
 	int				fd_out;
 	int				pipe_in;
-	int				pipe_out; 
+	int				pipe_out;
 	struct s_arg	*next;		// para manejar pipelines (|) entre comandos
 	struct s_arg	*prev;		// para controlar previo a pipes
 }	t_arg;
@@ -128,6 +113,11 @@ void	ft_export(t_shell *mini);
 void	ft_unset(t_shell *mini);
 //###----------------###
 
+//###--- BANNER ---###
+char	*get_prompt(void);
+void	print_header(void);
+//###----------------------###
+
 //###--- BUILTINS_UTILS ---###
 int		check_export(char *argv);
 void	add_arg_to_env(char *var, t_shell *mini);
@@ -140,12 +130,11 @@ void	ft_cmd_exec(t_shell *mini);
 //###--- CMD_UTILS ---###
 bool	init_pipes(t_shell *mini);
 void	close_pipes(t_arg *current);
-int	execute_redir(t_arg *arg);
+int		execute_redir(t_arg *arg);
 void	handle_status(t_shell *mini);
 void	execute_pipeline_commands(t_shell *mini, pid_t *last_pid);
 void	child_process(t_shell *msh);
 //###-----------------###
-
 
 //###--- PARSER ---###
 t_arg	*parse_tokens(t_token *tokens, t_env *env, int *status);
@@ -166,8 +155,7 @@ char	*expand(t_token *token, t_env *env, int *status, int *flag);
 //###--- EXPAND VAR UTILS---###
 char	*ft_join_free(char *dst, char *src);
 char	*strjoin_char(char *s, char c);
-//###--- PARSER_UTILS---###
-
+//###--------------###
 
 //###--- SIGNAL ---###
 void	init_signal(void);
@@ -185,7 +173,8 @@ int		is_quotes(char c);
 int		is_operator(char c);
 int		is_space(char c);
 int		handle_space(char *input, int i);
-void	add_token(char *input, t_token **token_list, t_token_type type, char quote);
+void	add_token(char *input, t_token **token_list,
+			t_token_type type, char quote);
 //###-----------------------###
 
 //###--- TOKENIZER_UTILS 2 ---###
@@ -193,7 +182,8 @@ int		is_quotes(char c);
 int		is_operator(char c);
 int		is_space(char c);
 int		handle_space(char *input, int i);
-void	add_token(char *input, t_token **token_list, t_token_type type, char quote);
+void	add_token(char *input, t_token **token_list,
+			t_token_type type, char quote);
 //###-----------------------###
 
 //###--- ENV UTILS ---###
@@ -204,8 +194,6 @@ char	*get_env_name(char *name);
 char	*get_env_value(char *value);
 char	*get_env_value_by_name(t_env *env, const char *name);
 void	update_shlvl(t_shell *mini);
-
-
 //###-----------------------###
 
 //###--- MINISHELL_UTILS ---###
@@ -217,16 +205,13 @@ char	*handle_word(char *input, int *i);
 
 //###--- MINISHELL_UTILS ---###
 char	*generate_tmp_filename(void);
-int	handle_heredoc(t_arg *arg, t_redir *redir);
-int	open_infile(t_arg *arg, t_redir *redir);
-int	open_outfile(t_arg *arg, t_redir *redir);
-int	open_append(t_arg *arg, t_redir *redir);
-
+int		handle_heredoc(t_arg *arg, t_redir *redir);
+int		open_infile(t_arg *arg, t_redir *redir);
+int		open_outfile(t_arg *arg, t_redir *redir);
+int		open_append(t_arg *arg, t_redir *redir);
 //###-----------------------###
 
-
-
-//###-----------------------###
+//###------FREE & ENV---------###
 void	ft_free_env(t_env **env);
 void	ft_free_list(t_env **env);
 void	free_tokens(t_token *tokens);
@@ -234,7 +219,6 @@ void	free_redirs(t_redir *redirs);
 void	free_args(t_arg *args);
 void	free_array(char **arr);
 t_arg	*handle_parse_errors(t_arg *head_arg, t_arg *curr_arg);
-//###-----------------------###
 char	*ft_get_path(char *cmd, t_env *env);
 char	**ft_env_to_array(t_shell *mini);
 //###-----------------------###

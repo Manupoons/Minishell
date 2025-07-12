@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mamaratr <mamaratr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jdorazio <jdorazio@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/12 13:16:58 by jdorazio          #+#    #+#             */
-/*   Updated: 2025/07/12 13:17:56 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/07/12 15:41:35 by jdorazio         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ static int	handle_redir_token(t_arg *curr_arg, t_token *token)
 
 	file_token = token->next;
 	if (!file_token || (token->type == TOKEN_REDIR_IN
-		&& file_token->type == TOKEN_REDIR_OUT))
+			&& file_token->type == TOKEN_REDIR_OUT))
 	{
 		printf("mini: syntax error near unexpected token `newline'\n");
 		return (2);
@@ -68,7 +68,7 @@ static int	process_word_token(t_arg **curr, t_token *token, t_env *env,
 
 	expanded = expand(token, env, status, &flag);
 	if (!expanded)
-		return (free(expanded), 0);
+		return (free(expanded), 1);
 	if (ft_strchr(expanded, ' ') && flag == 1)
 		split_tokens(&expanded, curr);
 	else
