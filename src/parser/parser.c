@@ -6,7 +6,7 @@
 /*   By: jdorazio <jdorazio@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 15:59:31 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/07/11 08:30:34 by jdorazio         ###   ########.fr       */
+/*   Updated: 2025/07/12 13:07:30 by jdorazio         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,18 +58,15 @@ static int	handle_redir_token(t_arg *curr_arg, t_token *token)
 	return (append_to_parser(&(curr_arg->redirs), redir), 0);
 }
 
-static void	process_word_token(t_arg **curr, t_token *token, t_env *env,
+static int	process_word_token(t_arg **curr, t_token *token, t_env *env,
 	int *status)
 {
 	char	*expanded;
 	int		flag;
 
 	expanded = expand(token, env, status, &flag);
-	if (!expanded || (expanded[0] == '\0' && token->quote_type == '\''))
-	{
-		free(expanded);
-		return ;
-	}
+	if (!expanded)
+		return (free(expanded), 0);
 	if (ft_strchr(expanded, ' ') && flag == 1)
 		split_tokens(&expanded, curr);
 	else
@@ -79,34 +76,29 @@ static void	process_word_token(t_arg **curr, t_token *token, t_env *env,
 		{
 			free(expanded);
 			printf("malloc failed\n");
-			return ;
+			return (0);
 		}
 		(*curr)->args_count++;
 		free(expanded);
 	}
+	return (1);
 }
 
 static int	process_tokens(t_arg **curr_arg, t_token *token, t_env *env,
 	int *status)
 {
 	if (token->type == TOKEN_WORD)
-		process_word_token(curr_arg, token, env, status);
+		return (!process_word_token(curr_arg, token, env, status));
 	else if (token->type == TOKEN_PIPE)
 	{
 		*curr_arg = handle_pipe_token(*curr_arg, token->next);
 		if (!(*curr_arg))
-		{
-			*status = 2;
-			return (1);
-		}
+			return (*status = 2, 1);
 	}
 	else if (is_redir(token->type))
 	{
 		if (!(*curr_arg))
-		{
-			printf("redir with no arg");
-			return (1);
-		}
+			return (printf("redir with no arg"), 1);
 		*status = handle_redir_token(*curr_arg, token);
 		if (*status == 2)
 			return (1);

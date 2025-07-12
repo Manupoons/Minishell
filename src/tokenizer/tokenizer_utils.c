@@ -6,7 +6,7 @@
 /*   By: jdorazio <jdorazio@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 17:43:10 by jdorazio          #+#    #+#             */
-/*   Updated: 2025/06/25 19:20:46 by jdorazio         ###   ########.fr       */
+/*   Updated: 2025/07/12 13:00:48 by jdorazio         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,11 +48,10 @@ void	add_token(char *input, t_token **token_list, t_token_type type,
 
 	new = (t_token *) malloc(sizeof(t_token));
 	if (!new)
-		printf("Failed to alloc mem for token.");
+		return ;
 	new->token = ft_strdup(input);
 	new->type = type;
-	if (quote)
-		new->quote_type = quote;
+	new->quote_type = quote;
 	new->next = NULL;
 	if (!*token_list)
 		*token_list = new;

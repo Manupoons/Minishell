@@ -6,7 +6,7 @@
 /*   By: jdorazio <jdorazio@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 17:41:35 by jdorazio          #+#    #+#             */
-/*   Updated: 2025/07/11 08:04:11 by jdorazio         ###   ########.fr       */
+/*   Updated: 2025/07/12 13:09:55 by jdorazio         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,13 +31,31 @@ int	handle_operator(char *input, t_token **token_list, int i)
 	return (0);
 }
 
+static int	is_valid_var_assign(const char *str)
+{
+	int	i;
+
+	i = 0;
+	if (!ft_isalpha(str[i]) && str[i] != '_')
+		return (0);
+	while (ft_isalnum(str[i]) || str[i] == '_')
+		i++;
+	if (str[i] != '=')
+		return (0);
+	if (str[i + 1] == '\0')
+		return (0);
+	return (1);
+}
+
 int	handle_compound_words(char *input, t_token **token_list, int i)
 {
-	char	*fragment;
 	int		start;
 	char	quote;
+	char	*fragment;
+	char	*full_token;
 
 	start = i;
+	full_token = ft_strdup("");
 	while (input[i] && !is_space(input[i]) && !is_operator(input[i]))
 	{
 		quote = is_quotes(input[i]);
@@ -46,10 +64,14 @@ int	handle_compound_words(char *input, t_token **token_list, int i)
 		else
 			fragment = handle_word(input, &i);
 		if (!fragment)
-			return (-1);
-		add_token(fragment, token_list, TOKEN_WORD, quote);
-		free(fragment);
+			return (free(full_token), -1);
+		full_token = ft_join_free(full_token, fragment);
 	}
+	if (is_valid_var_assign(full_token))
+		add_token(full_token, token_list, TOKEN_WORD, quote);
+	else
+		add_token(full_token, token_list, TOKEN_WORD, 0);
+	free(full_token);
 	return (i - start);
 }
 

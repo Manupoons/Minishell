@@ -6,7 +6,7 @@
 /*   By: jdorazio <jdorazio@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/31 12:15:39 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/07/11 08:31:29 by jdorazio         ###   ########.fr       */
+/*   Updated: 2025/07/12 11:58:34 by jdorazio         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -244,14 +244,5 @@ char	**ft_env_to_array(t_shell *mini);
 void	print_tokens(t_token *tokens);
 void	free_array_split(char **arr);
 void	print_parser(t_arg *head);
-
-int build_compound_token(char *input, int i, t_token **token_list);
-int process_fragment(char **full, char *frag, char *last_q, t_token **token_list);
-char current_quote_type(char *str);
-char *get_fragment(char *input, int *i);
-int build_assignment_token(char *input, int i, t_token **token_list);
-int handle_compound_words(char *input, t_token **token_list, int i);
-int is_assignment(char *input);
-
 
 #endif
