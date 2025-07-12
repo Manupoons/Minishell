@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cmd_pipes.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jdorazio <jdorazio@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mamaratr <mamaratr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/07 09:48:41 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/07/12 18:24:55 by jdorazio         ###   ########.fr       */
+/*   Updated: 2025/07/12 18:42:31 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ static int	handle_fork(t_shell *mini, t_arg *current)
 	{
 		mini->arg = current;
 		child_process(mini);
-		exit(1);
+		exit(127);
 	}
 	return (pid);
 }

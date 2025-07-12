@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand_var_utils.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jdorazio <jdorazio@student.42.madrid.co    +#+  +:+       +#+        */
+/*   By: mamaratr <mamaratr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/14 12:54:10 by jdorazio          #+#    #+#             */
-/*   Updated: 2025/06/14 12:54:10 by jdorazio         ###   ########.fr       */
+/*   Updated: 2025/07/12 17:41:51 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,12 +36,11 @@ char	*strjoin_char(char *s, char c)
 	return (joined);
 }
 
-void	free_array_split(char **arr)
+t_arg	*handle_parse_errors(t_arg *head_arg, t_arg *curr_arg)
 {
-	int	i;
-
-	i = 0;
-	while (arr[i])
-		free(arr[i++]);
-	free(arr);
+	if (head_arg)
+		free_args(head_arg);
+	else if (curr_arg)
+		free_args(curr_arg);
+	return (NULL);
 }

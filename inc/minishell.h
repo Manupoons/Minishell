@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jdorazio <jdorazio@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mamaratr <mamaratr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/31 12:15:39 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/07/12 18:18:28 by jdorazio         ###   ########.fr       */
+/*   Updated: 2025/07/12 18:42:19 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -214,11 +214,9 @@ int		open_append(t_arg *arg, t_redir *redir);
 
 //###------FREE & ENV---------###
 void	ft_free_env(t_env **env);
-void	ft_free_list(t_env **env);
 void	free_tokens(t_token *tokens);
 void	free_redirs(t_redir *redirs);
 void	free_args(t_arg *args);
-void	free_array(char **arr);
 t_arg	*handle_parse_errors(t_arg *head_arg, t_arg *curr_arg);
 char	*ft_get_path(char *cmd, t_env *env);
 char	**ft_env_to_array(t_shell *mini);
@@ -227,7 +225,8 @@ char	**ft_env_to_array(t_shell *mini);
 //###--- DEBUGGIN ---###
 // void	print_parser(t_arg *head);
 void	print_tokens(t_token *tokens);
-void	free_array_split(char **arr);
 void	print_parser(t_arg *head);
+
+void	ft_free_split(char **split);
 
 #endif

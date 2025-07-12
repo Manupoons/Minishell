@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   free.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jdorazio <jdorazio@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mamaratr <mamaratr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 13:16:16 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/07/11 08:30:57 by jdorazio         ###   ########.fr       */
+/*   Updated: 2025/07/12 17:42:30 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ void	free_args(t_arg *args)
 		tmp = args->next;
 		if (args->argv)
 		{
-			free_array_split(args->argv);
+			ft_free_split(args->argv);
 		}
 		if (args->redirs)
 			free_redirs(args->redirs);
@@ -72,11 +72,17 @@ void	free_args(t_arg *args)
 	}
 }
 
-t_arg	*handle_parse_errors(t_arg *head_arg, t_arg *curr_arg)
+void	ft_free_split(char **split)
 {
-	if (head_arg)
-		free_args(head_arg);
-	else if (curr_arg)
-		free_args(curr_arg);
-	return (NULL);
+	int	i;
+
+	i = 0;
+	if (!split)
+		return ;
+	while (split[i])
+	{
+		free(split[i]);
+		i++;
+	}
+	free(split);
 }

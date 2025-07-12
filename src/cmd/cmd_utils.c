@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cmd_utils.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jdorazio <jdorazio@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mamaratr <mamaratr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/07 09:33:04 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/07/12 18:23:33 by jdorazio         ###   ########.fr       */
+/*   Updated: 2025/07/12 18:42:26 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,6 @@
 
 static void	run_cmd_error(t_shell *mini, char *path, char **envp)
 {
-	if (access(path, X_OK) == -1)
-	{
-		perror(mini->arg->argv[0]);
-		if (errno == EACCES)
-			exit(126);
-		else
-			exit(127);
-	}
 	execve(path, mini->arg->argv, envp);
 	perror(mini->arg->argv[0]);
 	if (errno == EACCES)
@@ -43,7 +35,11 @@ static void	run_cmd(t_shell *mini)
 	else
 		path = ft_get_path(mini->arg->argv[0], mini->env);
 	if (!path)
+	{
+		ft_putstr_fd(mini->arg->argv[0], STDERR_FILENO);
+		ft_putendl_fd(": command not found", STDERR_FILENO);
 		exit(127);
+	}
 	run_cmd_error(mini, path, envp);
 }
 

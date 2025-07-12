@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cmd_redir.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jdorazio <jdorazio@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mamaratr <mamaratr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/07 09:21:59 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/07/12 18:18:15 by jdorazio         ###   ########.fr       */
+/*   Updated: 2025/07/12 18:42:36 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,4 @@ void	handle_status(t_shell *mini)
 		mini->status = WEXITSTATUS(mini->status);
 		g_signal = S_BASE;
 	}
-	if (mini->status == 127 && g_signal == S_BASE
-		&& mini->arg && mini->arg->argv && mini->arg->argv[0])
-		printf("%s: command not found\n", mini->arg->argv[0]);
 }

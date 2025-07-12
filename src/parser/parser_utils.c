@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jdorazio <jdorazio@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mamaratr <mamaratr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 17:24:18 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/07/11 08:26:30 by jdorazio         ###   ########.fr       */
+/*   Updated: 2025/07/12 17:42:29 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,13 +96,13 @@ void	split_tokens(char **expanded, t_arg **curr)
 		(*curr)->argv = ft_add_to_argv((*curr)->argv, splitted[i]);
 		if (!(*curr)->argv)
 		{
-			free_array_split(splitted);
+			ft_free_split(splitted);
 			printf("malloc failed to argv\n");
 			return ;
 		}
 		(*curr)->args_count++;
 		i++;
 	}
-	free_array_split(splitted);
+	ft_free_split(splitted);
 	free(*expanded);
 }
