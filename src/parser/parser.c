@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jdorazio <jdorazio@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mamaratr <mamaratr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/12 13:16:58 by jdorazio          #+#    #+#             */
-/*   Updated: 2025/07/12 13:17:06 by jdorazio         ###   ########.fr       */
+/*   Updated: 2025/07/12 13:17:56 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,14 +37,16 @@ static int	handle_redir_token(t_arg *curr_arg, t_token *token)
 	t_redir	*redir;
 
 	file_token = token->next;
-	if (!file_token)
+	if (!file_token || (token->type == TOKEN_REDIR_IN
+		&& file_token->type == TOKEN_REDIR_OUT))
 	{
 		printf("mini: syntax error near unexpected token `newline'\n");
 		return (2);
 	}
 	if (file_token->type != TOKEN_WORD)
 	{
-		printf("mini: syntax error near unexpected token `%s'\n", token->token);
+		printf("mini: syntax error near unexpected token `%s'\n",
+			token->next->token);
 		return (2);
 	}
 	redir = malloc(sizeof(t_redir));
