@@ -6,7 +6,7 @@
 /*   By: jdorazio <jdorazio@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/11 08:20:19 by jdorazio          #+#    #+#             */
-/*   Updated: 2025/07/11 08:36:48 by jdorazio         ###   ########.fr       */
+/*   Updated: 2025/07/12 18:17:58 by jdorazio         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ int	handle_heredoc(t_arg *arg, t_redir *redir)
 		return (free(filename), 0);
 	while (1)
 	{
-		line = readline("> ");
+		line = readline("HEREDOC > ");
 		if (!line || ft_strcmp(line, redir->cmd) == 0)
 			break ;
 		write(fd, line, ft_strlen(line));
@@ -53,7 +53,7 @@ int	handle_heredoc(t_arg *arg, t_redir *redir)
 	if (arg->fd_in == -1)
 		return (0);
 	unlink(filename);
-	return (free(filename), 1);
+	return (free(line), free(filename), 1);
 }
 
 int	open_infile(t_arg *arg, t_redir *redir)
@@ -63,7 +63,7 @@ int	open_infile(t_arg *arg, t_redir *redir)
 	arg->fd_in = open(redir->cmd, O_RDONLY);
 	if (arg->fd_in == -1)
 		return (perror(redir->cmd), 0);
-	return (dup2(arg->fd_out, STDIN_FILENO) != -1);
+	return (dup2(arg->fd_in, STDIN_FILENO) != -1);
 }
 
 int	open_outfile(t_arg *arg, t_redir *redir)
@@ -79,14 +79,11 @@ int	open_outfile(t_arg *arg, t_redir *redir)
 
 int	open_append(t_arg *arg, t_redir *redir)
 {
-	int	fd;
-
 	if (arg->fd_out != -1)
 		close(arg->fd_out);
-	fd = open(redir->cmd, O_WRONLY | O_CREAT
+	arg->fd_out = open(redir->cmd, O_WRONLY | O_CREAT
 			|O_APPEND, 0644);
-	if (fd == -1)
-		return (0);
-	arg->fd_out = fd;
-	return (1);
+	if (arg->fd_out == -1)
+		return (perror(redir->cmd), 0);
+	return (dup2(arg->fd_out, STDOUT_FILENO) != -1);
 }

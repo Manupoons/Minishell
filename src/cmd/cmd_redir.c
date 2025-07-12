@@ -3,14 +3,30 @@
 /*                                                        :::      ::::::::   */
 /*   cmd_redir.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mamaratr <mamaratr@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jdorazio <jdorazio@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/07 09:21:59 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/07/12 12:01:42 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/07/12 18:18:15 by jdorazio         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./minishell.h"
+
+void	process_heredoc(t_arg *arg)
+{
+	t_redir	*redir;
+
+	redir = arg->redirs;
+	while (redir)
+	{
+		if (redir->type == TOKEN_HEREDOC)
+		{
+			if (!handle_heredoc(arg, redir))
+				return ;
+		}
+		redir = redir->next;
+	}
+}
 
 int	execute_redir(t_arg *arg)
 {
@@ -21,16 +37,15 @@ int	execute_redir(t_arg *arg)
 	{
 		if (redir->type == TOKEN_REDIR_IN && !open_infile(arg, redir))
 			return (0);
-		else if (redir->type == TOKEN_REDIR_OUT && !open_outfile(arg, redir))
-			return (0);
-		else if (redir->type == TOKEN_APPEND && open_append(arg, redir))
-			return (0);
 		else if (redir->type == TOKEN_HEREDOC)
 		{
-			if (!handle_heredoc(arg, redir)
-				|| dup2(arg->fd_in, STDIN_FILENO) == -1)
+			if (dup2(arg->fd_in, STDIN_FILENO) == -1)
 				return (0);
 		}
+		else if (redir->type == TOKEN_REDIR_OUT && !open_outfile(arg, redir))
+			return (0);
+		else if (redir->type == TOKEN_APPEND && !open_append(arg, redir))
+			return (0);
 		redir = redir->next;
 	}
 	return (1);

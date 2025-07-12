@@ -6,7 +6,7 @@
 /*   By: jdorazio <jdorazio@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/27 19:14:03 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/07/11 08:34:14 by jdorazio         ###   ########.fr       */
+/*   Updated: 2025/07/12 18:18:10 by jdorazio         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,6 +109,7 @@ void	ft_cmd_exec(t_shell *mini)
 {
 	if (!mini->arg)
 		return ;
+	process_heredoc(mini->arg);
 	if (mini->arg && mini->arg->next)
 	{
 		mini->in_pipe = true;

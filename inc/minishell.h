@@ -6,7 +6,7 @@
 /*   By: jdorazio <jdorazio@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/31 12:15:39 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/07/12 15:01:47 by jdorazio         ###   ########.fr       */
+/*   Updated: 2025/07/12 18:18:28 by jdorazio         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,6 +131,7 @@ void	ft_cmd_exec(t_shell *mini);
 bool	init_pipes(t_shell *mini);
 void	close_pipes(t_arg *current);
 int		execute_redir(t_arg *arg);
+void	process_heredoc(t_arg *arg);
 void	handle_status(t_shell *mini);
 void	execute_pipeline_commands(t_shell *mini, pid_t *last_pid);
 void	child_process(t_shell *msh);
