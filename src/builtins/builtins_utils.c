@@ -6,7 +6,7 @@
 /*   By: mamaratr <mamaratr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 17:00:16 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/07/12 17:11:30 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/07/12 19:03:24 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ static int	update_env_value_if_exists(t_env *env_list, const char *name,
 	{
 		if (ft_strcmp(env_list->env_name, name) == 0)
 		{
-			if (!env_list->env_value)
+			if (!env_list->env_value && !new_value)
 				return (1);
 			ft_memfree(env_list->env_value);
 			env_list->env_value = ft_strdup(new_value);
