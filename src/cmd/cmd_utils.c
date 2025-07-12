@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cmd_utils.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jdorazio <jdorazio@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mamaratr <mamaratr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/07 09:33:04 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/07/11 08:37:39 by jdorazio         ###   ########.fr       */
+/*   Updated: 2025/07/12 12:01:57 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ static void	setup_redir_and_pipes(t_arg *arg)
 	}
 }
 
-void child_process(t_shell *mini)
+void	child_process(t_shell *mini)
 {
 	setup_redir_and_pipes(mini->arg);
 	if (is_comms(mini))

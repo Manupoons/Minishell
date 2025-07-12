@@ -3,10 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jdorazio <jdorazio@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mamaratr <mamaratr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/04 15:59:31 by mamaratr          #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2025/07/12 13:07:30 by jdorazio         ###   ########.fr       */
+=======
+/*   Updated: 2025/07/12 12:09:52 by mamaratr         ###   ########.fr       */
+>>>>>>> efd6880fdaf582888ca323981050a18e9c9942f9
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,13 +22,13 @@ static t_arg	*handle_pipe_token(t_arg *curr_arg, t_token *next_tokens)
 
 	if (!next_tokens || next_tokens->type == TOKEN_PIPE)
 	{
-		ft_putstr_fd("bash: syntax error near unexpected token `|'\n", 2);
+		ft_putstr_fd("mini: syntax error near unexpected token `|'\n", 2);
 		return (NULL);
 	}
 	new = init_arg();
 	if (!new)
 	{
-		ft_putstr_fd("bash: failed to allocate pipe arg\n", 2);
+		ft_putstr_fd("mini: failed to allocate pipe arg\n", 2);
 		return (NULL);
 	}
 	curr_arg->next = new;
@@ -39,12 +43,12 @@ static int	handle_redir_token(t_arg *curr_arg, t_token *token)
 	file_token = token->next;
 	if (!file_token)
 	{
-		printf("bash: syntax error near unexpected token `newline'\n");
+		printf("mini: syntax error near unexpected token `newline'\n");
 		return (2);
 	}
 	if (file_token->type != TOKEN_WORD)
 	{
-		printf("bash: syntax error near unexpected token `%s'\n", token->token);
+		printf("mini: syntax error near unexpected token `%s'\n", token->token);
 		return (2);
 	}
 	redir = malloc(sizeof(t_redir));
