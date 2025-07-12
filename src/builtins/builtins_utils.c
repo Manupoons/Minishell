@@ -3,34 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   builtins_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: mamaratr <mamaratr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/06 17:00:16 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/07/10 11:31:39 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/07/12 12:44:41 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./minishell.h"
-
-// static int	check_variable(char *name, char *value, t_shell *mini)
-// {
-// 	t_env	*env;
-// 
-// 	env = mini->env;
-// 	if (!env)
-// 		return (0);
-// 	while (env)
-// 	{
-// 		if (!ft_strcmp(env->env_name, name))
-// 		{
-// 			env->env_name = ft_strdup(name);
-// 			env->env_value = ft_strdup(value);
-// 			return (1);
-// 		}
-// 		env = env->next;
-// 	}
-// 	return (0);
-// }
 
 static int	update_env_value_if_exists(t_env *env_list, const char *name,
 							const char *new_value)

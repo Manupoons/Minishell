@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_cd.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mamaratr <mamaratr@student.42madrid.com    +#+  +:+       +#+        */
+/*   By: mamaratr <mamaratr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 18:20:52 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/07/09 19:53:40 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/07/12 12:10:04 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ void	ft_cd(t_shell *mini)
 		path = ft_strdup(getenv("HOME"));
 	if (chdir(path))
 	{
-		printf("bash: cd: %s: %s\n", path, strerror(errno));
+		printf("mini: cd: %s: %s\n", path, strerror(errno));
 		mini->status = 1;
 	}
 	else
