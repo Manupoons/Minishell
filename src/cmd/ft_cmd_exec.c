@@ -15,7 +15,6 @@
 static void	ft_next_cmd(t_shell *mini)
 {
 	t_redir	*redir;
-	t_redir	*tmp_redir;
 	t_arg	*tmp_arg;
 
 	if (!mini->arg)
@@ -26,14 +25,7 @@ static void	ft_next_cmd(t_shell *mini)
 		close(mini->arg->fd_out);
 	ft_memfree_all(mini->arg->argv);
 	redir = mini->arg->redirs;
-	while (redir)
-	{
-		if (redir->cmd)
-			free(redir->cmd);
-		tmp_redir = redir;
-		redir = redir->next;
-		free(tmp_redir);
-	}
+	free_redirs(redir);
 	mini->arg->redirs = NULL;
 	tmp_arg = mini->arg;
 	mini->arg = mini->arg->next;
@@ -101,10 +93,11 @@ void	execute(t_shell *mini)
 				|| !ft_isascii(mini->arg->redirs->cmd[0]))
 			{
 				mini->status = 1;
+				ft_next_cmd(mini);
 				break ;
 			}
 		}
-		if (is_comms(mini))
+		if (is_comms(mini) && mini->arg->redirs == NULL)
 			ft_comms(mini);
 		else
 			execute_pid(mini);

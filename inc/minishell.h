@@ -140,10 +140,9 @@ void	ft_cmd_exec(t_shell *mini);
 //###--- CMD_UTILS ---###
 bool	init_pipes(t_shell *mini);
 void	close_pipes(t_arg *current);
-void	execute_redir(t_shell *msh);
+int	execute_redir(t_arg *arg);
 void	handle_status(t_shell *mini);
 void	execute_pipeline_commands(t_shell *mini, pid_t *last_pid);
-int	execute_redir_token(t_arg *args);
 void	child_process(t_shell *msh);
 //###-----------------###
 
@@ -244,6 +243,15 @@ char	**ft_env_to_array(t_shell *mini);
 // void	print_parser(t_arg *head);
 void	print_tokens(t_token *tokens);
 void	free_array_split(char **arr);
+void	print_parser(t_arg *head);
+
+int build_compound_token(char *input, int i, t_token **token_list);
+int process_fragment(char **full, char *frag, char *last_q, t_token **token_list);
+char current_quote_type(char *str);
+char *get_fragment(char *input, int *i);
+int build_assignment_token(char *input, int i, t_token **token_list);
+int handle_compound_words(char *input, t_token **token_list, int i);
+int is_assignment(char *input);
 
 
 #endif

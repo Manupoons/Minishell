@@ -12,33 +12,50 @@
 
 #include "./minishell.h"
 
-void	execute_redir(t_shell *msh)
-{
-	t_arg	*arg;
+// void	execute_redir(t_arg *arg)
+// {
+// 	if (!arg)
+// 		return ;
+// 	if (arg->fd_out != -1)
+// 	{
+// 		if (dup2(arg->fd_out, STDOUT_FILENO) == -1)
+// 		{
+// 			exit(2);
+// 		}
+// 		close(arg->fd_out);
+// 		arg->fd_out = -1;
+// 	}
+// 	if (arg->fd_in != -1)
+// 	{
+// 		if (dup2(arg->fd_in, STDIN_FILENO) == -1)
+// 		{
+// 			exit(2);
+// 		}
+// 		close(arg->fd_in);
+// 		arg->fd_in = -1;
+// 	}
+// }
 
-	arg = msh->arg;
-	if (!arg)
-		return ;
-	if (arg->fd_out != -1)
-	{
-		if (dup2(arg->fd_out, STDOUT_FILENO) == -1)
-		{
-			close(arg->fd_out);
-			exit(2);
-		}
-		close(arg->fd_out);
-		arg->fd_out = -1;
-	}
-	if (arg->fd_in != -1)
-	{
-		if (dup2(arg->fd_in, STDIN_FILENO) == -1)
-		{
-			close(arg->fd_in);
-			exit(2);
-		}
-		close(arg->fd_in);
-		arg->fd_in = -1;
-	}
+int execute_redir(t_arg *arg)
+{
+    t_redir *redir = arg->redirs;
+    while (redir)
+    {
+        if (redir->type == TOKEN_REDIR_IN && !open_infile(arg, redir))
+					return (0);
+        else if (redir->type == TOKEN_REDIR_OUT && !open_outfile(arg, redir))
+					return (0);
+				else if (redir->type == TOKEN_APPEND && open_append(arg, redir))
+					return (0);
+				else if (redir->type == TOKEN_HEREDOC)
+				{
+					if (!handle_heredoc(arg, redir)
+						|| dup2(arg->fd_in, STDIN_FILENO) == -1)
+						return (0);
+				}
+        redir = redir->next;
+    }
+		return (1);
 }
 
 void	handle_status(t_shell *mini)
@@ -69,34 +86,32 @@ void	handle_status(t_shell *mini)
 		printf("%s: command not found\n", mini->arg->argv[0]);
 }
 
-int	execute_redir_token(t_arg *args)
-{
-	if (!args || !args->redirs)
-		return (1);
-	if (args->redirs->type == TOKEN_REDIR_IN)
-	{
-		if (!open_infile(args, args->redirs))
-			return (0);
-	}
-	else if (args->redirs->type == TOKEN_REDIR_OUT)
-	{
-		if (!open_outfile(args, args->redirs))
-			return (0);
-	}
-	else if (args->redirs->type == TOKEN_APPEND)
-	{
-		if (!open_append(args, args->redirs))
-			return (0);
-	}
-	else if (args->redirs->type == TOKEN_HEREDOC)
-	{
-		if (!handle_heredoc(args, args->redirs))
-			return (0);
-	}
-	if (args->redirs->next)
-		return (execute_redir_token(args->next));
-	return (1);
-}
+// int	execute_redir_token(t_arg *args)
+// {
+// 	if (!args || !args->redirs)
+// 		return (1);
+// 	if (args->redirs->type == TOKEN_REDIR_IN)
+// 	{
+// 		if (!open_infile(args, args->redirs))
+// 			return (0);
+// 	}
+// 	else if (args->redirs->type == TOKEN_REDIR_OUT)
+// 	{
+// 		if (!open_outfile(args, args->redirs))
+// 			return (0);
+// 	}
+// 	else if (args->redirs->type == TOKEN_APPEND)
+// 	{
+// 		if (!open_append(args, args->redirs))
+// 			return (0);
+// 	}
+// 	else if (args->redirs->type == TOKEN_HEREDOC)
+// 	{
+// 		if (!handle_heredoc(args, args->redirs))
+// 			return (0);
+// 	}
+// 	return (execute_redir_token(args->next));
+// }
 
 // int	execute_redir_token(t_arg *args)
 // {

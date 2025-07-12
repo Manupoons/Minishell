@@ -58,32 +58,23 @@ int	handle_heredoc(t_arg *arg, t_redir *redir)
 
 int	open_infile(t_arg *arg, t_redir *redir)
 {
-	int	fd;
-
 	if (arg->fd_in != -1)
 		close(arg->fd_in);
-	fd = open(redir->cmd, O_RDONLY);
-	if (fd == -1)
-	{
-		printf("-bash: %s: No such file or directory\n", redir->cmd);
-		return (0);
-	}
-	arg->fd_in = fd;
-	return (1);
+	arg->fd_in = open(redir->cmd, O_RDONLY);
+	if (arg->fd_in == -1)
+		return (perror(redir->cmd), 0);
+	return (dup2(arg->fd_out, STDIN_FILENO) != -1);
 }
 
 int	open_outfile(t_arg *arg, t_redir *redir)
 {
-	int	fd;
-
 	if (arg->fd_out != -1)
 		close(arg->fd_out);
-	fd = open(redir->cmd, O_WRONLY | O_CREAT
+	arg->fd_out = open(redir->cmd, O_WRONLY | O_CREAT
 			| O_TRUNC, 0644);
-	if (fd == -1)
-		return (0);
-	arg->fd_out = fd;
-	return (1);
+	if (arg->fd_out == -1)
+		return (perror(redir->cmd), 0);
+	return (dup2(arg->fd_out, STDOUT_FILENO) != -1);
 }
 
 int	open_append(t_arg *arg, t_redir *redir)

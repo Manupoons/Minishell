@@ -72,39 +72,25 @@ static void	run_cmd(t_shell *mini)
 	run_cmd_error(mini, path, envp);
 }
 
-static void	setup_redir_and_pipes(t_shell *mini)
+static void	setup_redir_and_pipes(t_arg *arg)
 {
-	if (!execute_redir_token(mini->arg))
-			exit(1);
-	execute_redir(mini);
-  if (mini->arg->pipe_in != STDIN_FILENO)
-  {
-    dup2(mini->arg->pipe_in, STDIN_FILENO);
-    close(mini->arg->pipe_in);
-  }
-  if (mini->arg->pipe_out != STDOUT_FILENO)
-  {
-		dup2(mini->arg->pipe_out, STDOUT_FILENO);
-    close(mini->arg->pipe_out);
-  }
+	if (!execute_redir(arg))
+		exit(1);
+	if (arg->fd_in == -1 && arg->pipe_in != STDIN_FILENO)
+	{
+		dup2(arg->pipe_in, STDIN_FILENO);
+		close(arg->pipe_in);
+	}
+	if (arg->fd_out == -1 && arg->pipe_out != STDOUT_FILENO)
+	{
+		dup2(arg->pipe_out, STDOUT_FILENO);
+		close(arg->pipe_out);
+	}
 }
 
 void child_process(t_shell *mini)
 {
-	t_arg *cmd;
-
-	setup_redir_and_pipes(mini);
-	cmd = mini->arg;
-	if (cmd->pipe_in != STDIN_FILENO)
-  {
-    dup2(cmd->pipe_in, STDIN_FILENO);
-		close(cmd->pipe_in);
-  }
-  if (cmd->pipe_out != STDOUT_FILENO)
-  {
-    dup2(cmd->pipe_out, STDOUT_FILENO);
-    close(cmd->pipe_out);
-  }
+	setup_redir_and_pipes(mini->arg);
 	if (is_comms(mini))
 	{
 		ft_comms(mini);
@@ -113,6 +99,6 @@ void child_process(t_shell *mini)
 	else
 	{
 		run_cmd(mini);
-	exit(127);
+		exit(127);
 	}
 }
