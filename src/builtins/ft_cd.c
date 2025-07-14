@@ -6,7 +6,7 @@
 /*   By: mamaratr <mamaratr@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/26 18:20:52 by mamaratr          #+#    #+#             */
-/*   Updated: 2025/07/12 12:10:04 by mamaratr         ###   ########.fr       */
+/*   Updated: 2025/07/14 12:03:22 by mamaratr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,12 +29,19 @@ static void	ft_change_pwd(t_shell *mini)
 	t_env	*env;
 	char	*pwd;
 
+	pwd = getcwd(NULL, 0);
+	if (!pwd)
+	{
+		ft_putstr_fd("cd: error retrieving current directory: getcwd: ", 2);
+		ft_putendl_fd(strerror(errno), 2);
+		mini->status = 1;
+		return ;
+	}
 	env = mini->env;
 	while (env)
 	{
 		if (ft_strncmp(env->env_name, "PWD", 3) == 0)
 		{
-			pwd = getcwd(NULL, 0);
 			ft_memfree(env->env_value);
 			env->env_value = ft_strdup(pwd);
 		}
